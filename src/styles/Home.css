@@ -1,0 +1,183 @@
+.home {
+    display: flex;
+    position: relative;
+
+    height: 100vh;
+    width: 100vw;
+}
+
+h1 {
+    margin: 0;
+    font-size: inherit;
+}
+
+.game-title {
+    display: block;
+    position: absolute;
+
+    top: 52px;
+    left: 130px;
+
+    font-size: 52px;
+    letter-spacing: 21px;
+}
+
+.game-version {
+    display: block;
+    position: absolute;
+
+    top: 108px;
+    left: 70px;
+
+    font-size: 52px;
+    letter-spacing: 35px;
+
+    color: #c90000;
+}
+
+.home-buttons {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+
+    gap: 16px;
+
+    top: 234px;
+    left: 187px;
+
+    align-items: flex-start;
+
+    font-size: 42px;
+    letter-spacing: 32px;
+
+    color: lightgray;
+
+    z-index: 1;
+}
+
+.home-button:hover{
+    color: #c90000;
+    transition: ease-in-out 0.2s;
+}
+
+#logout-btn {
+    letter-spacing: 26px;
+}
+
+#admin-btn {
+    letter-spacing: 26px;
+}
+
+.background {
+    display: flex;
+    position: absolute;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 509px;
+    height: 509px;
+
+    top:50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+}
+
+.background-h {
+    display: flex;
+    position: absolute;
+
+    flex-direction: column;
+    gap: 55px;
+
+    width:509px;
+    padding-top: 55px;
+    padding-bottom: 55px;
+}
+
+.background-v {
+    display: flex;
+    position: absolute;
+
+    flex-direction: row;
+    gap: 55px;
+
+    height: 509px;
+    padding-left: 55px;
+    padding-right: 55px;
+}
+
+.line-h {
+    background: radial-gradient(circle, rgba(0 , 0 , 0 , 1) 0%, rgba(0 , 0 , 0 , 0) 100%);
+    width: 100%;
+    height: 2px;
+}
+
+.line-v {
+    background: radial-gradient(circle, rgba(0 , 0 , 0 , 1) 0%, rgba(0 , 0 , 0 , 0) 100%);
+    width: 2px;
+    height: 100%;
+}
+
+/* Games Modal */
+
+.games-modal {
+    display: flex;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 10;
+
+    transition: ease-in-out 0.5s;
+}
+
+.games-modal .modal-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+    background-color: transparent;
+    height: fit-content;
+    max-height: 75%;
+    width: fit-content;
+    border-radius: 10%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    z-index: 12;
+}
+
+.games-modal .modal-auxiliar {
+    height: 100%;
+    width: 100%;
+    z-index: 11;
+}
+
+.games-modal button {
+    background-color: cadetblue;
+    color: white;
+    height: 55px;
+    width: 20vw;
+    border-radius: 15px;
+    transition: ease-in-out 0.25s;
+}
+
+.games-modal button:hover {
+    box-shadow: 0 0 0 5px white;
+    transition: ease-in-out 0.25s;
+}
+
+.saved-game {
+    height: fit-content !important;
+    padding: 10px 10px;
+}
+
+.inactive {
+    display: none;
+    transition: ease-in-out 0.5s;
+}
