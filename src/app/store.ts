@@ -2,10 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { isLoggedSlice } from "../features/isLogged.slice";
 import { roleSlice } from "../features/role.slice";
 
-const store = configureStore({
+export const store = configureStore({
     reducer: {
-        isLogged: isLoggedSlice,
-        role: roleSlice
+        isLogged: isLoggedSlice.reducer,
+        role: roleSlice.reducer
     }
 })
 
