@@ -9,13 +9,9 @@ interface GameOverProps {
     puzzle: PuzzleData | undefined,
     setAnswers: (answers:Grid) => void,
     setAnswersN: (answersN:string) => void,
-    setErrores: (errores:number) => void,
-    setTimeElapsed: (timeElapsed:number) => void,
-    setTimerOn: ( timerOn:boolean) => void,
-    resetInputs: () => void
 }
 
-const GameOver:React.FC<GameOverProps> = ({game_id , puzzle , setAnswers , setAnswersN , setErrores , setTimeElapsed , setTimerOn , resetInputs }) => {
+const GameOver:React.FC<GameOverProps> = ({game_id , puzzle , setAnswers , setAnswersN }) => {
     const navigate = useNavigate()
 
     function retry () {
@@ -24,10 +20,7 @@ const GameOver:React.FC<GameOverProps> = ({game_id , puzzle , setAnswers , setAn
             .then(res => {
                 setAnswers(res.data.grid)
                 setAnswersN(res.data.number)
-                setErrores(0)
-                setTimeElapsed(0)
-                setTimerOn(true)
-                resetInputs()
+                window.location.reload()
             })
             .catch(err => {console.error(err)})
     }
