@@ -6,13 +6,15 @@ import { Ids } from "../../app/types"
 import axios from "axios"
 
 interface Props {
-    goToPuzzle: () => void
+    goToPuzzle: () => void,
+    goToVs: () => void,
     closeModal: () => void
 }
 
-const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal}) => {
+const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
 
     const [showSaved , setShowSaved] = useState(false)
+    const [showNewGame , setShowNewGame] = useState(false)
     const [saved , setSaved] = useState<GameData[]>()
     const navigate = useNavigate()
 
@@ -40,16 +42,30 @@ const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal}) => {
 
     return (
         <div className="games-modal inactive">
-            {!showSaved ?
+            {!showSaved && !showNewGame ?
                 <div id="games" className="modal-window">
-                    <button onClick={goToPuzzle}>New Game</button>
+                    <button onClick={() => setShowNewGame(true)}>New Game</button>
                     <button onClick={goToSavedGames}>Saved Games</button>
                 </div>
                 :
+                <></>
+            }
+            {showSaved?
                 <div className="modal-window" id="saved-games">
                     {saved?.map(game => <button key={game.id} onClick={() => goToSavedGame(game.id)} className="saved-game">{saved.indexOf(game)+1}</button>)}
                     <button className="saved-game" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
+                :
+                <></>
+            }
+            {showNewGame?
+                <div className="modal-window" id="new-game">
+                    <button onClick={goToPuzzle}>Solo Game</button>
+                    <button onClick={goToVs}>Vs Game</button>
+                    <button onClick={() => setShowNewGame(false)}>Back</button>
+                </div>
+                :
+                <></>
             }
             <div onClick={() => {closeModal();setShowSaved(false)}} className="modal-auxiliar">
 

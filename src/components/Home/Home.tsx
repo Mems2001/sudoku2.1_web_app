@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
 import variables from '../../../utils/variables'
-import { GameData, PuzzleData } from "../../app/dbTypes"
+import { Data, GameData, PuzzleData } from "../../app/dbTypes"
 import { PostGameBody } from "../../app/types"
 import { AxiosResponse } from "axios"
 import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
@@ -39,19 +39,38 @@ function Home() {
         }
       }
 
-        function logout() {
-           const URL = variables.url_prefix + '/api/v1/auth/logout'
-           axios.get(URL)
-             .then(() => {
-               dispatch(setLoggedOut())
-               dispatch(setRole(null))
-             })
-             .catch(error => {
-               console.error('Error', error)
-             })
-        }
+      async function goToVs () {
+        const URL = variables.url_prefix + '/api/v1/puzzles/get_random'
+        const URL2 = variables.url_prefix + '/api/v1/games_vs'
+        try {
+          const puzzle:AxiosResponse<PuzzleData> = await axios.get(URL)
 
-       // Games modal functions
+          const body:PostGameBody = {
+            puzzle_id: puzzle.data.id,
+            sudoku_id: puzzle.data.sudoku_id
+          }
+          const game:AxiosResponse<Data> = await axios.post(URL2 , body)
+          closeModal()
+          // console.log(game)
+          navigate(`/game_vs/${game.data.game.id}`)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
+      function logout() {
+         const URL = variables.url_prefix + '/api/v1/auth/logout'
+         axios.get(URL)
+           .then(() => {
+             dispatch(setLoggedOut())
+             dispatch(setRole(null))
+           })
+           .catch(error => {
+             console.error('Error', error)
+           })
+      }
+
+      // Games modal functions
 
       function openModal() {
         const modal = document.getElementsByClassName('games-modal')[0] as HTMLDivElement
@@ -96,7 +115,7 @@ function Home() {
         <section className="background">
             <h1 className="game-title">5UD0KU</h1>
             <h1 className="game-version">2.1</h1>
-
+ 
             <div className="home-buttons">
                 <button className="home-button" onClick={openModal}>PLAY</button>
                 {isLogged ?
@@ -139,7 +158,7 @@ function Home() {
 
         </section>
 
-        <GamesModal goToPuzzle={goToPuzzle} closeModal={closeModal}/>
+        <GamesModal goToPuzzle={goToPuzzle} goToVs={goToVs} closeModal={closeModal}/>
        </div>
     )
 }

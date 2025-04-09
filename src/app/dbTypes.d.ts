@@ -126,7 +126,156 @@ export interface WelcomeHeaders {
 // Sudokus
 
 export interface Sudoku {
-    id:     string;
+    id:     Ids;
     number: string;
     grid:   Grid;
+}
+
+// Multiplayer games
+
+export interface MultiplayerGame {
+    data:       Data;
+    status:     number;
+    statusText: string;
+    headers:    WelcomeHeaders;
+    config:     Config;
+    request:    Request;
+}
+
+export interface Config {
+    transitional:      Transitional;
+    adapter:           string[];
+    transformRequest:  null[];
+    transformResponse: null[];
+    timeout:           number;
+    xsrfCookieName:    string;
+    xsrfHeaderName:    string;
+    maxContentLength:  number;
+    maxBodyLength:     number;
+    env:               Request;
+    headers:           ConfigHeaders;
+    withCredentials:   boolean;
+    method:            string;
+    url:               string;
+    data:              string;
+    allowAbsoluteUrls: boolean;
+}
+
+export interface Request {
+}
+
+export interface ConfigHeaders {
+    Accept:         string;
+    "Content-Type": string;
+}
+
+export interface Transitional {
+    silentJSONParsing:   boolean;
+    forcedJSONParsing:   boolean;
+    clarifyTimeoutError: boolean;
+}
+
+export interface Data {
+    game:   MultiplayerGameData;
+    player: PlayerData;
+}
+
+export interface MultiplayerGameData {
+    id:         Ids;
+    puzzle_id:  Ids;
+    sudoku_id:  Ids;
+    grid:       Grid;
+    number:     string;
+    updated_at: Date;
+    created_at: Date;
+    sudokuId:   Ids;
+    puzzleId:   Ids;
+    status:     number;
+    time:       number;
+}
+
+export interface PlayerData {
+    id:         Ids;
+    user_id:    Ids;
+    game_id:    Ids;
+    grid:       Grid;
+    number:     string;
+    updated_at: Date;
+    created_at: Date;
+    userId:     Ids;
+    gameId:     Ids;
+    errors:     number;
+    status:     number;
+}
+
+export interface WelcomeHeaders {
+    "content-length": string;
+    "content-type":   string;
+}
+
+// Players
+
+export interface Players {
+    data:       PlayerData[];
+    status:     number;
+    statusText: string;
+    headers:    WelcomeHeaders;
+    config:     Config;
+    request:    Request;
+}
+
+export interface Config {
+    transitional:      Transitional;
+    adapter:           string[];
+    transformRequest:  null[];
+    transformResponse: null[];
+    timeout:           number;
+    xsrfCookieName:    string;
+    xsrfHeaderName:    string;
+    maxContentLength:  number;
+    maxBodyLength:     number;
+    env:               Request;
+    headers:           ConfigHeaders;
+    withCredentials:   boolean;
+    method:            string;
+    url:               string;
+    allowAbsoluteUrls: boolean;
+}
+
+export interface Request {
+}
+
+export interface ConfigHeaders {
+    Accept: string;
+}
+
+export interface Transitional {
+    silentJSONParsing:   boolean;
+    forcedJSONParsing:   boolean;
+    clarifyTimeoutError: boolean;
+}
+
+export interface PlayerData {
+    id:         Ids;
+    userId:     Ids;
+    gameId:     Ids;
+    grid:       Array<number[]>;
+    number:     string;
+    errors:     number;
+    status:     number;
+    host:       boolean;
+    created_at: Date;
+    updated_at: Date;
+    game_id:    Ids;
+    user_id:    Ids;
+    User:       User;
+}
+
+export interface User {
+    username: string;
+}
+
+export interface WelcomeHeaders {
+    "content-length": string;
+    "content-type":   string;
 }

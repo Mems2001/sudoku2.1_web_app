@@ -259,7 +259,7 @@
     left: 50%;
     transform: translate(-50% , -50%);
 
-    background-color: rgba(220, 220, 220, 0.5);
+    background-color: rgba(220, 220, 220, 0.75);
     padding: 1.5rem;
     border-radius: 15px;
     width: 300px;
@@ -283,4 +283,52 @@
 
 .game-setting label {
     font-size: 1rem;
+}
+
+/* VS console */
+
+.vs-console {
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.vs-console .window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+    background-color: gainsboro;
+}
+
+.current-players {
+    display: flex;
+    flex-direction: column;
+}
+
+.room-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.room-actions button {
+    background-color: cornflowerblue;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.room-actions button:disabled {
+    background-color: gray;
+    cursor: unset;
+}
+
+.room-actions .cancel {
+    background-color: crimson;
 }

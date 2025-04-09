@@ -11,6 +11,7 @@ import Register from './components/UserAuth/Register'
 import SoloGame from './components/Games/SoloGame'
 
 import axios from 'axios'
+import VsGame from './components/Games/VsGame'
 axios.defaults.withCredentials = true
 
 
@@ -23,6 +24,7 @@ function App () {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/game/:game_id' element={<SoloGame />} />
+        <Route path='/game_vs/:game_id' element={<VsGame />} />
       </Routes>
     </div>
     

@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+// import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router-dom'
@@ -9,9 +9,9 @@ import {store} from './app/store.ts'
 createRoot(document.getElementById('root')!).render(
   <HashRouter>
     <Provider store={store}>
-      <StrictMode>
+      {/* <StrictMode> */}
         <App />
-      </StrictMode>,
+      {/* </StrictMode> */}
     </Provider>
   </HashRouter>
 )

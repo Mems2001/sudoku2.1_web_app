@@ -6,12 +6,16 @@ import Header from "./Header";
 import GameOver from "./GameOver";
 import GameCompleted from "./GameCompleted";
 import variables from "../../../utils/variables";
-import { Cells, Grid } from "../../app/types";
-import { PuzzleData, Sudoku } from "../../app/dbTypes";
+import { Cells, Grid, Ids } from "../../app/types";
+import { PlayerData, PuzzleData, Sudoku } from "../../app/dbTypes";
 import GameSettins from "./GameSettings";
+import VsRomm from "./VsRoom";
+import { io, Socket } from "socket.io-client";
+import { RootState } from "../../app/store";
+import { useAppSelector } from "../../app/hooks";
 
-function SoloGame () {
-    const game_id = useParams().game_id
+function VsGame () {
+    const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
 
     const [sudoku, setSudoku] = useState<Sudoku>()
@@ -23,10 +27,23 @@ function SoloGame () {
 
     const [currentFocus , setCurrentFocus] = useState<string>()
     const [timeElapsed , setTimeElapsed] = useState(0)
-    const [timerOn , setTimerOn] = useState(true)
+    const [timerOn , setTimerOn] = useState(false)
     const [colorGuides , setColorGuides] = useState(true)
     const [numberGuides , setNumberGuides] = useState(true)
     const [openSettings , setOpenSettings] = useState(false)
+
+    const role = useAppSelector((state:RootState) => state.role.value)
+    const [players , setPlayers] = useState<PlayerData[]>([])
+    const handlePlayers = useCallback ((data?: PlayerData , dataA?: PlayerData[]) => {
+        if (data) { // When data is an object then it pushes the object to the previous array
+            setPlayers(prevPlayers => [...prevPlayers , data])
+        } else { //If data is an array its values subtitue the previous array
+            setPlayers(() => dataA? [...dataA] : [])
+        }
+    } , [])
+    const [inList , setInList] = useState<boolean>(false)
+    const [socket , setSocket] = useState<Socket | null>(null)
+
 
     const cells:Cells = [];
     function defineCells (cells:Cells):void {
@@ -63,6 +80,28 @@ function SoloGame () {
     }
 
     // In game functions
+
+    async function getPlayers () {
+        try {
+            if (players.length === 0) {
+                const URL = variables.url_prefix + `/api/v1/players/${game_id}`
+                const res = await axios.get(URL)
+                // console.log(res)
+                handlePlayers(undefined , res.data)
+            } else {
+                // console.log(players)
+                const URL = variables.url_prefix + `/api/v1/players/in_list/${game_id}`
+                const res = await axios.get(URL)
+                // console.log(res)
+                if (res.status === 200) {
+                    setInList(true)
+                }
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     function checkRemainingNumbers () {
         // This function checks how many numbers are remaining in the sudoku grid, so we can show them to the user
       let aux:number[] = Array(9).fill(0)
@@ -222,13 +261,15 @@ function SoloGame () {
       }
     }
 
+    // Socket functions
+
     useEffect(() => {
       if (!answers) {
         try {
-          const URL = variables.url_prefix + `/api/v1/games/${game_id}`
+          const URL = variables.url_prefix + `/api/v1/games_vs/${game_id}`
           axios.get(URL)
             .then(res => {
-              // console.log(res)
+            //   console.log(res)
               setAnswers(res.data.grid)
               setAnswersN(res.data.number)
               setSudoku(res.data.Sudoku)
@@ -246,6 +287,12 @@ function SoloGame () {
           }    
         }
       }, []);
+
+    useEffect (
+      () => {
+          getPlayers()
+        }, [players , inList]
+    )
         
     useEffect(
       () => {
@@ -273,6 +320,30 @@ function SoloGame () {
         return () => clearInterval(timer); // Cleanup on unmount or when `timerOn` changes
       }
     }, [timerOn]);
+
+    useEffect(
+        () => {
+            const newSocket = io(variables.socket_url , {
+                transports: ['websocket']
+            })
+            setSocket(newSocket)
+
+            newSocket.on('connect_error' , (err) => {
+                console.error('Socket error: ', err)
+            })
+
+            newSocket.emit('join-room' , players)
+
+            newSocket.on('message' , (data) => console.log(data))
+
+            newSocket.on('updated-players' , data => {
+                console.log('new players:' , data)
+                handlePlayers(undefined , data)
+            })
+
+            return () => {newSocket.disconnect()}
+        } , [role]
+    )
 
     if (answers) {
         return (
@@ -319,9 +390,10 @@ function SoloGame () {
               :
               <></>
             }
+            <VsRomm game_id={game_id} players={players} handlePlayers={handlePlayers} inList={inList} setInList={setInList} role={role} getPlayers={getPlayers}/>
           </div>
         )
     }
   }
 
-export default SoloGame
+export default VsGame
