@@ -324,7 +324,8 @@ function VsGame () {
     useEffect(
         () => {
             const newSocket = io(variables.socket_url , {
-                transports: ['websocket']
+                transports: ['websocket'],
+                withCredentials: true
             })
             setSocket(newSocket)
 
@@ -332,17 +333,15 @@ function VsGame () {
                 console.error('Socket error: ', err)
             })
 
-            newSocket.emit('join-room' , players)
-
-            newSocket.on('message' , (data) => console.log(data))
+            newSocket.emit('join-room' , game_id , players)
 
             newSocket.on('updated-players' , data => {
-                console.log('new players:' , data)
+                console.log('socket/new players:' , data)
                 handlePlayers(undefined , data)
             })
 
             return () => {newSocket.disconnect()}
-        } , [role]
+        } , [inList]
     )
 
     if (answers) {
@@ -390,7 +389,7 @@ function VsGame () {
               :
               <></>
             }
-            <VsRomm game_id={game_id} players={players} handlePlayers={handlePlayers} inList={inList} setInList={setInList} role={role} getPlayers={getPlayers}/>
+            <VsRomm game_id={game_id} players={players} handlePlayers={handlePlayers} inList={inList} setInList={setInList} role={role}/>
           </div>
         )
     }

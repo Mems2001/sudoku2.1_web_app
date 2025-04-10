@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { Ids } from "../../app/types"
 import variables from "../../../utils/variables"
 import axios from "axios"
@@ -12,11 +11,10 @@ interface VsRommProps {
     handlePlayers: (data?: PlayerData, dataA?: PlayerData[]) => void,
     inList: boolean,
     setInList: (boolean:boolean) => void,
-    role: string | null,
-    getPlayers: () => void
+    role: string | null
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList, setInList, role , getPlayers}) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList, setInList, role}) => {
 
     const dispatch = useAppDispatch()
 
