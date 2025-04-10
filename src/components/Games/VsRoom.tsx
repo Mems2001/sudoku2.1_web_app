@@ -74,7 +74,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
 
     function playGame (socket:Socket | null) {
         if (socket) {
-            socket.emit('play-game' , game_id , true , time)
+            socket.emit('play-game' , game_id)
         }
     }
 

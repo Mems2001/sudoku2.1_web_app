@@ -87,7 +87,7 @@ function VsGame () {
     async function getPlayers () {
         try {
             if (players.length === 0) {
-                const URL = variables.url_prefix + `/api/v1/players/${game_id}`
+                const URL = variables.url_prefix + `/api/v1/players/game/${game_id}`
                 const res = await axios.get(URL)
                 // console.log(res)
                 handlePlayers(undefined , res.data)
@@ -122,12 +122,12 @@ function VsGame () {
     
     function saveAnswers (grid:Grid | undefined , errores:number) {
       // This function also saves the game
-      const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-      axios.patch(URL , {grid, time: timeElapsed , errors: errores})
+      const URL = variables.url_prefix + `/api/v1/players/${playerId}`
+      axios.patch(URL , {grid , errors: errores})
         .then(res => {
           setAnswers(res.data.grid)
           setAnswersN(res.data.number)
-          console.log('game saved')
+          console.log('game saved:' , res.data)
           CompletedCheck(res.data.number)
         })
         .catch(err => {
@@ -267,7 +267,7 @@ function VsGame () {
     // Socket functions
     function pauseGame (socket:Socket | null) {
             if (socket) {
-                socket.emit('pause-game' , game_id , false)
+                socket.emit('pause-game' , game_id)
             }
         }
 
@@ -357,27 +357,14 @@ function VsGame () {
               setPlayerId(data.player_id)
               setHost(data.isHost)
             })
-            newSocket.on('game-info' , data => {
-              console.log('game-info:' , data)
+            
+            newSocket.on('game-timer' , data => {
+              setTimeElapsed(data)
             })
-
-            newSocket.on('play-game' , ({timerOn , time}) => {
-              setTimeElapsed(time)
+            newSocket.on('play-game' , timerOn => {
               setTimerOn(timerOn)
             })
             newSocket.on('pause-game' , (data) => {
-              if (host) {
-                const URL = variables.url_prefix + `/api/v1/games_vs/${game_id}`
-                axios.patch(URL, {time: timeElapsedRef.current})
-                  .then(res => {
-                    console.log('game_saved' , res.data)
-                    setTimeElapsed(res.data.time)
-                    }
-                  )
-                  .catch(err => {
-                    console.error(err)
-                  })
-              }
               setTimerOn(data)
             })
             newSocket.on('game-alert' , data => {
