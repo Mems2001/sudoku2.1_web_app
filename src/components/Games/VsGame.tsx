@@ -423,7 +423,7 @@ function VsGame () {
             {timerOn?
             <></>
             :
-            <VsRomm game_id={game_id} players={players} inList={inList} setInList={setInList} role={role} host={host} socket={socket} time={timeElapsed}/>
+            <VsRomm game_id={game_id} players={players} inList={inList} setInList={setInList} role={role} host={host} socket={socket}/>
             }
           </div>
         )

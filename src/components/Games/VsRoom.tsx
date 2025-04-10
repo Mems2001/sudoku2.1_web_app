@@ -13,11 +13,10 @@ interface VsRommProps {
     setInList: (boolean:boolean) => void,
     role: string | null,
     host: boolean,
-    socket: Socket | null,
-    time: number
+    socket: Socket | null
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, role , host , socket , time}) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, role , host , socket }) => {
 
     const dispatch = useAppDispatch()
 
