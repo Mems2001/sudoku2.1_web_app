@@ -4,17 +4,20 @@ import axios from "axios"
 import { PlayerData } from "../../app/dbTypes"
 import { useAppDispatch } from "../../app/hooks"
 import { setRole } from "../../features/role.slice"
+import { Socket } from "socket.io-client"
 
 interface VsRommProps {
     game_id: Ids,
     players: PlayerData[]
-    handlePlayers: (data?: PlayerData, dataA?: PlayerData[]) => void,
     inList: boolean,
     setInList: (boolean:boolean) => void,
-    role: string | null
+    role: string | null,
+    host: boolean,
+    socket: Socket | null,
+    time: number
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList, setInList, role}) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, role , host , socket , time}) => {
 
     const dispatch = useAppDispatch()
 
@@ -53,10 +56,10 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList,
         try {
             const auth = await authSession()
             if (auth) {
-                const URL = variables.url_prefix + `/api/v1/players/${game_id}`
-                const res = await axios.post(URL)   
-                const newPlayers = [...players , res.data]
-                handlePlayers(undefined , newPlayers)
+                // const URL = variables.url_prefix + `/api/v1/players/${game_id}`
+                // const res = await axios.post(URL)   
+                // const newPlayers = [...players , res.data]
+                // handlePlayers(undefined , newPlayers)
                 setInList(true)
                 // console.log('new players' , newPlayers)
             } else {
@@ -66,6 +69,12 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList,
             }
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    function playGame (socket:Socket | null) {
+        if (socket) {
+            socket.emit('play-game' , game_id , true , time)
         }
     }
 
@@ -85,7 +94,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players, handlePlayers , inList,
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
                     <div className="room-actions">
-                        <button disabled={players && players.length < 2 ? true : false}>Continue</button>
+                        <button onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continue</button>
                         <button className="cancel">Cancel</button>
                     </div>
                 </div>

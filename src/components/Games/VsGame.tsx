@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -26,6 +26,7 @@ function VsGame () {
     const [errores , setErrores] = useState(0)
 
     const [currentFocus , setCurrentFocus] = useState<string>()
+    const timeElapsedRef = useRef(0)
     const [timeElapsed , setTimeElapsed] = useState(0)
     const [timerOn , setTimerOn] = useState(false)
     const [colorGuides , setColorGuides] = useState(true)
@@ -41,6 +42,8 @@ function VsGame () {
             setPlayers(() => dataA? [...dataA] : [])
         }
     } , [])
+    const [playerId , setPlayerId] = useState<Ids>()
+    const [host , setHost] = useState(false)
     const [inList , setInList] = useState<boolean>(false)
     const [socket , setSocket] = useState<Socket | null>(null)
 
@@ -262,6 +265,11 @@ function VsGame () {
     }
 
     // Socket functions
+    function pauseGame (socket:Socket | null) {
+            if (socket) {
+                socket.emit('pause-game' , game_id , false)
+            }
+        }
 
     useEffect(() => {
       if (!answers) {
@@ -276,7 +284,7 @@ function VsGame () {
             //   console.log(res.data.Sudoku)
               setPuzzle(res.data.Puzzle)
               setTimeElapsed(res.data.time)
-              setErrores(res.data.errors)
+              // setErrores(res.data.errors)
             })
             .catch(err => {
               console.error(err)
@@ -321,6 +329,10 @@ function VsGame () {
       }
     }, [timerOn]);
 
+    useEffect(() => {
+      timeElapsedRef.current = timeElapsed; // Update the ref whenever timeElapsed changes
+  }, [timeElapsed]);
+
     useEffect(
         () => {
             const newSocket = io(variables.socket_url , {
@@ -333,11 +345,43 @@ function VsGame () {
                 console.error('Socket error: ', err)
             })
 
-            newSocket.emit('join-room' , game_id , players)
+            newSocket.emit('join-room' , game_id)
 
             newSocket.on('updated-players' , data => {
                 console.log('socket/new players:' , data)
                 handlePlayers(undefined , data)
+            })
+
+            newSocket.on('player-info' , data => {
+              console.log('player-info:' , data)
+              setPlayerId(data.player_id)
+              setHost(data.isHost)
+            })
+            newSocket.on('game-info' , data => {
+              console.log('game-info:' , data)
+            })
+
+            newSocket.on('play-game' , ({timerOn , time}) => {
+              setTimeElapsed(time)
+              setTimerOn(timerOn)
+            })
+            newSocket.on('pause-game' , (data) => {
+              if (host) {
+                const URL = variables.url_prefix + `/api/v1/games_vs/${game_id}`
+                axios.patch(URL, {time: timeElapsedRef.current})
+                  .then(res => {
+                    console.log('game_saved' , res.data)
+                    setTimeElapsed(res.data.time)
+                    }
+                  )
+                  .catch(err => {
+                    console.error(err)
+                  })
+              }
+              setTimerOn(data)
+            })
+            newSocket.on('game-alert' , data => {
+              console.log(data)
             })
 
             return () => {newSocket.disconnect()}
@@ -347,7 +391,7 @@ function VsGame () {
     if (answers) {
         return (
           <div className="grid-container"> 
-            <Header errores={errores} time={timeElapsed} pause={() => {setTimerOn(false);setOpenSettings(true)}} play={() => {setTimerOn(true);setOpenSettings(false)}} timerOn={timerOn} save={() => saveAnswers(answers , errores)}/>  
+            <Header errores={errores} time={timeElapsed} pause={() => {pauseGame(socket)}} play={() => {setTimerOn(true);setOpenSettings(false)}} timerOn={timerOn} save={() => saveAnswers(answers , errores)}/>  
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
@@ -389,7 +433,11 @@ function VsGame () {
               :
               <></>
             }
-            <VsRomm game_id={game_id} players={players} handlePlayers={handlePlayers} inList={inList} setInList={setInList} role={role}/>
+            {timerOn?
+            <></>
+            :
+            <VsRomm game_id={game_id} players={players} inList={inList} setInList={setInList} role={role} host={host} socket={socket} time={timeElapsed}/>
+            }
           </div>
         )
     }

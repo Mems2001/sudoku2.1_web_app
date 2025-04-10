@@ -41,3 +41,8 @@ export interface GameHeaderProps {
     timerOn: boolean,
     save: () => void
 }
+
+export interface CurrentPlayer {
+    player_id?: Ids,
+    isHost: boolean
+}
