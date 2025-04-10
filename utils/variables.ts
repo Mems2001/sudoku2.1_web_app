@@ -7,7 +7,7 @@ const urls:Urls = {
     url_prefix : 'https://sudoku-db-ip9b.onrender.com',
     // url_prefix : 'http://localhost:443',
     socket_url: 'https://sudoku-db-ip9b.onrender.com',
-    // socket_url: 'http://localhost:3000'
+    // socket_url: 'http://localhost:443'
 }
 
 export default urls
