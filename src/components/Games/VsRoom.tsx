@@ -26,7 +26,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
             await navigator.share({
               title: 'Partida Vs en Sudoku 2.1',
               text: 'Fuiste invitado a una partida Vs en Sudoku 2.1, da click en el link para jugar',
-              url: `http://localhost:5173/#/game_vs/${game_id}`,
+              url: variables.share_link_prefix + `/#/game_vs/${game_id}`,
             });
             console.log('Enlace compartido con éxito');
           } catch (error) {
@@ -82,19 +82,30 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
             <section className="vs-console">
                 <div className="window">
                     <div className="current-players">
-                        <p>Current Players:</p>
-                        {players ? 
-                            players.map(player => <span key={player.id}>{player.User?.username} {player.host? 'Host' : ''}</span>)
-                            : 
-                        <></>}
+                        <h2>Current Players:</h2>
+                        <div className="players-container">
+                            {players ? 
+                                players.map(player =>
+                                    <div className="player-info">
+                                        <span key={player.id}>{player.User?.username}</span>
+                                        {player.host?
+                                            <span className="host-medal">host</span>
+                                            :
+                                            <></>
+                                        }
+                                    </div>
+                                )
+                                : 
+                            <></>}
+                        </div>
                     </div>
                     <div className="room-actions">
                         <button>Invitar</button>
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
-                    <div className="room-actions">
-                        <button onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continue</button>
-                        <button className="cancel">Cancel</button>
+                    <div id='main-room-actions' className="room-actions">
+                        <button onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continuar</button>
+                        <button className="cancel">Salir</button>
                     </div>
                 </div>
             </section>
@@ -102,14 +113,14 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
     } else {
         return (
             <div className="vs-console">
-                <div className="window">
+                <div id="pre-room" className="window">
                     {role === 'anon' || role === null?
-                        <div className="room-actions">
+                        <div className="pre-room-actions">
                             <button>Iniciar Sesión</button>
                             <button onClick={continueAsAnon}>Continuar como anónimo</button>
                         </div>
                     :
-                        <div className="room-actions">
+                        <div className="pre-room-actions">
                             <button>Aceptar invitación</button>
                         </div>
                     }

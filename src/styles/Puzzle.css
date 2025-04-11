@@ -301,32 +301,93 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    min-width: 300px;
     transform: translate(-50% , -50%);
     background-color: gainsboro;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}
+
+#pre-room {
+    background-color: unset;
+    padding: unset;
 }
 
 .current-players {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.players-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+    background-color: lightgrey;
+    padding: 0.75rem;
+    border-radius: 5px;
+    box-shadow: inset rgba(0, 0, 0, 0.25) 0 0 5px 0;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.host-medal {
+    display: flex;
+    background-color: lightblue;
+    padding: 0.15rem 0.75rem;
+    border-radius: 10px;
+    color: darkblue;
+    align-items: center;
+    justify-content: center;
+}
+
+.pre-room-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.pre-room-actions button {
+    background-color: lightgray;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 500;
 }
 
 .room-actions {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    width: 100%;
+    justify-content: space-between;
+    width: 75%;
 }
 
 .room-actions button {
-    background-color: cornflowerblue;
+    background-color: rgba(0, 0, 0, 0.1);
     padding: 10px;
     border-radius: 10px;
     font-weight: 500;
 }
 
+#main-room-actions {
+    width: 50%;
+}
+
 .room-actions button:disabled {
     background-color: gray;
     cursor: unset;
+    color: gray;
 }
 
 .room-actions .cancel {
