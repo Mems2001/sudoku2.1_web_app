@@ -39,10 +39,10 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
 
     async function authSession () {
         const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
-        let response = false
+        let response = undefined
         await axios.get(URL)
             .then(res => {
-                if (res.status === 200) response = true
+                if (res.status === 200) response = res.data
             })
             .catch(err => {
                 console.error(err)
@@ -53,9 +53,9 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
     
     async function continueAsAnon () {
         try {
-            const auth = await authSession()
+            const auth:any = await authSession()
             if (auth) {
-                if (socket) socket.emit('create-player') 
+                if (socket) socket.emit('create-player' , auth.user_id , game_id) 
                 setInList(true)
             } else {
                 const URL = variables.url_prefix + '/api/v1/users/anon'
@@ -104,7 +104,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
                     <div id='main-room-actions' className="room-actions">
-                        <button onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continuar</button>
+                        <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continuar</button>
                         <button className="cancel">Salir</button>
                     </div>
                 </div>

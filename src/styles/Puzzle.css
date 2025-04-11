@@ -378,6 +378,7 @@
     padding: 10px;
     border-radius: 10px;
     font-weight: 500;
+    transition: ease 0.2s;
 }
 
 #main-room-actions {
@@ -391,5 +392,13 @@
 }
 
 .room-actions .cancel {
+    background-color: darksalmon;
+}
+
+.room-actions .cancel:hover {
     background-color: crimson;
+}
+
+.room-actions .continue:hover {
+    background-color: cornflowerblue;
 }
