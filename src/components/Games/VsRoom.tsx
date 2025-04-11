@@ -3,9 +3,8 @@ import variables from "../../../utils/variables"
 import axios from "axios"
 import { PlayerData } from "../../app/dbTypes"
 import { useAppDispatch } from "../../app/hooks"
-import { roleSlice, setRole } from "../../features/role.slice"
+import { setRole } from "../../features/role.slice"
 import { Socket } from "socket.io-client"
-import { set } from "react-hook-form"
 
 interface VsRommProps {
     game_id: Ids,

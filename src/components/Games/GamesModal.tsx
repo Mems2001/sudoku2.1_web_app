@@ -60,8 +60,8 @@ const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
             }
             {showNewGame?
                 <div className="modal-window" id="new-game">
-                    <button onClick={goToPuzzle}>Solo Game</button>
-                    <button onClick={goToVs}>Vs Game</button>
+                    <button onClick={goToPuzzle}>Single Player</button>
+                    <button onClick={goToVs}>Multiplayer Time Attack</button>
                     <button onClick={() => setShowNewGame(false)}>Back</button>
                 </div>
                 :
