@@ -98,6 +98,8 @@ function VsGame () {
                 // console.log(res)
                 if (res.status === 200) {
                     setInList(true)
+                } else {
+                  setInList(false)
                 }
             }
         } catch (err) {
@@ -340,6 +342,8 @@ function VsGame () {
                 withCredentials: true
             })
             setSocket(newSocket)
+
+            newSocket.on('message' , data => console.log(data))
 
             newSocket.on('connect_error' , (err) => {
                 console.error('Socket error: ', err)

@@ -86,8 +86,8 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
                         <div className="players-container">
                             {players ? 
                                 players.map(player =>
-                                    <div className="player-info">
-                                        <span key={player.id}>{player.User?.username}</span>
+                                    <div key={player.id} className="player-info">
+                                        <span>{player.User?.username}</span>
                                         {player.host?
                                             <span className="host-medal">host</span>
                                             :
