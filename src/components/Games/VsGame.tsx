@@ -343,13 +343,12 @@ function VsGame () {
             })
             setSocket(newSocket)
 
+            newSocket.emit('join-room' , game_id)
             newSocket.on('message' , data => console.log(data))
 
             newSocket.on('connect_error' , (err) => {
                 console.error('Socket error: ', err)
             })
-
-            newSocket.emit('join-room' , game_id)
 
             newSocket.on('updated-players' , data => {
                 console.log('socket/new players:' , data)
@@ -376,7 +375,7 @@ function VsGame () {
             })
 
             return () => {newSocket.disconnect()}
-        } , [inList]
+        } , []
     )
 
     if (answers) {

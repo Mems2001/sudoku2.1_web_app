@@ -3,8 +3,9 @@ import variables from "../../../utils/variables"
 import axios from "axios"
 import { PlayerData } from "../../app/dbTypes"
 import { useAppDispatch } from "../../app/hooks"
-import { setRole } from "../../features/role.slice"
+import { roleSlice, setRole } from "../../features/role.slice"
 import { Socket } from "socket.io-client"
+import { set } from "react-hook-form"
 
 interface VsRommProps {
     game_id: Ids,
@@ -55,16 +56,16 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
         try {
             const auth = await authSession()
             if (auth) {
-                // const URL = variables.url_prefix + `/api/v1/players/${game_id}`
-                // const res = await axios.post(URL)   
-                // const newPlayers = [...players , res.data]
-                // handlePlayers(undefined , newPlayers)
+                if (socket) socket.emit('create-player') 
                 setInList(true)
-                // console.log('new players' , newPlayers)
             } else {
                 const URL = variables.url_prefix + '/api/v1/users/anon'
-                await axios.get(URL).then(() => dispatch(setRole('anon')))
-                return continueAsAnon()
+                await axios.get(URL).then(res => {
+                    console.log(res)
+                    dispatch(setRole('anon'))
+                    if (socket) socket.emit('create-player' , res.data.id , game_id)
+                    setInList(true)
+                })
             }
         } catch (error) {
             console.error(error)
