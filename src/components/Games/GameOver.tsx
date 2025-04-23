@@ -11,24 +11,28 @@ interface GameOverProps {
 const GameOver:React.FC<GameOverProps> = ({game_id , puzzle}) => {
     const navigate = useNavigate()
 
-    function retry () {
-        const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-        axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0 , time:0})
-            .then(() => {
-                window.location.reload()
-            })
-            .catch(err => {console.error(err)})
+    async function retry () {
+        const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
+        const URL2 = variables.url_prefix + `/api/v1/games/${game_id}`
+        try {
+            await axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0})
+            await axios.patch(URL2 , {time:0})
+            window.location.reload()
+        } catch (error) {
+            console.error(error)
+        }
     }
 
-    function surrender() {
-        const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-        axios.patch(URL , {status:2})
-            .then(() => {
-                navigate('/')
-            })
-            .catch(err => {
-                console.error(err)
-            })
+    async function surrender() {
+        const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
+        const URL2 = variables.url_prefix + `/api/v1/games/${game_id}`
+        try {
+            await axios.patch(URL , {status:2})
+            await axios.patch(URL2 , {status:2})
+            navigate('/')
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (

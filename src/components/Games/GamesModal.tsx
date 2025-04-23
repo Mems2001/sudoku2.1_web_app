@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import variables from "../../../utils/variables"
-import { GameData } from "../../app/dbTypes"
+import { PlayerData } from "../../app/dbTypes"
 import { Ids } from "../../app/types"
 import axios from "axios"
 
@@ -15,7 +15,7 @@ const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
 
     const [showSaved , setShowSaved] = useState(false)
     const [showNewGame , setShowNewGame] = useState(false)
-    const [saved , setSaved] = useState<GameData[]>()
+    const [saved , setSaved] = useState<PlayerData[]>()
     const navigate = useNavigate()
 
     function goToSavedGames() {
@@ -52,7 +52,7 @@ const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
             }
             {showSaved?
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.id} onClick={() => goToSavedGame(game.id)} className="saved-game">{saved.indexOf(game)+1}</button>)}
+                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id)} className="saved-game">{saved.indexOf(game)+1}</button>)}
                     <button className="saved-game" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
                 :

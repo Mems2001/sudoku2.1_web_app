@@ -71,6 +71,7 @@ export interface PlayerData {
 }
 
 export interface Game {
+    id: Ids;
     status: number;
     time:   number;
     Puzzle: Puzzle;
