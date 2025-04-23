@@ -1,3 +1,5 @@
+import { Sudoku } from "./dbTypes"
+
 export type Ids = `${string}-${string}-${string}-${string}-${string}`
 
 export interface PostGameBody {
@@ -46,3 +48,5 @@ export interface CurrentPlayer {
     player_id?: Ids,
     isHost: boolean
 }
+
+export type numbers = [number , number , number , number , number , number , number , number , number]

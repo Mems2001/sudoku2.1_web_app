@@ -8,7 +8,7 @@ import './styles/Puzzle.css'
 
 import Login from './components/UserAuth/Login'
 import Register from './components/UserAuth/Register'
-import SoloGame from './components/Games/SoloGame'
+import Game from './components/Games/Game'
 
 import axios from 'axios'
 import VsGame from './components/Games/VsGame'
@@ -23,7 +23,7 @@ function App () {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/game/:game_id' element={<SoloGame />} />
+        <Route path='/game/:game_id' element={<Game />} />
         <Route path='/game_vs/:game_id' element={<VsGame />} />
       </Routes>
     </div>

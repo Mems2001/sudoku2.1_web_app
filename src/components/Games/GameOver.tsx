@@ -1,25 +1,20 @@
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import variables from "../../../utils/variables"
-import { Grid } from "../../app/types"
-import { PuzzleData } from "../../app/dbTypes"
+import { Puzzle } from "../../app/dbTypes"
 
 interface GameOverProps {
     game_id: string | undefined,
-    puzzle: PuzzleData | undefined,
-    setAnswers: (answers:Grid) => void,
-    setAnswersN: (answersN:string) => void,
+    puzzle: Puzzle | undefined
 }
 
-const GameOver:React.FC<GameOverProps> = ({game_id , puzzle , setAnswers , setAnswersN }) => {
+const GameOver:React.FC<GameOverProps> = ({game_id , puzzle}) => {
     const navigate = useNavigate()
 
     function retry () {
         const URL = variables.url_prefix + `/api/v1/games/${game_id}`
         axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0 , time:0})
-            .then(res => {
-                setAnswers(res.data.grid)
-                setAnswersN(res.data.number)
+            .then(() => {
                 window.location.reload()
             })
             .catch(err => {console.error(err)})

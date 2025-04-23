@@ -1,26 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
-import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Header from "./Header";
 import GameOver from "./GameOver";
 import GameCompleted from "./GameCompleted";
-import variables from "../../../utils/variables";
-import { Cells, Grid } from "../../app/types";
-import { PuzzleData, Sudoku } from "../../app/dbTypes";
+import { Cells, Ids } from "../../app/types";
 import GameSettins from "./GameSettings";
+import { useGame } from "../../hooks/useGame";
 
-function SoloGame () {
-    const game_id = useParams().game_id
+/**
+ * This component contains the general functions for any single player game, such as the game menu, settings, timer, win and lose conditions, and displays the puzzle information. It is the main user interface for game interactions but deppends on other components and hooks to work correctly. Its main purpose is to display and order information from the game.
+ */
+function Game () {
+    const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
 
-    const [sudoku, setSudoku] = useState<Sudoku>()
-    const [puzzle , setPuzzle] = useState<PuzzleData>()
-    const [answers , setAnswers] = useState<Grid>()
-    const [answersN , setAnswersN] = useState<string>()
-    const [remaningNumbers , setRemainingNumbers] = useState(() => Array(9).fill(0))
-    const [errores , setErrores] = useState(0)
-
+    //General game functionality states
     const [currentFocus , setCurrentFocus] = useState<string>()
     const [timeElapsed , setTimeElapsed] = useState(0)
     const [timerOn , setTimerOn] = useState(true)
@@ -28,10 +23,14 @@ function SoloGame () {
     const [numberGuides , setNumberGuides] = useState(true)
     const [openSettings , setOpenSettings] = useState(false)
 
+    const {game , loading} = useGame({game_id , setTimeElapsed})
+
     const cells:Cells = [];
+    /**
+     * This function defines the cells of the sudoku grid, so we can use them later. The cells are defined as a string with the format 'xy' where x is the row and y is the column.
+     * @param cells - An empty array of strings that will be filled with strings representing matrix positioning row+column within a sudoku grid destined to used as html elements ids.
+    */
     function defineCells (cells:Cells):void {
-    // This function defines the cells of the sudoku grid, so we can use them later
-    // The cells are defined as a string with the format 'xy' where x is the row and y is the column
         for (let i=0 ; i < 9 ; i++) {
           for (let j=0 ; j < 9 ; j++) {
             cells.push(`${i}${j}`);
@@ -40,8 +39,11 @@ function SoloGame () {
     }
     defineCells(cells)
 
+    /**
+    * This function adds the borders to the cells, so we can see the sudoku grid.
+    * @param cells - An array of strings wich contains all the posible cells ids of a sudoku 9x9 grid written in format row+column concatenation.
+    */
     function cellsBorders (cells:Cells):void {
-      // This function adds the borders to the cells, so we can see the sudoku grid
       for (let cell of cells) {
         if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
           const c = document.getElementById(`c${cell}`) as HTMLDivElement
@@ -63,60 +65,41 @@ function SoloGame () {
     }
 
     // In game functions
-    function checkRemainingNumbers () {
-        // This function checks how many numbers are remaining in the sudoku grid, so we can show them to the user
-      let aux:number[] = Array(9).fill(0)
-      for (let i=1 ; i < 10 ; i++) {
-        for (let number of Array.from(answersN || [])) {
-          if (parseInt(number) == i) {
-            aux[i-1] += 1
-          }
-
-        }
-      }
-      // console.log(aux)
-      setRemainingNumbers(aux)
-    }
-    
-    function saveAnswers (grid:Grid | undefined , errores:number) {
-      // This function also saves the game
-      const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-      axios.patch(URL , {grid, time: timeElapsed , errors: errores})
-        .then(res => {
-          setAnswers(res.data.grid)
-          setAnswersN(res.data.number)
-          console.log('game saved')
-          CompletedCheck(res.data.number)
-        })
-        .catch(err => {
-          console.error(err)
-        })  
-    }
-
+    /**
+     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It sets the value to the corresponding focused cell if there is one, it also checks the correction of the value according to the filled sudoku object destined for correction control, if there is not a focused cell it does nothing.
+     * @param currentFocused - A string that represents the id of the focused cell, it also represents its position within the grid for correcction checks.
+     * @param value - A number that the user intends to put into the corresponding cell or sudoku's grid position. 
+     */
     function numberButton (currentFocused:string | undefined , value:number) {
       // console.log(currentFocused, value)
       if (currentFocused && value && timerOn) {
         const cell = document.getElementById(currentFocused) as HTMLInputElement
-        if (answers && answers[parseInt(currentFocused[0])][parseInt(currentFocused[1])] !== sudoku?.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])]) {
+        if (game && game.answers.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])] !== game.sudoku.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])]) {
           setValue(cell , value)
           verifyNumber(cell , currentFocused , value)
         }
       }
     }
     
+    /**
+     * This function first sets the value to the corresponding game object, then it checks for the value correctness and finally saves the changes to the database.
+     * @param cell - The html element corresponding to the focused cell, it is used to display visual indicators for incorrect or correct values.
+     * @param c - The string that represents both the id of a cell and the position of an element in the grid. It is used to set the value in the correct position within the game object and to check for correctness.
+     * @param value - A number that represents the value that a user wants to put into the cell and therefore into the grid.
+     */
     function verifyNumber (cell:HTMLInputElement , c:string , value:number) {
-      let answersGrid = answers
-      let aRow:Grid[0] | [] = answers ? answers[parseInt(c[0])] : [0 ,0 , 0, 0, 0, 0, 0, 0, 0]
-      let err = errores
+      game?.setValue(c , value)
+      let err = game?.errors || 0
       // We need to compare the provided value with the correct value, then, let the user know if he is correct or not
-      if (value === sudoku?.grid[parseInt(c[0])][parseInt(c[1])]) {
+      if (game?.verifyValue(c , value)) {
         cell.classList.remove('incorrect')
         cell.classList.add('correct')
         cell.disabled = true
+        if (game.completedGameCheck()) setTimerOn(false)
       } else {
-        if (value != 10) {
+        if (value != 10) { // The 10 value is an arbitrary value chosen to represent erasing intentions.
           err++
-          setErrores(err)
+          game?.setErrors(err)
           gameOverCheck(err)
         }
         cell.classList.remove('correct')
@@ -124,17 +107,14 @@ function SoloGame () {
       }
      
       // We also save the game via patch call
-      if (value != 10) {
-        aRow.splice(parseInt(c[1]) , 1 , value)
-        answersGrid?.splice(parseInt(c[0]) , 1 , aRow)
-      } else {
-        aRow.splice(parseInt(c[1]) , 1 , 0)
-        answersGrid?.splice(parseInt(c[0]) , 1 , aRow)
-      }
-      // console.log(answersGrid)
-      saveAnswers(answersGrid , err)
+      game?.saveAnswers(game.answers.grid , 0, err , timeElapsed)
     }
 
+    /**
+     * This function sets the value into the corresponding cell within the frontend display, it does not set value to the game object or the database.
+     * @param cell - A html element to wich the value will be set, it is the focused cell in the UI.
+     * @param value - The user's desired value to be ser into the cell.
+     */
     function setValue (cell:HTMLInputElement, value:number) {
       if (value != 10) {
         cell.value = value.toString()
@@ -146,6 +126,11 @@ function SoloGame () {
     }
 
     // Focus actions
+
+    /**
+     * Highlighs all the cells that are in the same row, column or 3x3 quadrant as the selected cell. It also removes the highlight from all other cells or from all the cells whenever the user wantos to by clicking or tapping outside the UI grid.
+     * @param id - A string that represents the cell id and the position of an element inside a grid.
+     */
     function selectRowNColumn (id:string) {
       for (let cell of cells) {
         if (id != 'x') {
@@ -163,6 +148,10 @@ function SoloGame () {
       }
     }
 
+    /**
+     * Hightlights al the values in the UI grid that are the same ass the selected one. It also removes the highlight from all the unmatched values or from all values if the user intend to by clicking outside the UI grid.
+     * @param id  - A string that represents both the cell id and a position of an element inside a grid.
+     */
     function sameNumbers(id:string) {
       // Highlight all numbers that are the same as the selected one
       let number = document.getElementById(id)?.innerText
@@ -216,44 +205,16 @@ function SoloGame () {
       }
     }
 
-    function CompletedCheck(number:string) {
-      if (sudoku?.number == number) {
-        setTimerOn(false)
-      }
-    }
-
     useEffect(() => {
-      if (!answers) {
-        try {
-          const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-          axios.get(URL)
-            .then(res => {
-              // console.log(res)
-              setAnswers(res.data.grid)
-              setAnswersN(res.data.number)
-              setSudoku(res.data.Sudoku)
-            //   console.log(res.data.Sudoku)
-              setPuzzle(res.data.Puzzle)
-              setTimeElapsed(res.data.time)
-              setErrores(res.data.errors)
-            })
-            .catch(err => {
-              console.error(err)
-            })
-            
-          } catch (error) {
-            console.error(error)
-          }    
-        }
-      }, []);
+      if (game) game?.setRemainingNumbers(game.answers.number)
+      }, [game?.answers.grid]);
         
     useEffect(
       () => {
-        if (answers) {
+        if (game) {
           cellsBorders(cells)
-          checkRemainingNumbers();
         }
-      } , [answers]
+      } , [game]
     )
 
     useEffect(
@@ -261,7 +222,7 @@ function SoloGame () {
         if (currentFocus) {
           focusOperations(currentFocus)
         }
-      }, [currentFocus , answers]
+      }, [currentFocus , game?.answers.grid]
     )
 
     useEffect(() => {
@@ -274,21 +235,21 @@ function SoloGame () {
       }
     }, [timerOn]);
 
-    if (answers) {
+    if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header errores={errores} time={timeElapsed} pause={() => {setTimerOn(false);setOpenSettings(true)}} play={() => {setTimerOn(true);setOpenSettings(false)}} timerOn={timerOn} save={() => saveAnswers(answers , errores)}/>  
+            <Header errores={game.errors} time={timeElapsed} pause={() => {setTimerOn(false);setOpenSettings(true)}} play={() => {setTimerOn(true);setOpenSettings(false)}} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid , 0 , game.errors , timeElapsed)}/>  
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
                 <div id={`c${cell}`} onClick={() => handleFocus(cell)} className="cell" key={index}>
-                    {answers[parseInt(cell[0])][parseInt(cell[1])] == sudoku?.grid[parseInt(cell[0])][parseInt(cell[1])]?
-                        <p id={cell}>{answers[parseInt(cell[0])][parseInt(cell[1])]}</p>
+                    {game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] == game.sudoku.grid[parseInt(cell[0])][parseInt(cell[1])]?
+                        <p id={cell}>{game.answers.grid[parseInt(cell[0])][parseInt(cell[1])]}</p>
                     : 
                         <input id={cell} type="text" autoComplete="off" readOnly={true} maxLength={1}
                         disabled={!timerOn} 
-                        defaultValue={answers[parseInt(cell[0])][parseInt(cell[1])] != 0 ? answers[parseInt(cell[0])][parseInt(cell[1])] : ''} 
-                        className={answers[parseInt(cell[0])][parseInt(cell[1])] == sudoku?.grid[parseInt(cell[0])][parseInt(cell[1])] ? 'correct' : 'incorrect'}
+                        defaultValue={game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] != 0 ? game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] : ''} 
+                        className={game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] == game.sudoku.grid[parseInt(cell[0])][parseInt(cell[1])] ? 'correct' : 'incorrect'}
                         {...register(`${cell}`)}/>
                     }
                 </div>
@@ -297,7 +258,7 @@ function SoloGame () {
             </div>
             <div className="remaining-numbers">
               <h2>Números restantes:</h2>
-              {remaningNumbers.map((n , index) => 
+              {game.remainingNumbers.map((n , index) => 
                 <button onClick={() => numberButton(currentFocus , index+1)} className="remaining-number" key={index}>{n<9?index +1:''}</button>
               )}
               <button onClick={() => numberButton(currentFocus , 10)}>
@@ -309,12 +270,12 @@ function SoloGame () {
               <GameSettins rcMatch={colorGuides} nMatch={numberGuides} setRcMatch={setColorGuides} setNMatch={setNumberGuides} clearColorGuides={clearColorGuides} clearNumberGuides={clearNumberGuides} selectRowNColumn={() => { if (currentFocus)selectRowNColumn(currentFocus)}} sameNumbers={() => {if (currentFocus) sameNumbers(currentFocus)}}/>
                 :
               <></>}
-            {errores >= 3?
-              <GameOver game_id={game_id} puzzle={puzzle} setAnswers={setAnswers} setAnswersN={setAnswersN}/>
+            {game.errors >= 3?
+              <GameOver game_id={game_id} puzzle={game.puzzle}/>
               :
               <></>
             }
-            {sudoku?.number == answersN?
+            {game.sudoku.number == game.answers.number?
               <GameCompleted game_id={game_id} time={timeElapsed}/>
               :
               <></>
@@ -324,4 +285,4 @@ function SoloGame () {
     }
   }
 
-export default SoloGame
+export default Game
