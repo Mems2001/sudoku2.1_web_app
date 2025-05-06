@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
 import variables from '../../../utils/variables'
-import { Data, GameData, PuzzleData } from "../../app/dbTypes"
+import { GameData, PuzzleData } from "../../app/dbTypes"
 import { PostGameBody } from "../../app/types"
 import { AxiosResponse } from "axios"
 import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
@@ -19,7 +19,10 @@ function Home() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-     async function goToPuzzle () {
+    /**
+     * First picks a random puzzle, then creates a game, then uses its id to redirect to the a single player game component
+     */
+     async function goToGame () {
         const URL = variables.url_prefix + '/api/v1/puzzles/get_random'
         const URL2 = variables.url_prefix  + '/api/v1/games'
         try {
@@ -28,31 +31,34 @@ function Home() {
           
           const body:PostGameBody = {
             puzzle_id: puzzle.data.id,
-            sudoku_id: puzzle.data.sudoku_id
+            gameType: 0
           }
           const game:AxiosResponse<GameData> = await axios.post(URL2 , body)
           // console.log(game)
           closeModal()
-          navigate(`/game/${game.data.id}`)
+          return navigate(`/game/${game.data.id}`)
         } catch (error) {
           console.error(error)
         }
       }
 
+      /**
+       * First picks a random puzzle, then creates a game, then uses the game_id to redirect to the vs game component
+       */
       async function goToVs () {
         const URL = variables.url_prefix + '/api/v1/puzzles/get_random'
-        const URL2 = variables.url_prefix + '/api/v1/games_vs'
+        const URL2 = variables.url_prefix + '/api/v1/games'
         try {
           const puzzle:AxiosResponse<PuzzleData> = await axios.get(URL)
 
           const body:PostGameBody = {
             puzzle_id: puzzle.data.id,
-            sudoku_id: puzzle.data.sudoku_id
+            gameType: 1
           }
-          const game:AxiosResponse<Data> = await axios.post(URL2 , body)
+          const game:AxiosResponse<GameData> = await axios.post(URL2 , body)
           closeModal()
           // console.log(game)
-          navigate(`/game_vs/${game.data.game.id}`)
+          return navigate(`/game_vs/${game.data.id}`)
         } catch (error) {
           console.error(error)
         }
@@ -64,6 +70,7 @@ function Home() {
            .then(() => {
              dispatch(setLoggedOut())
              dispatch(setRole(null))
+             console.log('user logged out')
            })
            .catch(error => {
              console.error('Error', error)
@@ -98,7 +105,7 @@ function Home() {
                     console.error('Error:', error)
                     axios.get(URL2)
                         .then(res => {
-                          console.log('Anon user:' , res.data)
+                          console.log('Anon user logged in' , res.status)
                           dispatch(setRole('anon'))
                         })
                         .catch(error => {
@@ -158,7 +165,7 @@ function Home() {
 
         </section>
 
-        <GamesModal goToPuzzle={goToPuzzle} goToVs={goToVs} closeModal={closeModal}/>
+        <GamesModal goToGame={goToGame} goToVs={goToVs} closeModal={closeModal}/>
        </div>
     )
 }

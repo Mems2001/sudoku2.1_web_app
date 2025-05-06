@@ -4,7 +4,7 @@ export type Ids = `${string}-${string}-${string}-${string}-${string}`
 
 export interface PostGameBody {
     puzzle_id: string,
-    sudoku_id: string
+    gameType: number
 }
 
 export interface LoginForm {

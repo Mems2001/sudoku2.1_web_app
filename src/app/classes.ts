@@ -15,6 +15,7 @@ import { Grid, Ids, numbers } from "./types"
 export class Game {
     id: Ids | undefined
     player_id: Ids
+    host: boolean
     _sudoku: Sudoku
     _puzzle: Puzzle
     answers: {
@@ -24,9 +25,10 @@ export class Game {
     remainingNumbers: numbers
     errors: number
 
-    constructor(player_id:Ids , sudoku: Sudoku , puzzle: Puzzle , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
+    constructor(player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: Puzzle , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
         this.id = id
         this.player_id = player_id
+        this.host = host
         this._sudoku = sudoku
         this._puzzle = puzzle
         this.answers = {
@@ -125,7 +127,7 @@ export class Game {
         const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
             const updatedPlayer = await axios.patch(URL , {grid, status, errors})
-            console.log(updatedPlayer.data)
+            // console.log(updatedPlayer.data)
             await axios.patch(URL2 , {time: timeElapsed})
             this.setAnswersGrid(updatedPlayer.data.grid)
             this.setAnswersNumber(updatedPlayer.data.number)

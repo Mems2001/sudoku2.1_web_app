@@ -68,6 +68,11 @@ export interface PlayerData {
     user_id:    Ids;
     game_id:    Ids;
     Game:       Game;
+    User:       User;
+}
+
+export interface User {
+    username: string
 }
 
 export interface Game {

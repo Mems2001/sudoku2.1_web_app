@@ -1,24 +1,18 @@
 import { Ids } from "../../app/types"
 import variables from "../../../utils/variables"
-import axios from "axios"
 import { PlayerData } from "../../app/dbTypes"
-import { useAppDispatch } from "../../app/hooks"
-import { setRole } from "../../features/role.slice"
 import { Socket } from "socket.io-client"
+import { useEffect } from "react"
 
 interface VsRommProps {
     game_id: Ids,
-    players: PlayerData[]
-    inList: boolean,
-    setInList: (boolean:boolean) => void,
-    role: string | null,
-    host: boolean,
-    socket: Socket | null
+    players?: PlayerData[]
+    inList?: boolean,
+    host?: boolean,
+    socket?: Socket
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, role , host , socket }) => {
-
-    const dispatch = useAppDispatch()
+const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, host , socket }) => {
 
     const shareLink = async () => {
         if (navigator.share) {
@@ -37,45 +31,17 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
         }
       }
 
-    async function authSession () {
-        const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
-        let response = undefined
-        await axios.get(URL)
-            .then(res => {
-                if (res.status === 200) response = res.data
-            })
-            .catch(err => {
-                console.error(err)
-            })
-
-        return response
-    }
-    
-    async function continueAsAnon () {
-        try {
-            const auth:any = await authSession()
-            if (auth) {
-                if (socket) socket.emit('create-player' , auth.user_id , game_id) 
-                setInList(true)
-            } else {
-                const URL = variables.url_prefix + '/api/v1/users/anon'
-                await axios.get(URL).then(res => {
-                    console.log(res)
-                    dispatch(setRole('anon'))
-                    if (socket) socket.emit('create-player' , res.data.id , game_id)
-                    setInList(true)
-                })
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    function playGame (socket:Socket | null) {
+    function playGame (socket:Socket | undefined) {
         if (socket) {
             socket.emit('play-game' , game_id)
         }
     }
+
+    useEffect(
+        () => {
+        console.log(players , inList)
+        } , [players , inList]
+    )
 
     if (inList && players && players.length > 0) {
         return (
@@ -109,23 +75,6 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, setInList, rol
                     </div>
                 </div>
             </section>
-        )
-    } else {
-        return (
-            <div className="vs-console">
-                <div id="pre-room" className="window">
-                    {role === 'anon' || role === null?
-                        <div className="pre-room-actions">
-                            <button>Iniciar Sesión</button>
-                            <button onClick={continueAsAnon}>Continuar como anónimo</button>
-                        </div>
-                    :
-                        <div className="pre-room-actions">
-                            <button>Aceptar invitación</button>
-                        </div>
-                    }
-                </div>
-            </div>
         )
     }
 }

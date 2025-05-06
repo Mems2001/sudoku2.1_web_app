@@ -10,13 +10,16 @@ interface GameCompletedProps {
 const GameCompleted:React.FC<GameCompletedProps> = ({game_id , time}) => {
     const navigate = useNavigate()
 
-    function continueH () {
+    async function continueH () {
         const URL = variables.url_prefix + `/api/v1/games/${game_id}`
-        axios.patch(URL , {time , status:1})
-            .then(() => {
-                navigate('/')
-            })
-            .catch(err => {console.error(err)})
+        const URL2 = variables.url_prefix + `/api/v1/players/single/${game_id}`
+        try {
+            await axios.patch(URL , {time , status:1})
+            await axios.patch(URL2 , {status:1})
+            navigate('/')
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     return (

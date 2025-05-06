@@ -6,12 +6,12 @@ import { Ids } from "../../app/types"
 import axios from "axios"
 
 interface Props {
-    goToPuzzle: () => void,
+    goToGame: () => void,
     goToVs: () => void,
     closeModal: () => void
 }
 
-const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
+const GamesModal: React.FC<Props> = ({goToGame , closeModal , goToVs}) => {
 
     const [showSaved , setShowSaved] = useState(false)
     const [showNewGame , setShowNewGame] = useState(false)
@@ -60,7 +60,7 @@ const GamesModal: React.FC<Props> = ({goToPuzzle , closeModal , goToVs}) => {
             }
             {showNewGame?
                 <div className="modal-window" id="new-game">
-                    <button onClick={goToPuzzle}>Single Player</button>
+                    <button onClick={goToGame}>Single Player</button>
                     <button onClick={goToVs}>Multiplayer Time Attack</button>
                     <button onClick={() => setShowNewGame(false)}>Back</button>
                 </div>

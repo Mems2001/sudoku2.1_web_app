@@ -27,7 +27,7 @@ export const useGame = ({game_id , setTimeElapsed}:UsePuzzleProps) => {
             const res:AxiosResponse<PlayerData> = await axios.get(URL)
             console.log(res.data)
             if (res.data) {
-                setGame(new Game(res.data.id, res.data.Game.Puzzle.Sudoku , res.data.Game.Puzzle , game_id , res.data.number , res.data.grid))
+                setGame(new Game(res.data.id, res.data.host, res.data.Game.Puzzle.Sudoku , res.data.Game.Puzzle , game_id , res.data.number , res.data.grid))
                 setTimeElapsed(res.data.Game.time)
             } else {
                 setError("Error getting the game, it doesn't exist")
