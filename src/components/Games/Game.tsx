@@ -50,7 +50,8 @@ const Game:React.FC<GameProps> = ({
     const [numberGuides , setNumberGuides] = useState(true)
     const [openSettings , setOpenSettings] = useState(gameType===0?false:true)
 
-    const {game , loading} = useGame({game_id , setTimeElapsed})
+    const {game , loading , error} = useGame({game_id , setTimeElapsed})
+    console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
 
     const cells:Cells = [];
 
@@ -261,6 +262,8 @@ const Game:React.FC<GameProps> = ({
       () => {
         if (game) {
           cellsBorders(cells)
+        } else {
+
         }
       } , [game]
     )

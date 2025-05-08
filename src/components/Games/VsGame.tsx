@@ -8,7 +8,7 @@ import { io, Socket } from "socket.io-client";
 import { RootState } from "../../app/store";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Game from "./Game";
-import { setRole } from "../../features/role.slice";
+import { roleSlice, setRole } from "../../features/role.slice";
 
 function VsGame () {
     const game_id:Ids = useParams().game_id as Ids
@@ -21,7 +21,7 @@ function VsGame () {
     const role = useAppSelector((state:RootState) => state.role.value)
     const [players , setPlayers] = useState<PlayerData[]>([])
     const handlePlayers = useCallback ((data?: PlayerData , dataA?: PlayerData[]) => {
-        console.log(data, dataA)
+        // console.log('players data:', data, dataA)
         try {
             if (data) { // When data is an object then it pushes the object to the previous array
                 setPlayers(prevPlayers => [...prevPlayers , data])
@@ -64,7 +64,6 @@ function VsGame () {
                         console.log(res)
                         dispatch(setRole('anon'))
                         if (socket) socket.emit('create-player' , res.data.id , game_id)
-                        if (setInList) setInList(true)
                     })
                 }
             } catch (error) {
@@ -74,25 +73,27 @@ function VsGame () {
 
     // In game functions (correct get players function)
 
-    async function getPlayers () {
+    function getPlayers (players:PlayerData[]) {
         try {
             if (players.length === 0) {
                 const URL = variables.url_prefix + `/api/v1/players/multi/${game_id}`
-                const res = await axios.get(URL)
-                console.log( 'players list:', res.data)
-                handlePlayers(undefined , res.data)
+                axios.get(URL).then(res => {
+                    console.log( 'players list:', res.data)
+                    handlePlayers(undefined , res.data)
+                })
             } else {
-                console.log(players)
+                console.log('current players:', players)
                 const URL = variables.url_prefix + `/api/v1/players/in_list/${game_id}`
-                const res = await axios.get(URL)
-                console.log('player on list:', res)
-                if (res.status === 200) {
-                    console.log('the player is on the list')
-                    setInList(true)
-                } else {
-                    console.log('the player is not on the list')
-                  setInList(false)
-                }
+                axios.get(URL).then(res => {
+                    console.log('player on list:', res)
+                    if (res.status === 200) {
+                        setInList(true)
+                        console.log('the player is on the list')
+                    } else {
+                        setInList(false)
+                        console.log('the player is not on the list')
+                    }
+                })
             }
         } catch (err) {
             console.error(err)
@@ -101,7 +102,7 @@ function VsGame () {
 
     useEffect (
       () => {
-          getPlayers()
+          getPlayers(players)
           console.log('Is the player in list?' ,players , inList)
         }, [players , inList]
     )
@@ -142,6 +143,7 @@ function VsGame () {
 
             newSocket.on('player-info' , data => {
               console.log('player-info:' , data)
+              setInList(true)
               setPlayerId(data.player_id)
               setHost(data.isHost)
             })
@@ -163,12 +165,33 @@ function VsGame () {
         } , []
     )
 
-    if (inList) {
+    // if (inList) {
+    //     return (
+    //       <Game gameType={1} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList}/>
+    //     )
+    // } else {
+    //     return (
+    //       <div className="vs-console">
+    //             <div id="pre-room" className="window">
+    //                 {role === 'anon' || role === null?
+    //                     <div className="pre-room-actions">
+    //                         <button>Iniciar Sesión</button>
+    //                         <button onClick={continueAsAnon}>Continuar como anónimo</button>
+    //                     </div>
+    //                 :
+    //                     <div className="pre-room-actions">
+    //                         <button>Aceptar invitación</button>
+    //                     </div>
+    //                 }
+    //             </div>
+    //         </div>
+    //     )
+    // }
         return (
+            <>
+        {inList?
           <Game gameType={1} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList}/>
-        )
-    } else {
-        return (
+          :
           <div className="vs-console">
                 <div id="pre-room" className="window">
                     {role === 'anon' || role === null?
@@ -183,8 +206,9 @@ function VsGame () {
                     }
                 </div>
             </div>
-        )
-    }
+        }
+            </>
+    )
   }
 
 export default VsGame
