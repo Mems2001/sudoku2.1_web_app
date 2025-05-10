@@ -37,9 +37,9 @@ interface GameProps {
  * @property (mutiplayer only) socket - The socket objct that allos the user to comunicates with the game server for online playing.
  */
 const Game:React.FC<GameProps> = ({
-  gameType , timeElapsed , setTimeElapsed , timerOn , setTimerOn,
+  gameType, timeElapsed, setTimeElapsed, timerOn, setTimerOn,
   //Multiplayer props
-  players , inList , host , socket
+  players, inList, socket
   }) => {
     const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
@@ -50,8 +50,8 @@ const Game:React.FC<GameProps> = ({
     const [numberGuides , setNumberGuides] = useState(true)
     const [openSettings , setOpenSettings] = useState(gameType===0?false:true)
 
-    const {game , loading , error} = useGame({game_id , setTimeElapsed})
-    console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
+    const {game , loading} = useGame({game_id , setTimeElapsed})
+    // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
 
     const cells:Cells = [];
 
@@ -102,7 +102,6 @@ const Game:React.FC<GameProps> = ({
       } else {
         if (socket) {
           socket.emit('pause-game' , game_id)
-          setOpenSettings(!timerOn)
         }
       }
     }
@@ -315,14 +314,14 @@ const Game:React.FC<GameProps> = ({
               <></>}
             
             {/* Game menu for multiplayer games */}
-            {openSettings && gameType===1?
-              <VsRomm game_id={game_id} players={players} inList={inList} host={host} socket={socket}/>
+            {!timerOn && gameType===1?
+              <VsRomm game_id={game_id} players={players} inList={inList} host={game.host} socket={socket}/>
               :
               <></>
             }
 
             {game.errors >= 3?
-              <GameOver game_id={game_id} puzzle={game.puzzle}/>
+              <GameOver gameType={gameType} game_id={game_id} puzzle={game.puzzle}/>
               :
               <></>
             }

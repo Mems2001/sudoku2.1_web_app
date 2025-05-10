@@ -3,6 +3,7 @@ import variables from "../../../utils/variables"
 import { PlayerData } from "../../app/dbTypes"
 import { Socket } from "socket.io-client"
 import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 interface VsRommProps {
     game_id: Ids,
@@ -13,6 +14,7 @@ interface VsRommProps {
 }
 
 const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, host , socket }) => {
+    const navigate = useNavigate()
 
     const shareLink = async () => {
         if (navigator.share) {
@@ -70,8 +72,8 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, host , socket 
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
                     <div id='main-room-actions' className="room-actions">
-                        <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host ? true : false}>Continuar</button>
-                        <button className="cancel">Salir</button>
+                        <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host}>Continuar</button>
+                        <button className="cancel" onClick={() => navigate('/')}>Salir</button>
                     </div>
                 </div>
             </section>

@@ -79,10 +79,10 @@ export interface Game {
     id: Ids;
     status: number;
     time:   number;
-    Puzzle: Puzzle;
+    Puzzle: PuzzleS;
 }
 
-export interface Puzzle {
+export interface PuzzleS {
     grid:   Grid;
     number: string;
     Sudoku: Sudoku;

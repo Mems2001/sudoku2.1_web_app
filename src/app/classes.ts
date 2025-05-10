@@ -1,11 +1,12 @@
 import axios from "axios"
 import variables from "../../utils/variables"
-import { Puzzle, Sudoku } from "./dbTypes"
+import { PuzzleS, Sudoku } from "./dbTypes"
 import { Grid, Ids, numbers } from "./types"
 
 /**
- * This class represents a full Sudoku game. All the propoperties that are objects contain as well properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the game table in the database, with the objective to simplify and modularize the majority of the basic game related logic as posible, encapsulating it as methods that prevents us to rewrite logic in every game variation component.
- * @property id - The unique identifier for the game.
+ * This class represents a full Sudoku game. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the majority of the sudoku's rules related logic as posible, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
+ * @property id - The unique identifier for the game table.
+ * @property player_id - The unique identifier for the player table.
  * @property sudoku - An object representing the "solved" puzzle or the fullfilled grid. The control object to wich any attempt of answer will be compared to check correctness.
  * @property puzzle - An object representing the "unsolved sudoku" or the incomplete grid wich the user will fill. This object will not be modified.
  * @property answers - An object containing the values provided by the user as an attempt to correctly fill the puzzle.
@@ -17,7 +18,7 @@ export class Game {
     player_id: Ids
     host: boolean
     _sudoku: Sudoku
-    _puzzle: Puzzle
+    _puzzle: PuzzleS
     answers: {
         number: string,
         grid: Grid
@@ -25,7 +26,7 @@ export class Game {
     remainingNumbers: numbers
     errors: number
 
-    constructor(player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: Puzzle , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
+    constructor(player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
         this.id = id
         this.player_id = player_id
         this.host = host
@@ -49,8 +50,8 @@ export class Game {
 
     /**
      * Counts each 1 to 9 number apparition within a sudoku puzzle
-     * @param number - A string that represents the concatenation of all numbers inside a sudoku
-     * @returns An array wich its element's index+1 represents the numeral and its value represents how many times this number have appeared in the param
+     * @param number - A string that represents the concatenation of all numbers inside a sudoku puzzle.
+     * @returns An array wich its element's index+1 represents the numeral and its value represents how many times this number have appeared in the param.
      */
     _checkRemainingNumbers(number:string | undefined) {
         let aux:numbers = Array(9).fill(0) as numbers
