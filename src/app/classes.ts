@@ -105,13 +105,10 @@ export class Game {
     /**
      * Compares the provided value to the value from the corresponding sudoku at the providad location
      * @param location - A string that represents the concatenation of a particular row and column of the grid.
-     * @param value - A number obtained from the provided location.
      * @returns A boolean value being true if the provided value matches the corresponding sudoku value at the provided location (think of the sudoku object as the solved puzzle), and false otherwise.
      */
-    verifyValue(location:string ,value:number) {
-        const row = parseInt(location[0])
-        const col = parseInt(location[1])
-        if (this.sudoku.grid[row][col] == value) {
+    verifyValue(location:string) {
+        if (this.getSudokuValueByPosition(location) == this.getAnswersValueByPosition(location)) {
             return true
         }
         return false
@@ -142,7 +139,7 @@ export class Game {
 
         //Value checking
        
-        if (this.verifyValue(location, value)) {
+        if (this.verifyValue(location)) {
             if (this.completedGameCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
             else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
         } else {

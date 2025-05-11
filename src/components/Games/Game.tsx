@@ -243,13 +243,13 @@ const Game:React.FC<GameProps> = ({
             {cells.map((cell, index) => {
                 return (
                 <div id={`c${cell}`} onClick={() => focusOperations(cell)} className="cell" key={index}>
-                    {game.verifyValue(cell, game.getAnswersValueByPosition(cell))?
+                    {game.verifyValue(cell)?
                         <p id={cell}>{game.getAnswersValueByPosition(cell)}</p>
                     : 
                         <input id={cell} type="text" autoComplete="off" readOnly={true} maxLength={1}
                         disabled={!timerOn} 
                         defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] : ''} 
-                        className={!game.verifyValue(cell, game.getAnswersValueByPosition(cell)) ? 'incorrect' : 'correct'}
+                        className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                         {...register(`${cell}`)}/>
                     }
                 </div>
