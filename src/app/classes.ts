@@ -122,12 +122,12 @@ export class Game {
      * @param errors: Number of errors that th user committed.
      * @param timeElapsed: Time run to the point of this saving. 
      */
-    async saveAnswers (grid:Grid | undefined , status: number, errors:number , timeElapsed:number) {
+    async saveAnswers (grid:Grid | undefined, timeElapsed:number , playerStatus?:number) {
         // console.log('Saving game...' , this)
         const URL = variables.url_prefix + `/api/v1/players/single/${this.id}`
         const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
-            const updatedPlayer = await axios.patch(URL , {grid, status, errors})
+            const updatedPlayer = await axios.patch(URL , {grid, status:playerStatus, errors:this.errors})
             // console.log(updatedPlayer.data)
             await axios.patch(URL2 , {time: timeElapsed})
             this.setAnswersGrid(updatedPlayer.data.grid)

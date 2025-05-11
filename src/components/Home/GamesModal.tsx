@@ -18,6 +18,15 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal , goToVs}) => {
     const [saved , setSaved] = useState<PlayerData[]>()
     const navigate = useNavigate()
 
+    function handleGameType(gameType:number) {
+        switch (gameType) {
+            case 0:
+                return 'Single player'
+            case 1:
+                return 'Vs time attack'
+        }
+    }
+
     function goToSavedGames() {
         try {
             getMySavedGames()
@@ -27,8 +36,9 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal , goToVs}) => {
         setShowSaved(true)
     }
 
-    function goToSavedGame(game_id:Ids) {
-        navigate(`/game/${game_id}`)
+    function goToSavedGame(game_id:Ids , gameType:number) {
+        if (gameType === 0) navigate(`/game/${game_id}`)
+        else navigate(`/game_vs/${game_id}`)
     }
 
     function getMySavedGames() {
@@ -52,7 +62,7 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal , goToVs}) => {
             }
             {showSaved?
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id)} className="saved-game">{saved.indexOf(game)+1}</button>)}
+                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game">{handleGameType(game.Game.type)} {saved.indexOf(game)+1}</button>)}
                     <button className="saved-game" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
                 :

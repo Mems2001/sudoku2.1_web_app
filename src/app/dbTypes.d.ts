@@ -35,6 +35,7 @@ export interface Game {
 
 export interface GameData {
     id:         Ids;
+    type: number;
     puzzle_id:  Ids;
     updated_at: Date;
     created_at: Date;
@@ -62,12 +63,13 @@ export interface PlayerData {
     number:     string;
     errors:     number;
     status:     number;
+    is_connected: boolean;
     host:       boolean;
     created_at: Date;
     updated_at: Date;
     user_id:    Ids;
     game_id:    Ids;
-    Game:       Game;
+    Game:       GameS;
     User:       User;
 }
 
@@ -75,11 +77,12 @@ export interface User {
     username: string
 }
 
-export interface Game {
+export interface GameS {
     id: Ids;
     status: number;
     time:   number;
     Puzzle: PuzzleS;
+    type: number
 }
 
 export interface PuzzleS {

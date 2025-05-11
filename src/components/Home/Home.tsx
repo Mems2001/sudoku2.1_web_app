@@ -8,7 +8,7 @@ import { AxiosResponse } from "axios"
 import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
 import { setRole } from "../../features/role.slice"
 import { RootState } from "../../app/store"
-import GamesModal from "../Games/GamesModal"
+import GamesModal from "./GamesModal"
 import { useEffect } from "react"
 
 import axios from "axios"
@@ -31,7 +31,8 @@ function Home() {
           
           const body:PostGameBody = {
             puzzle_id: puzzle.data.id,
-            gameType: 0
+            gameType: 0,
+            status: 1
           }
           const game:AxiosResponse<GameData> = await axios.post(URL2 , body)
           // console.log(game)

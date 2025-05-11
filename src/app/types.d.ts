@@ -4,7 +4,8 @@ export type Ids = `${string}-${string}-${string}-${string}-${string}`
 
 export interface PostGameBody {
     puzzle_id: string,
-    gameType: number
+    gameType: number,
+    status?: number
 }
 
 export interface LoginForm {

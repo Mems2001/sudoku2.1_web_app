@@ -143,19 +143,18 @@ const Game:React.FC<GameProps> = ({
         cellHtml.classList.remove('incorrect')
         cellHtml.classList.add('correct')
         cellHtml.disabled = true
-        if (game.completedGameCheck()) setTimerOn(false)
       } else {
         if (value != 10) { // The 10 value is an arbitrary value chosen to represent erasing intentions.
           err++
           game?.setErrors(err)
-          gameOverCheck(err)
+          if (gameOverCheck(err)) return game?.saveAnswers(game.answers.grid , timeElapsed, 2)
         }
         cellHtml.classList.remove('correct')
         cellHtml.classList.add('incorrect')
       }
      
       // We also save the game via patch call
-      game?.saveAnswers(game.answers.grid , 0, err , timeElapsed)
+      game?.saveAnswers(game.answers.grid, timeElapsed)
     }
 
     /**
@@ -250,7 +249,9 @@ const Game:React.FC<GameProps> = ({
     function gameOverCheck(e:number) {
       if (e >= 3) {
         setTimerOn(false)
+        return true
       }
+      return false
     }
 
     useEffect(() => {
@@ -278,7 +279,7 @@ const Game:React.FC<GameProps> = ({
     if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header errores={game.errors} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid , 0 , game.errors , timeElapsed)}/>  
+            <Header errores={game.errors} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, timeElapsed)}/>  
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
@@ -325,8 +326,8 @@ const Game:React.FC<GameProps> = ({
               :
               <></>
             }
-            {game.sudoku.number == game.answers.number?
-              <GameCompleted game_id={game_id} time={timeElapsed}/>
+            {game.completedGameCheck()?
+              <GameCompleted setTimerOn={setTimerOn} saveGame={() => game.saveAnswers(game.answers.grid, timeElapsed, 1)}/>
               :
               <></>
             }

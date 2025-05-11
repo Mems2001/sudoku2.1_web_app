@@ -2,6 +2,7 @@ import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import variables from "../../../utils/variables"
 import { PuzzleS } from "../../app/dbTypes"
+import { useEffect } from "react"
 
 interface GameOverProps {
     gameType: number,
@@ -24,24 +25,9 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle}) => {
         const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
         const URL2 = variables.url_prefix + `/api/v1/games/${game_id}`
         try {
-            await axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0})
-            await axios.patch(URL2 , {time:0})
+            await axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0, status:0})
+            await axios.patch(URL2 , {time:0 , status:1})
             window.location.reload()
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    /**
-     * This updates the game data to "failed". In the player table the status will be 2 for failed game, same applies to the game table. Then it navigates to home.
-     */
-    async function surrender() {
-        const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
-        const URL2 = variables.url_prefix + `/api/v1/games/${game_id}`
-        try {
-            await axios.patch(URL , {status:2})
-            await axios.patch(URL2 , {status:2})
-            navigate('/')
         } catch (error) {
             console.error(error)
         }
@@ -54,7 +40,7 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle}) => {
                     <h1>Game Over</h1>
                     <div className="go-btns">
                         <button onClick={retry} id="retry">Reintentar</button>
-                        <button onClick={surrender} id="surrender">Salir</button>
+                        <button onClick={() => navigate('/')} id="surrender">Salir</button>
                     </div>
                 </div>
             </section>
@@ -65,7 +51,7 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle}) => {
                 <div className="window">
                     <h1>Game Over</h1>
                     <div className="go-btns">
-                        <button onClick={surrender} id="surrender">Salir</button>
+                        <button onClick={() => navigate('/')} id="surrender">Salir</button>
                     </div>
                 </div>
             </section>
