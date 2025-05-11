@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Header from "./Header";
@@ -45,6 +45,7 @@ const Game:React.FC<GameProps> = ({
     const {register} = useForm()
 
     //General game functionality states
+    const [clickControl, setClickControl] = useState(false)
     const [currentFocus , setCurrentFocus] = useState<string>()
     const [colorGuides , setColorGuides] = useState(true)
     const [numberGuides , setNumberGuides] = useState(true)
@@ -123,31 +124,11 @@ const Game:React.FC<GameProps> = ({
       // console.log(currentFocused, value)
       if (currentFocused && value && timerOn) {
         const cell = document.getElementById(currentFocused) as HTMLInputElement
-        if (game && game.answers.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])] !== game.sudoku.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])]) {
+        if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
+          game?.setValue(currentFocused , value, timeElapsed)
           setValueAtHtml(cell , value)
-          verifyNumber(cell , currentFocused , value, timeElapsed)
+          setClickControl(!clickControl)
         }
-      }
-    }
-    
-    /**
-     * This function first sets the value to the corresponding game object, then it checks for the value correctness and displays the result in the UI via highlighting.
-     * @param cellHtml - The html element corresponding to the focused cell, it is used to display visual indicators for incorrect or correct values.
-     * @param cell - The string that represents both the id of a cell and the position of an element in the grid. It is used to set the value in the correct position within the game object and to check for correctness.
-     * @param value - A number that represents the value that a user wants to put into the cell and therefore into the grid.
-     * @param timeElapsed - The time elapsed since the game started.
-     */
-    function verifyNumber (cellHtml:HTMLInputElement , cell:string , value:number, timeElapsed:number) {
-      game?.setValue(cell , value, timeElapsed)
-      // let err = game?.errors || 0
-      // We need to compare the provided value with the correct value, then, let the user know if he is correct or not
-      if (game?.verifyValue(cell , value)) {
-        cellHtml.classList.remove('incorrect')
-        cellHtml.classList.add('correct')
-        cellHtml.disabled = true
-      } else {
-        cellHtml.classList.remove('correct')
-        cellHtml.classList.add('incorrect')
       }
     }
 
@@ -211,10 +192,6 @@ const Game:React.FC<GameProps> = ({
       }
     }
 
-    const handleFocus = useCallback((id:string) => { 
-      focusOperations(id)
-    } , [focusOperations])
-
     function focusOperations(id:string) {
       if (colorGuides) {
         highlightRowNColumn(id)
@@ -253,25 +230,26 @@ const Game:React.FC<GameProps> = ({
       () => {
         if (currentFocus) {
           focusOperations(currentFocus)
+          // console.log('refreshed focus')
         }
-      }, [currentFocus , game?.answers.grid]
+      }, [clickControl]
     )
 
     if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header errores={game.errors} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, game.answers.number, timeElapsed)}/>
+            <Header errores={game.getErrors()} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, game.answers.number, timeElapsed)}/>
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
-                <div id={`c${cell}`} onClick={() => handleFocus(cell)} className="cell" key={index}>
-                    {game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] == game.sudoku.grid[parseInt(cell[0])][parseInt(cell[1])]?
-                        <p id={cell}>{game.answers.grid[parseInt(cell[0])][parseInt(cell[1])]}</p>
+                <div id={`c${cell}`} onClick={() => focusOperations(cell)} className="cell" key={index}>
+                    {game.verifyValue(cell, game.getAnswersValueByPosition(cell))?
+                        <p id={cell}>{game.getAnswersValueByPosition(cell)}</p>
                     : 
                         <input id={cell} type="text" autoComplete="off" readOnly={true} maxLength={1}
                         disabled={!timerOn} 
-                        defaultValue={game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] != 0 ? game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] : ''} 
-                        className={game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] == game.sudoku.grid[parseInt(cell[0])][parseInt(cell[1])] ? 'correct' : 'incorrect'}
+                        defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] : ''} 
+                        className={!game.verifyValue(cell, game.getAnswersValueByPosition(cell)) ? 'incorrect' : 'correct'}
                         {...register(`${cell}`)}/>
                     }
                 </div>

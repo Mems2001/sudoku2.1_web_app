@@ -7,53 +7,81 @@ import { Grid, Ids, numbers } from "./types"
  * This class represents a full Sudoku game. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the majority of the sudoku's rules related logic as posible, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
  * @property id - The unique identifier for the game table.
  * @property player_id - The unique identifier for the player table.
- * @property sudoku - An object representing the "solved" puzzle or the fullfilled grid. The control object to wich any attempt of answer will be compared to check correctness.
- * @property puzzle - An object representing the "unsolved sudoku" or the incomplete grid wich the user will fill. This object will not be modified.
- * @property answers - An object containing the values provided by the user as an attempt to correctly fill the puzzle.
+ * @private sudoku - An object representing the "solved" puzzle or the fullfilled grid. The control object to wich any attempt of answer will be compared to check correctness.
+ * @private puzzle - An object representing the "unsolved sudoku" or the incomplete grid wich the user will fill. This object will not be modified.
+ * @private answers - An object containing the values provided by the user as an attempt to correctly fill the puzzle.
  * @property remainingNumbers - An array wich its "index + 1" represents a number value from 1 to 9 (numbers allowed to fill any sudoku cell) and its value represents the number of times that number apppeared in the answers grid or number. Destined to inform the user wich values are still available to fill the grid (if the number of appeareances is less than 9 is available, otherwise it is not).
- * @property errors - A number representing the number of mistakes committed by the user.
+ * @private errors - A number representing the number of mistakes committed by the user.
  */
 export class Game {
     id: Ids | undefined
     player_id: Ids
     host: boolean
-    _sudoku: Sudoku
-    _puzzle: PuzzleS
-    answers: {
+    #sudoku: Sudoku
+    #puzzle: PuzzleS
+    #answers: {
         number: string,
         grid: Grid
     }
     remainingNumbers: numbers
-    errors: number
+    #errors: number
 
     constructor(player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
         this.id = id
         this.player_id = player_id
         this.host = host
-        this._sudoku = sudoku
-        this._puzzle = puzzle
-        this.answers = {
+        this.#sudoku = sudoku
+        this.#puzzle = puzzle
+        this.#answers = {
             number: answersN,
             grid: answersGrid
         }
-        this.remainingNumbers = this._checkRemainingNumbers(this.answers.number)
-        this.errors = 0
+        this.remainingNumbers = this.#checkRemainingNumbers(this.answers.number)
+        this.#errors = 0
     }
 
     get sudoku() {
-        return this._sudoku
+        return this.#sudoku
     }
 
     get puzzle() {
-        return this._puzzle
+        return this.#puzzle
+    }
+
+    get answers() {
+        return this.#answers
+    }
+
+    getAnswersValueByPosition(position:string) {
+        return this.#answers.grid[parseInt(position[0])][parseInt(position[1])]
+    }
+
+    getSudokuValueByPosition(position:string) {
+        return this.#sudoku.grid[parseInt(position[0])][parseInt(position[1])]
+    }
+    
+    #setErrors (number:number) {
+        this.#errors = number
+    }
+
+    getErrors () {
+        return this.#errors
+    }
+
+    #setAnswersGrid (grid:Grid) {
+        this.answers.grid = grid
+    }
+
+    #setAnswersNumber (number:string) {
+        this.answers.number = number
     }
 
     /**
-     * Counts each 1 to 9 number apparition within a sudoku puzzle
+     * Counts each 1 to 9 number apparition within a sudoku puzzle. Needed for the constructor.
      * @param number - A string that represents the concatenation of all numbers inside a sudoku puzzle.
      * @returns An array wich its element's index+1 represents the numeral and its value represents how many times this number have appeared in the param.
      */
-    _checkRemainingNumbers(number:string | undefined) {
+    #checkRemainingNumbers(number:string | undefined) {
         let aux:numbers = Array(9).fill(0) as numbers
         for (let i=1 ; i < 10 ; i++) {
             for (let n of Array.from(number || [])) {
@@ -70,8 +98,8 @@ export class Game {
      * Counts each 1 to 9 number apparition within a sudoku puzzle and sets an array wich each element's index represent the 1 to 9 number and its value represents the number of times that numeral appeared in the param
      * @param number - A string that represents the concatenation of all numbers inside a sudoku
      */
-    setRemainingNumbers(number:string | undefined) {
-        this.remainingNumbers = this._checkRemainingNumbers(number)
+    #setRemainingNumbers(number:string | undefined) {
+        this.remainingNumbers = this.#checkRemainingNumbers(number)
     }
 
     /**
@@ -87,18 +115,6 @@ export class Game {
             return true
         }
         return false
-    }
-
-    setErrors (number:number) {
-        this.errors = number
-    }
-
-    setAnswersGrid (grid:Grid) {
-        this.answers.grid = grid
-    }
-
-    setAnswersNumber (number:string) {
-        this.answers.number = number
     }
 
     /**
@@ -122,7 +138,7 @@ export class Game {
             }
         }
         this.answers.number = newNumber
-        this.setRemainingNumbers(this.answers.number)
+        this.#setRemainingNumbers(this.answers.number)
 
         //Value checking
        
@@ -131,7 +147,7 @@ export class Game {
             else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
         } else {
             if (value != 10) {
-                this.setErrors(this.errors + 1)
+                this.#setErrors(this.#errors + 1)
                 if (this.gameOverCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
                 else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
             } else {
@@ -151,11 +167,11 @@ export class Game {
         const URL = variables.url_prefix + `/api/v1/players/single/${this.id}`
         const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
-            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.errors})
+            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.#errors})
             // console.log(updatedPlayer.data)
             await axios.patch(URL2 , {time: timeElapsed})
-            this.setAnswersGrid(updatedPlayer.data.grid)
-            this.setAnswersNumber(updatedPlayer.data.number)
+            this.#setAnswersGrid(updatedPlayer.data.grid)
+            this.#setAnswersNumber(updatedPlayer.data.number)
         } catch (err:any) {
             console.error(err)
         }
@@ -170,7 +186,7 @@ export class Game {
     }
 
     gameOverCheck() {
-        if (this.errors >= 3) return true
+        if (this.#errors >= 3) return true
         return false
     }
 }
