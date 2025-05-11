@@ -7,7 +7,8 @@ import { useEffect } from "react"
 interface GameOverProps {
     gameType: number,
     game_id: string | undefined,
-    puzzle: PuzzleS | undefined
+    puzzle: PuzzleS | undefined,
+    setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -15,7 +16,7 @@ interface GameOverProps {
  * @param GameOverProps - An object that contains gameType (number), game_id (string) and puzzle (Puzzle type) props. 
  * @returns 
  */
-const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle}) => {
+const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle, setTimerOn}) => {
     const navigate = useNavigate()
 
     /**
@@ -32,6 +33,12 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle}) => {
             console.error(error)
         }
     }
+
+    useEffect(
+        () => {
+            setTimerOn(false)
+        }, []
+    )
     
     if (gameType === 0) {
         return (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import variables from "../../../utils/variables";

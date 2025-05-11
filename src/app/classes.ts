@@ -102,11 +102,12 @@ export class Game {
     }
 
     /**
-     * Sets a particular value to any desired position of the ansers grid.
+     * Sets a particular value to any desired position of the ansers grid. It also checks the correctness of the value and finally saves the game.
      * @param location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
      * @param value  - The desired value to be set.
+     * @param timeElapsed - The time elapsed since the game started.
      */
-    setValue (location:string , value:number) {
+    setValue (location:string , value:number, timeElapsed:number) {
         let parsedValue = value
         if (value === 10) {
             parsedValue = 0
@@ -114,6 +115,29 @@ export class Game {
         const row = parseInt(location[0])
         const col = parseInt(location[1])
         this.answers.grid[row].splice(col , 1 , parsedValue)
+        let newNumber = ''
+        for (let row of this.answers.grid) {
+            for (let n of row) {
+                newNumber += String(n)
+            }
+        }
+        this.answers.number = newNumber
+        this.setRemainingNumbers(this.answers.number)
+
+        //Value checking
+       
+        if (this.verifyValue(location, value)) {
+            if (this.completedGameCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
+            else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+        } else {
+            if (value != 10) {
+                this.setErrors(this.errors + 1)
+                if (this.gameOverCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
+                else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+            } else {
+                this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+            }
+        }
     }
 
     /**
@@ -122,12 +146,12 @@ export class Game {
      * @param errors: Number of errors that th user committed.
      * @param timeElapsed: Time run to the point of this saving. 
      */
-    async saveAnswers (grid:Grid | undefined, timeElapsed:number , playerStatus?:number) {
+    async saveAnswers (grid:Grid, number:string, timeElapsed:number , playerStatus?:number) {
         // console.log('Saving game...' , this)
         const URL = variables.url_prefix + `/api/v1/players/single/${this.id}`
         const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
-            const updatedPlayer = await axios.patch(URL , {grid, status:playerStatus, errors:this.errors})
+            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.errors})
             // console.log(updatedPlayer.data)
             await axios.patch(URL2 , {time: timeElapsed})
             this.setAnswersGrid(updatedPlayer.data.grid)
@@ -139,8 +163,14 @@ export class Game {
     
     completedGameCheck() {
         if (this.sudoku.number === this.answers.number) {
+            // console.log('game completed method')
             return true
         }
+        return false
+    }
+
+    gameOverCheck() {
+        if (this.errors >= 3) return true
         return false
     }
 }

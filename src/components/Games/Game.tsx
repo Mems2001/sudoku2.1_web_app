@@ -114,47 +114,41 @@ const Game:React.FC<GameProps> = ({
     }
 
     /**
-     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It sets the value to the corresponding focused cell if there is one, it also checks the correction of the value according to the filled sudoku object destined for correction control, if there is not a focused cell it does nothing.
+     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It sets the value to the corresponding focused html cell if there is one, it also checks the correction of the value according to the sudoku object destined for correction control. If there is not a focused cell or the game is paused it does nothing.
      * @param currentFocused - A string that represents the id of the focused cell, it also represents its position within the grid for correcction checks.
      * @param value - A number that the user intends to put into the corresponding cell or sudoku's grid position. 
+     * @param timeElapsed - The time elapse since the game started.
      */
-    function numberButton (currentFocused:string | undefined , value:number) {
+    function numberButton (currentFocused:string | undefined , value:number, timeElapsed:number) {
       // console.log(currentFocused, value)
       if (currentFocused && value && timerOn) {
         const cell = document.getElementById(currentFocused) as HTMLInputElement
         if (game && game.answers.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])] !== game.sudoku.grid[parseInt(currentFocused[0])][parseInt(currentFocused[1])]) {
           setValueAtHtml(cell , value)
-          verifyNumber(cell , currentFocused , value)
+          verifyNumber(cell , currentFocused , value, timeElapsed)
         }
       }
     }
     
     /**
-     * This function first sets the value to the corresponding game object, then it checks for the value correctness and finally saves the changes to the database.
+     * This function first sets the value to the corresponding game object, then it checks for the value correctness and displays the result in the UI via highlighting.
      * @param cellHtml - The html element corresponding to the focused cell, it is used to display visual indicators for incorrect or correct values.
      * @param cell - The string that represents both the id of a cell and the position of an element in the grid. It is used to set the value in the correct position within the game object and to check for correctness.
      * @param value - A number that represents the value that a user wants to put into the cell and therefore into the grid.
+     * @param timeElapsed - The time elapsed since the game started.
      */
-    function verifyNumber (cellHtml:HTMLInputElement , cell:string , value:number) {
-      game?.setValue(cell , value)
-      let err = game?.errors || 0
+    function verifyNumber (cellHtml:HTMLInputElement , cell:string , value:number, timeElapsed:number) {
+      game?.setValue(cell , value, timeElapsed)
+      // let err = game?.errors || 0
       // We need to compare the provided value with the correct value, then, let the user know if he is correct or not
       if (game?.verifyValue(cell , value)) {
         cellHtml.classList.remove('incorrect')
         cellHtml.classList.add('correct')
         cellHtml.disabled = true
       } else {
-        if (value != 10) { // The 10 value is an arbitrary value chosen to represent erasing intentions.
-          err++
-          game?.setErrors(err)
-          if (gameOverCheck(err)) return game?.saveAnswers(game.answers.grid , timeElapsed, 2)
-        }
         cellHtml.classList.remove('correct')
         cellHtml.classList.add('incorrect')
       }
-     
-      // We also save the game via patch call
-      game?.saveAnswers(game.answers.grid, timeElapsed)
     }
 
     /**
@@ -244,19 +238,6 @@ const Game:React.FC<GameProps> = ({
         div.classList.remove('font-bold')
       })
     }
-
-    // After game functions
-    function gameOverCheck(e:number) {
-      if (e >= 3) {
-        setTimerOn(false)
-        return true
-      }
-      return false
-    }
-
-    useEffect(() => {
-      if (game) game?.setRemainingNumbers(game.answers.number)
-      }, [game?.answers.grid]);
         
     useEffect(
       () => {
@@ -279,7 +260,7 @@ const Game:React.FC<GameProps> = ({
     if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header errores={game.errors} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, timeElapsed)}/>  
+            <Header errores={game.errors} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, game.answers.number, timeElapsed)}/>
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
@@ -300,9 +281,9 @@ const Game:React.FC<GameProps> = ({
             <div className="remaining-numbers">
               <h2>Números restantes:</h2>
               {game.remainingNumbers.map((n , index) => 
-                <button onClick={() => numberButton(currentFocus , index+1)} className="remaining-number" key={index}>{n<9?index +1:''}</button>
+                <button onClick={() => numberButton(currentFocus , index+1, timeElapsed)} className="remaining-number" key={index}>{n<9?index +1:''}</button>
               )}
-              <button onClick={() => numberButton(currentFocus , 10)}>
+              <button onClick={() => numberButton(currentFocus , 10, timeElapsed)}>
                 <i className="fa-solid fa-eraser fa-xl"></i>
               </button>
             </div>
@@ -321,13 +302,13 @@ const Game:React.FC<GameProps> = ({
               <></>
             }
 
-            {game.errors >= 3?
-              <GameOver gameType={gameType} game_id={game_id} puzzle={game.puzzle}/>
+            {game.gameOverCheck()?
+              <GameOver gameType={gameType} game_id={game_id} puzzle={game.puzzle} setTimerOn={setTimerOn}/>
               :
               <></>
             }
             {game.completedGameCheck()?
-              <GameCompleted setTimerOn={setTimerOn} saveGame={() => game.saveAnswers(game.answers.grid, timeElapsed, 1)}/>
+              <GameCompleted setTimerOn={setTimerOn}/>
               :
               <></>
             }
