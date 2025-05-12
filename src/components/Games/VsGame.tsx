@@ -186,7 +186,7 @@ function VsGame () {
           <div className="vs-console">
                 <div id="pre-room" className="window">
                     {role === 'anon' || role === null?
-                        <MultiplayerLogin game_id={game_id} socket={socket}/>
+                        <MultiplayerLogin game_id={game_id} authSession={authSession} socket={socket}/>
                     :
                         <div className="pre-room-actions">
                             <button onClick={authenticatedUserContinue}>Aceptar invitación</button>

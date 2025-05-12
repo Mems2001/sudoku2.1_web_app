@@ -5,11 +5,10 @@ import variables from '../../../utils/variables'
 import { GameData, PuzzleData } from "../../app/dbTypes"
 import { PostGameBody } from "../../app/types"
 import { AxiosResponse } from "axios"
-import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
+import { setLoggedOut } from "../../features/isLogged.slice"
 import { setRole } from "../../features/role.slice"
 import { RootState } from "../../app/store"
 import GamesModal from "./GamesModal"
-import { useEffect } from "react"
 
 import axios from "axios"
 
@@ -88,35 +87,6 @@ function Home() {
         const modal = document.getElementsByClassName('games-modal')[0] as HTMLDivElement
         modal.classList.add('inactive')
       }
-    
-    useEffect(
-      () => {
-        if (!role) {
-                const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
-                const URL2 = variables.url_prefix + '/api/v1/users/anon'
-                axios.get(URL)
-                  .then((response) => {
-                    console.log(response.data , response.status)
-                    if (response.status == 200) {
-                      dispatch(setRole(response.data.role))
-                      response.data.role != 'anon'? dispatch(setLoggedIn()) : dispatch(setLoggedOut())
-                    }
-                  })
-                  .catch((error) => {
-                    console.error('Error:', error)
-                    axios.get(URL2)
-                        .then(res => {
-                          console.log('Anon user logged in' , res.status)
-                          dispatch(setRole('anon'))
-                        })
-                        .catch(error => {
-                          console.error(error)
-                        })
-                    dispatch(setLoggedOut())
-                  })
-              }
-            } , [role]
-    )
     
     return (
        <div className="home">
