@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom"
 import variables from "../../../utils/variables"
 import { PuzzleS } from "../../app/dbTypes"
 import { useEffect } from "react"
+import { Game } from "../../app/classes"
 
 interface GameOverProps {
     gameType: number,
-    game_id: string | undefined,
+    game: Game | undefined,
     puzzle: PuzzleS | undefined,
     setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
+    timeElapsed: number
+    multiplayerGameOver?: boolean
 }
 
 /**
@@ -16,15 +19,15 @@ interface GameOverProps {
  * @param GameOverProps - An object that contains gameType (number), game_id (string) and puzzle (Puzzle type) props. 
  * @returns 
  */
-const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle, setTimerOn}) => {
+const GameOver:React.FC<GameOverProps> = ({gameType, game , puzzle, setTimerOn, timeElapsed, multiplayerGameOver}) => {
     const navigate = useNavigate()
 
     /**
      * This resets the game data, in the player table: puzzle grid, puzzle number, number of errors and timer in the game table. Then reloads the whole window to play again.
      */
     async function retry () {
-        const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
-        const URL2 = variables.url_prefix + `/api/v1/games/${game_id}`
+        const URL = variables.url_prefix + `/api/v1/players/single/${game?.id}`
+        const URL2 = variables.url_prefix + `/api/v1/games/${game?.id}`
         try {
             await axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0, status:0})
             await axios.patch(URL2 , {time:0 , status:1})
@@ -36,6 +39,7 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game_id , puzzle, setTimerO
 
     useEffect(
         () => {
+            if (gameType === 1 && multiplayerGameOver) game?.saveAnswers(game.answers.grid, game.answers.number, timeElapsed, 2)
             setTimerOn(false)
         }, []
     )

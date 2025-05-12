@@ -1,16 +1,20 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { Socket } from "socket.io-client"
 
 interface GameCompletedProps {
-    setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
+    gameType: number,
+    pauseGame: () => void,
+    socket?: Socket
 }
 
-const GameCompleted:React.FC<GameCompletedProps> = ({setTimerOn}) => {
+const GameCompleted:React.FC<GameCompletedProps> = ({gameType, pauseGame, socket}) => {
     const navigate = useNavigate()
 
     useEffect(
         () => {
-            setTimerOn(false)
+            pauseGame()
+            if (gameType === 1 && socket) socket.emit('multiplayer-gameover')
         } , []
     )
 

@@ -21,7 +21,8 @@ interface GameProps {
   players?: PlayerData[],
   inList?: boolean,
   host?: boolean,
-  socket?: Socket
+  socket?: Socket,
+  multiplayerGameOver?: boolean
 }
 
 /**
@@ -39,7 +40,7 @@ interface GameProps {
 const Game:React.FC<GameProps> = ({
   gameType, timeElapsed, setTimeElapsed, timerOn, setTimerOn,
   //Multiplayer props
-  players, inList, socket
+  players, inList, socket, multiplayerGameOver
   }) => {
     const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
@@ -50,7 +51,6 @@ const Game:React.FC<GameProps> = ({
     const [colorGuides , setColorGuides] = useState(true)
     const [numberGuides , setNumberGuides] = useState(true)
     const [openSettings , setOpenSettings] = useState(gameType===0?false:true)
-
     const {game , loading} = useGame({game_id , setTimeElapsed})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
 
@@ -287,13 +287,13 @@ const Game:React.FC<GameProps> = ({
               <></>
             }
 
-            {game.gameOverCheck()?
-              <GameOver gameType={gameType} game_id={game_id} puzzle={game.puzzle} setTimerOn={setTimerOn}/>
+            {game.gameOverCheck() || multiplayerGameOver?
+              <GameOver gameType={gameType} game={game} puzzle={game.puzzle} setTimerOn={setTimerOn} timeElapsed={timeElapsed} multiplayerGameOver={multiplayerGameOver}/>
               :
               <></>
             }
             {game.completedGameCheck()?
-              <GameCompleted setTimerOn={setTimerOn}/>
+              <GameCompleted gameType={gameType} pauseGame={() => pauseGame(gameType)} socket={socket}/>
               :
               <></>
             }

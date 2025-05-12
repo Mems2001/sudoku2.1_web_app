@@ -18,7 +18,7 @@ function VsGame () {
     const game_id:Ids = useParams().game_id as Ids
     const dispatch = useAppDispatch()
 
-    // const timeElapsedRef = useRef(0)
+    const [multiplayerGameOver, setMultiPlayerGamever] = useState(false)
     const [timeElapsed , setTimeElapsed] = useState(0)
     const [timerOn , setTimerOn] = useState(false)
 
@@ -185,6 +185,9 @@ function VsGame () {
             newSocket.on('pause-game' , (data) => {
               setTimerOn(data)
             })
+            newSocket.on('multiplayer-gameover' , (data) => {
+                setMultiPlayerGamever(data)
+            })
             newSocket.on('game-alert' , data => {
               console.log(data)
             })
@@ -195,7 +198,7 @@ function VsGame () {
 
     if (inList) {
         return (
-          <Game gameType={1} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList} socket={socket}/>
+          <Game gameType={1} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
         )
     } else {
         return (
