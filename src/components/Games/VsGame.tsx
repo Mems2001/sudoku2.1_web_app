@@ -127,10 +127,10 @@ function VsGame () {
       }
     }, [timerOn]);
 
-    useEffect(() => {
-        console.log('time elapsed useEffect:' , timeElapsed)
-        // timeElapsedRef.current = timeElapsed; // Update the ref whenever timeElapsed changes
-  }, [timeElapsed]);
+//     useEffect(() => {
+//         console.log('time elapsed useEffect:' , timeElapsed)
+//         // timeElapsedRef.current = timeElapsed; // Update the ref whenever timeElapsed changes
+//   }, [timeElapsed]);
 
     useEffect(
         () => {

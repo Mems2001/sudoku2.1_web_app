@@ -192,6 +192,10 @@ const Game:React.FC<GameProps> = ({
       }
     }
 
+    /**
+     * This function handles the highlighting functions acording to a concrete cell.
+     * @param id - The cell id, which is its name and the positicion of the cell within a grid.
+     */
     function focusOperations(id:string) {
       if (colorGuides) {
         highlightRowNColumn(id)
@@ -199,7 +203,8 @@ const Game:React.FC<GameProps> = ({
       if (numberGuides) {
         highlightSameNumbers(id)
       }
-      setCurrentFocus(id)
+      if (id != 'x') setCurrentFocus(id)
+      else setCurrentFocus(undefined)
     }
 
     function clearColorGuides () {
@@ -238,7 +243,8 @@ const Game:React.FC<GameProps> = ({
     if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header errores={game.getErrors()} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn} save={() => game.saveAnswers(game.answers.grid, game.answers.number, timeElapsed)}/>
+            <Header game={game} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn}/>
+
             <div className="grid">
             {cells.map((cell, index) => {
                 return (
@@ -256,6 +262,7 @@ const Game:React.FC<GameProps> = ({
                 )
             })}
             </div>
+
             <div className="remaining-numbers">
               <h2>Números restantes:</h2>
               {game.remainingNumbers.map((n , index) => 
@@ -275,7 +282,7 @@ const Game:React.FC<GameProps> = ({
             
             {/* Game menu for multiplayer games */}
             {!timerOn && gameType===1?
-              <VsRomm game_id={game_id} players={players} inList={inList} host={game.host} socket={socket}/>
+              <VsRomm game_id={game_id} timeElapsed={timeElapsed} players={players} inList={inList} host={game.host} socket={socket}/>
               :
               <></>
             }

@@ -7,13 +7,14 @@ import { useNavigate } from "react-router-dom"
 
 interface VsRommProps {
     game_id: Ids,
+    timeElapsed: number,
     players?: PlayerData[]
     inList?: boolean,
     host?: boolean,
     socket?: Socket
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, host , socket }) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, timeElapsed, players , inList, host , socket }) => {
     const navigate = useNavigate()
 
     const shareLink = async () => {
@@ -72,7 +73,11 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, players , inList, host , socket 
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
                     <div id='main-room-actions' className="room-actions">
-                        <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host}>Continuar</button>
+                        { timeElapsed === 0?
+                            <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host}>Iniciar</button>
+                            :
+                            <button className="continue" disabled={!host} onClick={() => playGame(socket)}>Continuar</button>
+                        }
                         <button className="cancel" onClick={() => navigate('/')}>Salir</button>
                     </div>
                 </div>

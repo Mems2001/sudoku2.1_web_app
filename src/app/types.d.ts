@@ -1,3 +1,4 @@
+import { Game } from "./classes"
 import { Sudoku } from "./dbTypes"
 
 export type Ids = `${string}-${string}-${string}-${string}-${string}`
@@ -37,12 +38,11 @@ export type Grid = [
 ]
 
 export interface GameHeaderProps {
-    errores: number,
+    game: Game,
     time: number,
     pause: () => void,
     play: () => void,
-    timerOn: boolean,
-    save: () => void
+    timerOn: boolean
 }
 
 export interface CurrentPlayer {
