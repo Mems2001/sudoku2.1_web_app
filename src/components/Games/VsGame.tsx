@@ -6,9 +6,9 @@ import { Ids } from "../../app/types";
 import { PlayerData } from "../../app/dbTypes";
 import { io, Socket } from "socket.io-client";
 import { RootState } from "../../app/store";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import Game from "./Game";
-import { setRole } from "../../features/role.slice";
+import MultiplayerLogin from "./MultiplayerLogin";
 
 /**
  * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component wil handle how the information received will be passed to the "Game" component if rendered.
@@ -16,7 +16,6 @@ import { setRole } from "../../features/role.slice";
  */
 function VsGame () {
     const game_id:Ids = useParams().game_id as Ids
-    const dispatch = useAppDispatch()
 
     const [multiplayerGameOver, setMultiPlayerGamever] = useState(false)
     const [timeElapsed , setTimeElapsed] = useState(0)
@@ -39,43 +38,7 @@ function VsGame () {
     const [inList , setInList] = useState<boolean>(false)
     const [socket , setSocket] = useState<Socket | undefined>(undefined)
 
-    //Room functions
-    async function authSession () {
-            const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
-            let response = undefined
-            await axios.get(URL)
-                .then(res => {
-                    if (res.status === 200) response = res.data
-                })
-                .catch(err => {
-                    console.error(err)
-                })
-    
-            return response
-        }
-
-    /**
-     * When accesing a multiplayer game the user have the choice to play with its own profile or to do it as a anon and not log in. If he does not have an anon profile then the function creates it, in anycase it request a new player creation event, which from the back-end creates a player related to the profile id and add it to the game's players list.
-     */
-    async function continueAsAnon () {
-            try {
-                const auth:any = await authSession()
-                if (auth) {
-                    if (socket) socket.emit('create-player' , auth.user_id , game_id)
-                } else {
-                    const URL = variables.url_prefix + '/api/v1/users/anon'
-                    await axios.get(URL).then(res => {
-                        console.log(res)
-                        dispatch(setRole('anon'))
-                        if (socket) socket.emit('create-player' , res.data.id , game_id)
-                    })
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
-
-    // In game functions (correct get players function)
+    // In game functions
 
     /**
      * This function gets called two times. Once the "VsGame" component is rendered and it gets the list of players signed to the game, and then again when the list is set as a local state it verifies if the current user is a player of the game and update the "inList" state according to the case. This is crutial because the soduku game will be accesible only to those users who are verified players of the game.
@@ -108,6 +71,29 @@ function VsGame () {
         }
     }
 
+     async function authSession ():Promise<any|undefined> {
+                const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
+                let response = undefined
+                await axios.get(URL)
+                    .then(res => {
+                        if (res.status === 200) response = res.data
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
+        
+                return response
+            }
+
+    async function authenticatedUserContinue () {
+        try {
+            const auth = await authSession()
+            if (socket && auth) socket?.emit('create-player' , auth.user_id, game_id)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect (
       () => {
           getPlayers(players)
@@ -126,11 +112,6 @@ function VsGame () {
         return () => clearInterval(timer); // Cleanup on unmount or when `timerOn` changes
       }
     }, [timerOn]);
-
-//     useEffect(() => {
-//         console.log('time elapsed useEffect:' , timeElapsed)
-//         // timeElapsedRef.current = timeElapsed; // Update the ref whenever timeElapsed changes
-//   }, [timeElapsed]);
 
     useEffect(
         () => {
@@ -205,13 +186,10 @@ function VsGame () {
           <div className="vs-console">
                 <div id="pre-room" className="window">
                     {role === 'anon' || role === null?
-                        <div className="pre-room-actions">
-                            <button>Iniciar Sesión</button>
-                            <button onClick={continueAsAnon}>Continuar como anónimo</button>
-                        </div>
+                        <MultiplayerLogin game_id={game_id} socket={socket}/>
                     :
                         <div className="pre-room-actions">
-                            <button>Aceptar invitación</button>
+                            <button onClick={authenticatedUserContinue}>Aceptar invitación</button>
                         </div>
                     }
                 </div>
