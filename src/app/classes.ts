@@ -4,7 +4,7 @@ import { PuzzleS, Sudoku } from "./dbTypes"
 import { Grid, Ids, numbers } from "./types"
 
 /**
- * This class represents a full Sudoku game. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the majority of the sudoku's rules related logic as posible, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
+ * This class represents a full Sudoku game and implements the sudoku's rules and preserves its correct structure. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the sudoku's rules related logic, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
  * @property id - The unique identifier for the game table.
  * @property player_id - The unique identifier for the player table.
  * @private sudoku - An object representing the "solved" puzzle or the fullfilled grid. The control object to wich any attempt of answer will be compared to check correctness.

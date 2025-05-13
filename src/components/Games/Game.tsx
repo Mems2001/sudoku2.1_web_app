@@ -123,27 +123,11 @@ const Game:React.FC<GameProps> = ({
     function numberButton (currentFocused:string | undefined , value:number, timeElapsed:number) {
       // console.log(currentFocused, value)
       if (currentFocused && value && timerOn) {
-        const cell = document.getElementById(currentFocused) as HTMLInputElement
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
           game?.setValue(currentFocused , value, timeElapsed)
-          setValueAtHtml(cell , value)
+          // setValueAtHtml(cell , value)
           setClickControl(!clickControl)
         }
-      }
-    }
-
-    /**
-     * This function sets the value into the corresponding cell within the frontend display, it does not set value to the game object or the database.
-     * @param cell - A html element to wich the value will be set, it is the focused cell in the UI.
-     * @param value - The user's desired value to be ser into the cell.
-     */
-    function setValueAtHtml (cell:HTMLInputElement, value:number) {
-      if (value != 10) {
-        cell.value = value.toString()
-        cell.focus()
-      } else {
-        cell.value = ''
-        cell.focus()
       }
     }
 
@@ -254,7 +238,7 @@ const Game:React.FC<GameProps> = ({
                     : 
                         <input id={cell} type="text" autoComplete="off" readOnly={true} maxLength={1}
                         disabled={!timerOn} 
-                        defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.answers.grid[parseInt(cell[0])][parseInt(cell[1])] : ''} 
+                        defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.getAnswersValueByPosition(cell) : ''} 
                         className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                         {...register(`${cell}`)}/>
                     }
