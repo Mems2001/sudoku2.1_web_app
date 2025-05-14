@@ -25,9 +25,11 @@ function App () {
   const role = useAppSelector((state:RootState) => state.role.value)
   const dispatch = useAppDispatch()
 
-  useEffect(
-      () => {
-        if (!role) {
+  /**
+   * This function will be called any time the whole app is rendered. It checks if there is a valid cookie for user authentication via get call. If not, the back-end deletes the cookie if there was one and proceed to create an anon user. The anon user is a user of special kind, existing in the database but not upadting the glabal state "loggedIn" to true.
+   */
+  function anonUserControl() {
+      if (!role) {
           const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
           const URL2 = variables.url_prefix + '/api/v1/users/anon'
           axios.get(URL)
@@ -35,11 +37,11 @@ function App () {
               console.log(response.data , response.status)
               if (response.status == 200) {
                 dispatch(setRole(response.data.role))
-                response.data.role != 'anon'? dispatch(setLoggedIn()) : dispatch(setLoggedOut())
+                response.data.rol && response.data.role != 'anon'? dispatch(setLoggedIn()) : dispatch(setLoggedOut())
               }
             })
             .catch((error) => {
-              console.error('Error:', error)
+              console.error('User authentication error:', error)
               axios.get(URL2)
                   .then(res => {
                     console.log('Anon user logged in' , res.status)
@@ -51,6 +53,11 @@ function App () {
               dispatch(setLoggedOut())
             })
           }
+  }
+
+  useEffect(
+      () => {
+          anonUserControl()
         } , [role]
       )
 
