@@ -115,7 +115,7 @@ const Game:React.FC<GameProps> = ({
     }
 
     /**
-     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It sets the value to the corresponding focused html cell if there is one, it also checks the correction of the value according to the sudoku object destined for correction control. If there is not a focused cell or the game is paused it does nothing.
+     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
      * @param currentFocused - A string that represents the id of the focused cell, it also represents its position within the grid for correcction checks.
      * @param value - A number that the user intends to put into the corresponding cell or sudoku's grid position. 
      * @param timeElapsed - The time elapse since the game started.

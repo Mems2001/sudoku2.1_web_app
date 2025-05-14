@@ -115,7 +115,7 @@ export class Game {
     }
 
     /**
-     * Sets a particular value to any desired position of the ansers grid. It also checks the correctness of the value and finally saves the game.
+     * Sets a particular value to any desired position of the anwsers grid. It also checks the correctness of the value and finally saves the game.
      * @param location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
      * @param value  - The desired value to be set.
      * @param timeElapsed - The time elapsed since the game started.
