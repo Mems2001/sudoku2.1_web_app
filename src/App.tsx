@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks'
 import { RootState } from './app/store'
 import { setRole } from './features/role.slice'
 import { setLoggedIn, setLoggedOut } from './features/isLogged.slice'
+import { setGameSettings } from './features/gameSettings.slice'
 axios.defaults.withCredentials = true
 
 
@@ -26,7 +27,7 @@ function App () {
   const dispatch = useAppDispatch()
 
   /**
-   * This function will be called any time the whole app is rendered. It checks if there is a valid cookie for user authentication via get call. If not, the back-end deletes the cookie if there was one and proceed to create an anon user. The anon user is a user of special kind, existing in the database but not upadting the glabal state "loggedIn" to true.
+   * This function will be called any time the whole app is rendered. It checks if there is a valid cookie for user authentication via get call. If not, the back-end deletes the cookie if there was one and proceeds to create an anon user. The anon user is a user of special kind, existing in the database but not upadting the glabal state "loggedIn" to true. But, is successful it sets global stats such as "loggedIn", "role" and "gameSettings".
    */
   function anonUserControl() {
       if (!role) {
@@ -34,10 +35,17 @@ function App () {
           const URL2 = variables.url_prefix + '/api/v1/users/anon'
           axios.get(URL)
             .then((response) => {
+              // console.log(response)
               console.log(response.data , response.status)
               if (response.status == 200) {
                 dispatch(setRole(response.data.role))
-                response.data.rol && response.data.role != 'anon'? dispatch(setLoggedIn()) : dispatch(setLoggedOut())
+                if (response.data.role && response.data.role != 'anon') {
+                  dispatch(setLoggedIn())
+                  dispatch(setGameSettings(response.data.settings))
+                }
+                else {
+                  dispatch(setLoggedOut())
+                }
               }
             })
             .catch((error) => {

@@ -8,6 +8,7 @@ import variables from '../../../utils/variables'
 import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
 import { setRole } from "../../features/role.slice"
 import { Socket } from "socket.io-client"
+import { setGameSettings } from "../../features/gameSettings.slice"
 
 interface LoginError {
     message: string,
@@ -52,6 +53,10 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
         }
     }
 
+    /**
+     * The functions divides the login process into two stages. First, the classic login that returns an "access-token" cookie, but if successful the second stage is triggered. This one is a get api call for user authentication that sets global states such as "loggedIn", "role", or "gameSettings" when successful.
+     * @param data Objet gotten from the form. Contains the username(string), email(string), password(string) and useUsername(boolean)
+     */
     function loginSubmit (data:LoginForm) {
         let newData:LoginForm = {
             username: undefined,
@@ -81,6 +86,7 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                     if (response.status == 200) {
                         dispatch(setLoggedIn())
                         dispatch(setRole(response.data.role))
+                        dispatch(setGameSettings(response.data.settings))               
                         if (game_id) socket?.emit('create-player', response.data.user_id, game_id)
                     } else {
                         dispatch(setLoggedOut())

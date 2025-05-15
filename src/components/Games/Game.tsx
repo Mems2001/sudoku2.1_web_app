@@ -10,6 +10,9 @@ import { useGame } from "../../hooks/useGame";
 import VsRomm from "./VsRoom";
 import { PlayerData } from "../../app/dbTypes";
 import { Socket } from "socket.io-client";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { RootState } from "../../app/store";
+import { setGameSettings } from "../../features/gameSettings.slice";
 
 interface GameProps {
   gameType: number // 0 -> single plager , 1 -> multiplayer vs time attack
@@ -44,15 +47,16 @@ const Game:React.FC<GameProps> = ({
   }) => {
     const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
+    const dispatch = useAppDispatch()
 
     //General game functionality states
     const [clickControl, setClickControl] = useState(false)
     const [currentFocus , setCurrentFocus] = useState<string>()
-    const [colorGuides , setColorGuides] = useState(true)
-    const [numberGuides , setNumberGuides] = useState(true)
+    const gameSettings = useAppSelector((state:RootState) => state.gameSettings.value)
     const [openSettings , setOpenSettings] = useState(gameType===0?false:true)
     const {game , loading} = useGame({game_id , setTimeElapsed})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
+    // console.log("game_settings:", gameSettings)
 
     const cells:Cells = [];
 
@@ -137,7 +141,7 @@ const Game:React.FC<GameProps> = ({
      * Highlighs all the cells that are in the same row, column or 3x3 quadrant as the selected cell. It also removes the highlight from all other cells or from all the cells whenever the user wantos to by clicking or tapping outside the UI grid.
      * @param id - A string that represents the cell id and the position of an element inside a grid.
      */
-    function highlightRowNColumn (id:string) {
+    function highlightCells (id:string) {
       for (let cell of cells) {
         if (id != 'x') {
           if (cell[0] === id[0] || cell[1] === id[1] || (Math.ceil((parseInt(cell[0])+1)/3) === Math.ceil((parseInt(id[0])+1)/3) && Math.ceil((parseInt(cell[1])+1)/3) === Math.ceil((parseInt(id[1])+1)/3))) {
@@ -181,24 +185,24 @@ const Game:React.FC<GameProps> = ({
      * @param id - The cell id, which is its name and the positicion of the cell within a grid.
      */
     function focusOperations(id:string) {
-      if (colorGuides) {
-        highlightRowNColumn(id)
+      if (gameSettings.cells_highlight) {
+        highlightCells(id)
       }
-      if (numberGuides) {
+      if (gameSettings.numbers_highlight) {
         highlightSameNumbers(id)
       }
       if (id != 'x') setCurrentFocus(id)
       else setCurrentFocus(undefined)
     }
 
-    function clearColorGuides () {
+    function clearCellsHighlighting () {
       cells.forEach(cell => {
         const div = document.getElementById(`c${cell}`) as HTMLDivElement
         div.classList.remove('selected')
       })
     }
 
-    function clearNumberGuides () {
+    function clearNumbersHighlighting () {
       cells.forEach(cell => {
         const div = document.getElementById(`c${cell}`) as HTMLDivElement
         div.classList.remove('font-bold')
@@ -260,7 +264,7 @@ const Game:React.FC<GameProps> = ({
 
             {/* Game menu for single player games */}
             {openSettings && gameType===0?
-              <GameSettins rcMatch={colorGuides} nMatch={numberGuides} setRcMatch={setColorGuides} setNMatch={setNumberGuides} clearColorGuides={clearColorGuides} clearNumberGuides={clearNumberGuides} selectRowNColumn={() => { if (currentFocus)highlightRowNColumn(currentFocus)}} sameNumbers={() => {if (currentFocus) highlightSameNumbers(currentFocus)}}/>
+              <GameSettins cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} setGameSettings={(payload)=>dispatch(setGameSettings(payload))} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocus)highlightCells(currentFocus)}} sameNumbers={() => {if (currentFocus) highlightSameNumbers(currentFocus)}}/>
                 :
               <></>}
             
