@@ -1,23 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
-import axios from 'axios';
-import { useParams } from "react-router-dom";
-import variables from "../../../utils/variables";
-import { Ids } from "../../app/types";
-import { PlayerData } from "../../app/dbTypes";
-import { io, Socket } from "socket.io-client";
-import { RootState } from "../../app/store";
-import { useAppSelector } from "../../app/hooks";
-import Game from "./Game";
-import MultiplayerLogin from "./MultiplayerLogin";
+import axios from 'axios'
+import variables from "../../../utils/variables"
+import Game from "./Game"
+import MultiplayerLogin from "./MultiplayerLogin"
+
+import { useCallback, useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { Ids } from "../../app/types"
+import { PlayerData } from "../../app/dbTypes"
+import { io, Socket } from "socket.io-client"
+import { RootState } from "../../app/store"
+import { useAppSelector } from "../../app/hooks"
+
+interface MultiplayerGameProps {
+    gameType: number
+}
 
 /**
  * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component wil handle how the information received will be passed to the "Game" component if rendered.
  * @returns Conditionally, if the user is a validated player this renders the Game component, otherwise this renders an auth UI wehter to log in or to continue as annonymous user.
  */
-function VsGame () {
+const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     const game_id:Ids = useParams().game_id as Ids
 
-    const [multiplayerGameOver, setMultiPlayerGamever] = useState(false)
+    const [multiplayerGameOver, setMultiPlayerGameOver] = useState(false)
     const [timeElapsed , setTimeElapsed] = useState(0)
     const [timerOn , setTimerOn] = useState(false)
 
@@ -121,15 +126,15 @@ function VsGame () {
             })
             setSocket(newSocket)
 
+            newSocket.on('connect_error' , (err) => {
+                console.error('Socket error: ', err)
+            })
+            
             /**
              * Anytime the "VsGame" component it's rendered the user joins a room. This allows the backend to handle all kinds of user and player validations, needed to get access to the game data and the game itself.
              */
             newSocket.emit('join-room' , game_id)
             newSocket.on('message' , data => console.log(data))
-
-            newSocket.on('connect_error' , (err) => {
-                console.error('Socket error: ', err)
-            })
 
             /**
              * This event is received anytime the players list is updated at the backend, it allows us to synchronize the players data since it also updates the "players" local state.
@@ -166,9 +171,11 @@ function VsGame () {
             newSocket.on('pause-game' , (data) => {
               setTimerOn(data)
             })
+            
             newSocket.on('multiplayer-gameover' , (data) => {
-                setMultiPlayerGamever(data)
+                setMultiPlayerGameOver(data)
             })
+
             newSocket.on('game-alert' , data => {
               console.log(data)
             })
@@ -179,7 +186,7 @@ function VsGame () {
 
     if (inList) {
         return (
-          <Game gameType={1} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
+          <Game gameType={gameType} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
         )
     } else {
         return (
@@ -198,4 +205,4 @@ function VsGame () {
     }
   }
 
-export default VsGame
+export default MultiplayerGame

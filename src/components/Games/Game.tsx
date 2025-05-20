@@ -50,6 +50,7 @@ const Game:React.FC<GameProps> = ({
     const dispatch = useAppDispatch()
 
     //General game functionality states
+    const [turn, setTurn] = useState<boolean|undefined>(undefined)
     const [clickControl, setClickControl] = useState(false)
     const [currentFocus , setCurrentFocus] = useState<string>()
     const gameSettings = useAppSelector((state:RootState) => state.gameSettings.value)
@@ -126,9 +127,17 @@ const Game:React.FC<GameProps> = ({
      */
     function numberButton (currentFocused:string | undefined , value:number, timeElapsed:number) {
       // console.log(currentFocused, value)
+      if (gameType===2 && !turn) {
+        return
+      }
+
       if (currentFocused && value && timerOn) {
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
-          game?.setValue(currentFocused , value, timeElapsed)
+          if (gameType===2 && socket) {
+            socket.emit('coop-save', {currentFocused, value, timeElapsed, gameType})
+            setTurn(false)
+          }
+          game?.setValue(currentFocused , value, timeElapsed, gameType)
           // setValueAtHtml(cell , value)
           setClickControl(!clickControl)
         }
@@ -213,6 +222,7 @@ const Game:React.FC<GameProps> = ({
       () => {
         if (game) {
           cellsBorders(cells)
+          setTurn(game.host)
         } else {
 
         }
@@ -228,6 +238,24 @@ const Game:React.FC<GameProps> = ({
       }, [clickControl]
     )
 
+    useEffect(() => {
+      if (!socket || !game) return
+
+      const handler = (data: any) => {
+        console.log('cooperative game data:', data)
+        game.setValue(data.currentFocused, data.value, data.timeElapsed, data.gameType)
+        setTurn(true)
+        setClickControl(!clickControl)
+      };
+    
+      socket.on('coop-save-2', handler)
+    
+      // Limpia el handler cuando cambie el socket/game o se desmonte el componente
+      return () => {
+        socket.off('coop-save-2', handler)
+      };
+    }, [socket, game])
+
     if (!loading && game) {
         return (
           <div className="grid-container"> 
@@ -241,7 +269,7 @@ const Game:React.FC<GameProps> = ({
                         <p id={cell}>{game.getAnswersValueByPosition(cell)}</p>
                     : 
                         <input id={cell} type="text" autoComplete="off" readOnly={true} maxLength={1}
-                        disabled={!timerOn} 
+                        disabled={!timerOn}
                         defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.getAnswersValueByPosition(cell) : ''} 
                         className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                         {...register(`${cell}`)}/>
@@ -254,9 +282,11 @@ const Game:React.FC<GameProps> = ({
             <div className="remaining-numbers">
               <h2>Números restantes:</h2>
               {game.remainingNumbers.map((n , index) => 
-                <button onClick={() => numberButton(currentFocus , index+1, timeElapsed)} className="remaining-number" key={index}>{n<9?index +1:''}</button>
+                <button onClick={() => numberButton(currentFocus , index+1, timeElapsed)} className="remaining-number" key={index}
+                disabled={gameType===2 && !turn}>{n<9?index +1:''}</button>
               )}
-              <button onClick={() => numberButton(currentFocus , 10, timeElapsed)}>
+              <button onClick={() => numberButton(currentFocus , 10, timeElapsed)}
+                disabled={gameType===2 && !turn}>
                 <i className="fa-solid fa-eraser fa-xl"></i>
               </button>
             </div>
@@ -269,7 +299,7 @@ const Game:React.FC<GameProps> = ({
               <></>}
             
             {/* Game menu for multiplayer games */}
-            {!timerOn && gameType===1?
+            {!timerOn && gameType!=0?
               <VsRomm game_id={game_id} timeElapsed={timeElapsed} players={players} inList={inList} host={game.host} socket={socket}/>
               :
               <></>

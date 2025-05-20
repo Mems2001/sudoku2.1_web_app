@@ -8,8 +8,7 @@ import './styles/Puzzle.css'
 
 import Login from './components/UserAuth/Login'
 import Register from './components/UserAuth/Register'
-import VsGame from './components/Games/VsGame'
-import SinglePlayer from '../src/components/Games/SinglePlayer'
+import GameModes from './components/Games/GameModes'
 
 import variables from '../utils/variables'
 import axios from 'axios'
@@ -75,8 +74,7 @@ function App () {
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/game/:game_id' element={<SinglePlayer />} />
-        <Route path='/game_vs/:game_id' element={<VsGame />} />
+        <Route path='/game/:game_type/:game_id' element={<GameModes />} />
       </Routes>
     </div>
     

@@ -18,34 +18,10 @@ function Home() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    /**
-     * First picks a random puzzle, then creates a game, then uses its id to redirect to the a single player game component
-     */
-     async function goToGame () {
-        const URL = variables.url_prefix + '/api/v1/puzzles/get_random'
-        const URL2 = variables.url_prefix  + '/api/v1/games'
-        try {
-          const puzzle:AxiosResponse<PuzzleData> = await axios.get(URL)
-          // console.log(puzzle)
-          
-          const body:PostGameBody = {
-            puzzle_id: puzzle.data.id,
-            gameType: 0,
-            status: 1
-          }
-          const game:AxiosResponse<GameData> = await axios.post(URL2 , body)
-          // console.log(game)
-          closeModal()
-          return navigate(`/game/${game.data.id}`)
-        } catch (error) {
-          console.error(error)
-        }
-      }
-
       /**
-       * First picks a random puzzle, then creates a game, then uses the game_id to redirect to the vs game component
+       * First picks a random puzzle, then creates a game according to the game type, then redirects to the module in charge on game rendering.
        */
-      async function goToVs () {
+      async function goToGame (gameType:number) {
         const URL = variables.url_prefix + '/api/v1/puzzles/get_random'
         const URL2 = variables.url_prefix + '/api/v1/games'
         try {
@@ -53,12 +29,13 @@ function Home() {
 
           const body:PostGameBody = {
             puzzle_id: puzzle.data.id,
-            gameType: 1
+            gameType,
+            status: gameType===0?1:0
           }
           const game:AxiosResponse<GameData> = await axios.post(URL2 , body)
           closeModal()
           // console.log(game)
-          return navigate(`/game_vs/${game.data.id}`)
+          return navigate(`/game/${gameType}/${game.data.id}`)
         } catch (error) {
           console.error(error)
         }
@@ -136,7 +113,7 @@ function Home() {
 
         </section>
 
-        <GamesModal goToGame={goToGame} goToVs={goToVs} closeModal={closeModal}/>
+        <GamesModal goToGame={goToGame} closeModal={closeModal}/>
        </div>
     )
 }

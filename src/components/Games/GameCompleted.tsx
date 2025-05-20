@@ -14,6 +14,7 @@ const GameCompleted:React.FC<GameCompletedProps> = ({gameType, pauseGame, socket
     useEffect(
         () => {
             pauseGame()
+            //This event can be called only when the users are playing a time attack multiplayer game, gameType = 1.
             if (gameType === 1 && socket) socket.emit('multiplayer-gameover')
         } , []
     )

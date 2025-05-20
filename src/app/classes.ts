@@ -119,8 +119,9 @@ export class Game {
      * @param location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
      * @param value  - The desired value to be set.
      * @param timeElapsed - The time elapsed since the game started.
+     * @param gameType
      */
-    setValue (location:string , value:number, timeElapsed:number) {
+    setValue (location:string , value:number, timeElapsed:number, gameType: number) {
         let parsedValue = value
         if (value === 10) {
             parsedValue = 0
@@ -140,31 +141,33 @@ export class Game {
         //Value checking
        
         if (this.verifyValue(location)) {
-            if (this.completedGameCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
-            else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+            if (this.completedGameCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, gameType, 1)
+            else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, gameType)
         } else {
             if (value != 10) {
                 this.#setErrors(this.#errors + 1)
-                if (this.gameOverCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
-                else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+                if (this.gameOverCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, gameType, 2)
+                else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, gameType)
             } else {
-                this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+                this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, gameType)
             }
         }
     }
 
     /**
      * This function is used to save the game in the database acording to the game_id
-     * @param grid: Matrix of sudoku values updated by the user.
-     * @param errors: Number of errors that th user committed.
-     * @param timeElapsed: Time run to the point of this saving. 
+     * @param grid Matrix of sudoku values updated by the user.
+     * @param errors Number of errors that th user committed.
+     * @param timeElapsed Time run to the point of this saving. 
+     * @param gameType
+     * @param playerStatus A number that represents if the player is still playing(0), won(1) or lost(2) the game.
      */
-    async saveAnswers (grid:Grid, number:string, timeElapsed:number , playerStatus?:number) {
+    async saveAnswers (grid:Grid, number:string, timeElapsed:number, gameType:number, playerStatus?:number) {
         // console.log('Saving game...' , this)
         const URL = variables.url_prefix + `/api/v1/players/single/${this.id}`
         const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
-            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.#errors})
+            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.#errors, gameType})
             // console.log(updatedPlayer.data)
             await axios.patch(URL2 , {time: timeElapsed})
             this.#setAnswersGrid(updatedPlayer.data.grid)
