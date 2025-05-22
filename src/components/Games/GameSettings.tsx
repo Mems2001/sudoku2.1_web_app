@@ -4,6 +4,7 @@ import { RootState } from "../../app/store";
 import variables from '../../../utils/variables'
 
 interface GameSettingsProps {
+    gameType: number,
     cellsHighlight: boolean,
     numbersHighlight: boolean,
     setGameSettings: (payload: { cells_highlight: boolean; numbers_highlight: boolean; }) => { payload: { cells_highlight: boolean; numbers_highlight: boolean; }},
@@ -13,7 +14,7 @@ interface GameSettingsProps {
     sameNumbers: () => void
 }
 
-const GameSettins:React.FC<GameSettingsProps> = ({cellsHighlight , numbersHighlight , setGameSettings , clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers}) => {
+const GameSettins:React.FC<GameSettingsProps> = ({gameType, cellsHighlight , numbersHighlight , setGameSettings , clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers}) => {
     const isLogged = useAppSelector((state:RootState) => state.isLogged.value)
 
     async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean) {
@@ -46,9 +47,27 @@ const GameSettins:React.FC<GameSettingsProps> = ({cellsHighlight , numbersHighli
             sameNumbers()
         }
     }
-    return (
-        <div className="game-settings">
-            <div className="window">
+    
+    if (gameType === 0) 
+    {
+        return (
+            <div className="game-settings">
+                <div className="settings-window">
+                    <div className="game-setting">
+                        <label htmlFor="rc-match">Cells highlighting</label>
+                        <input type="checkbox" id="rc-match" defaultChecked={cellsHighlight} onChange={() => handleColorGuides(cellsHighlight)}/>
+                    </div>
+                    <div className="game-setting">
+                        <label htmlFor="n-match">Numbers highlighting</label>
+                        <input type="checkbox" id="n-match" defaultChecked={numbersHighlight} onChange={() => handleNumberGuides(numbersHighlight)}/>
+                    </div>
+                </div>
+                {/* <div className="auxiliar"></div> */}
+            </div>
+        )
+    } else {
+        return (
+            <div className="settings-window">
                 <div className="game-setting">
                     <label htmlFor="rc-match">Cells highlighting</label>
                     <input type="checkbox" id="rc-match" defaultChecked={cellsHighlight} onChange={() => handleColorGuides(cellsHighlight)}/>
@@ -58,9 +77,8 @@ const GameSettins:React.FC<GameSettingsProps> = ({cellsHighlight , numbersHighli
                     <input type="checkbox" id="n-match" defaultChecked={numbersHighlight} onChange={() => handleNumberGuides(numbersHighlight)}/>
                 </div>
             </div>
-            {/* <div className="auxiliar"></div> */}
-        </div>
-    )
+        )
+    }
 }
 
 export default GameSettins

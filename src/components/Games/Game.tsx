@@ -304,13 +304,13 @@ const Game:React.FC<GameProps> = ({
 
             {/* Game menu for single player games */}
             {openSettings && gameType===0?
-              <GameSettins cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} setGameSettings={(payload)=>dispatch(setGameSettings(payload))} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocus)highlightCells(currentFocus)}} sameNumbers={() => {if (currentFocus) highlightSameNumbers(currentFocus)}}/>
+              <GameSettins gameType={gameType} cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} setGameSettings={(payload)=>dispatch(setGameSettings(payload))} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocus)highlightCells(currentFocus)}} sameNumbers={() => {if (currentFocus) highlightSameNumbers(currentFocus)}}/>
                 :
               <></>}
             
             {/* Game menu for multiplayer games */}
             {!timerOn && gameType!=0?
-              <VsRomm game_id={game_id} timeElapsed={timeElapsed} players={players} inList={inList} host={game.host} socket={socket}/>
+              <VsRomm gameType={gameType} game_id={game_id} timeElapsed={timeElapsed} cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocus) highlightSameNumbers(currentFocus)}} selectCells={() => {if (currentFocus) highlightCells(currentFocus)}} setGameSettings={(payload) => dispatch(setGameSettings(payload))} players={players} inList={inList} host={game.host} socket={socket}/>
               :
               <></>
             }
