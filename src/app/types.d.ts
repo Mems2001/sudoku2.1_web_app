@@ -39,6 +39,8 @@ export type Grid = [
 
 export interface GameHeaderProps {
     game: Game,
+    gameType: number,
+    turn?: boolean,
     time: number,
     pause: () => void,
     play: () => void,

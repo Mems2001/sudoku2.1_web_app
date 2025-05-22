@@ -132,12 +132,13 @@ const Game:React.FC<GameProps> = ({
       }
 
       if (currentFocused && value && timerOn) {
+        //We allow the change only when the value is not correct.
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
+          game?.setValue(currentFocused , value, timeElapsed)
           if (gameType===2 && socket) {
             socket.emit('coop-save', {currentFocused, value, timeElapsed, gameType})
-            setTurn(false)
+            if (game.verifyValue(currentFocused)) setTurn(false)
           }
-          game?.setValue(currentFocused , value, timeElapsed, gameType)
           // setValueAtHtml(cell , value)
           setClickControl(!clickControl)
         }
@@ -241,25 +242,34 @@ const Game:React.FC<GameProps> = ({
     useEffect(() => {
       if (!socket || !game) return
 
-      const handler = (data: any) => {
+      const coopSave = (data: any) => {
         console.log('cooperative game data:', data)
-        game.setValue(data.currentFocused, data.value, data.timeElapsed, data.gameType)
-        setTurn(true)
+        game.setValue(data.currentFocused, data.value, data.timeElapsed)
+        if (game.verifyValue(data.currentFocused))  setTurn(true)
         setClickControl(!clickControl)
-      };
+      }
+      function newHost (newHostId:Ids) {
+        if (game?.player_id === newHostId) {
+          game.host = true
+          setTurn(game.host)
+          setClickControl(!clickControl)
+        }
+      }
     
-      socket.on('coop-save-2', handler)
+      socket.on('coop-save-2', data => {coopSave(data)})
+      socket.on('new-host', data => {newHost(data)})
     
       // Limpia el handler cuando cambie el socket/game o se desmonte el componente
       return () => {
-        socket.off('coop-save-2', handler)
+        socket.off('coop-save-2')
+        socket.off('new-host')
       };
     }, [socket, game])
 
     if (!loading && game) {
         return (
           <div className="grid-container"> 
-            <Header game={game} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn}/>
+            <Header game={game} gameType={gameType} turn={turn} time={timeElapsed} pause={() => pauseGame(gameType)} play={() => playGame(gameType)} timerOn={timerOn}/>
 
             <div className="grid">
             {cells.map((cell, index) => {

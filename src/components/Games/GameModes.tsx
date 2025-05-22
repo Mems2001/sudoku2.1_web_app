@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 import SinglePlayer from "./SinglePlayer"
-import MultiplayerGame from "./multiplayerGame"
+import MultiplayerGame from "./MultiplayerGame"
 
 function GameModes () {
     const gameType = useParams().game_type

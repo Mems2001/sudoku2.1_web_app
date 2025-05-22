@@ -53,23 +53,31 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
         try {
             if (players.length === 0) {
                 const URL = variables.url_prefix + `/api/v1/players/multi/${game_id}`
-                axios.get(URL).then(res => {
-                    console.log( 'players list:', res.data)
-                    handlePlayers(undefined , res.data)
-                })
+                axios.get(URL)
+                    .then(res => {
+                        console.log( 'players list api response:', res.data)
+                        handlePlayers(undefined , res.data)
+                    })
+                    .catch(() => {
+                        handlePlayers(undefined, [])
+                    })
             } else {
-                console.log('current players:', players)
-                const URL = variables.url_prefix + `/api/v1/players/in_list/${game_id}`
-                axios.get(URL).then(res => {
-                    console.log('player on list:', res)
-                    if (res.status === 200) {
-                        setInList(true)
-                        console.log('the player is on the list')
-                    } else {
+                // console.log('current players:', players)
+                const URL = variables.url_prefix + `/api/v1/players/on_list/${game_id}`
+                axios.get(URL)
+                    .then(res => {
+                        console.log('player on list api response:', res)
+                        if (res.status === 200) {
+                            setInList(true)
+                            console.log('the player is on the list')
+                        } else {
+                            setInList(false)
+                            console.log('the player is not on the list')
+                        }
+                    })
+                    .catch(() => {
                         setInList(false)
-                        console.log('the player is not on the list')
-                    }
-                })
+                    })
             }
         } catch (err) {
             console.error(err)
@@ -102,8 +110,8 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     useEffect (
       () => {
           getPlayers(players)
-          console.log('Is the player in list?' ,players , inList)
-        }, [players , inList]
+          console.log('useEffect players list:', players, 'player on list:', inList)
+        }, [players]
     )
 
     useEffect(() => {
@@ -140,8 +148,8 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
              * This event is received anytime the players list is updated at the backend, it allows us to synchronize the players data since it also updates the "players" local state.
              */
             newSocket.on('updated-players' , data => {
-                console.log('socket/new players:' , data)
                 handlePlayers(undefined , data)
+                console.log('socket/new players:' , data)
             })
 
             /**

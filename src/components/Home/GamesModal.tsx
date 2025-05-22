@@ -36,8 +36,7 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
     }
 
     function goToSavedGame(game_id:Ids , gameType:number) {
-        if (gameType === 0) navigate(`/game/${game_id}`)
-        else navigate(`/game_vs/${game_id}`)
+        navigate(`/game/${gameType}/${game_id}`)
     }
 
     function getMySavedGames() {
