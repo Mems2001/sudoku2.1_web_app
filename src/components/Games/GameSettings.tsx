@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useAppSelector } from "../../models/hooks";
 import { RootState } from "../../store/store";
-import variables from '../../../utils/variables'
+import { UsersServices } from "../../services";
 
 interface GameSettingsProps {
     gameType: number,
@@ -20,8 +19,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, cellsHighlight , num
     async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean) {
         if (isLogged) {
             try {
-                const URL = variables.url_prefix + '/api/v1/users/game_settings'
-                const newSettings = await axios.patch(URL, {cellsHighlight, numbersHighlight})
+                const newSettings = await UsersServices.updateGameSettings(cellsHighlight, numbersHighlight)
                 return console.log('new_game_settings:' , newSettings.data)
             } catch (error) {
                 return console.error(error)
@@ -31,7 +29,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, cellsHighlight , num
 
     function handleColorGuides (cellsHighlight:boolean) {
         saveGameSettings(!cellsHighlight, numbersHighlight)
-        setGameSettings({cells_highlight:!cellsHighlight,numbers_highlight:numbersHighlight})
+        setGameSettings({cells_highlight:!cellsHighlight, numbers_highlight:numbersHighlight})
         if (cellsHighlight) {
             clearCellsHighlighting()
         } else {

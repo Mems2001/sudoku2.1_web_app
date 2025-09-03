@@ -1,7 +1,6 @@
 import { GameData, PuzzleData } from '../models/dbTypes'
-import { PostGameBody } from '../models/types'
 import { useNavigate } from 'react-router-dom'
-import { GamesServices } from '../services/GamesServices'
+import { GamesServices, PostGameBody } from '../services/GamesServices'
 import { PuzzlesServices } from '../services/PuzzlesServices'
 import { AxiosResponse } from 'axios'
 

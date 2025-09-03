@@ -50,9 +50,11 @@ export const useGridCells = ({game, setTurn}: UseGridCells):{cells: Cells} => {
 
     useEffect(
           () => {
-            cellsBorders(cells)
-            if (game) setTurn(game.host)
-          } , []
+            if (game) {
+              cellsBorders(cells)
+              setTurn(game.host)
+            }
+          } , [game]
         )
 
     return {cells}

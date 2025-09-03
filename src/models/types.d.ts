@@ -4,12 +4,6 @@ import { Sudoku } from "./dbTypes"
 
 export type Ids = `${string}-${string}-${string}-${string}-${string}`
 
-export interface PostGameBody {
-    puzzle_id: string,
-    gameType: number,
-    status?: number
-}
-
 export interface LoginForm {
     username?: string,
     email?: string,

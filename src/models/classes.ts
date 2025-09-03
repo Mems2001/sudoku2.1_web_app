@@ -1,7 +1,6 @@
-import axios from "axios"
-import variables from "../../utils/variables"
 import { PuzzleS, Sudoku } from "./dbTypes"
 import { Grid, Ids, numbers } from "./types"
+import { GamesServices, PlayersServices } from "../services"
 
 /**
  * This class represents a full Sudoku game and implements the sudoku's rules and preserves its correct structure. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the sudoku's rules related logic, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
@@ -162,14 +161,17 @@ export class Game {
      */
     async saveAnswers (grid:Grid, number:string, timeElapsed:number, playerStatus?:number) {
         // console.log('Saving game...' , this)
-        const URL = variables.url_prefix + `/api/v1/players/single/${this.id}`
-        const URL2 = variables.url_prefix + `/api/v1/games/${this.id}`
         try {
-            const updatedPlayer = await axios.patch(URL , {grid, number,status:playerStatus, errors:this.#errors})
+            let updatedPlayer
+            if (this.id && playerStatus) {
+                updatedPlayer = await PlayersServices.updatePlayer(this.id, grid, number,playerStatus, this.#errors)
+                await GamesServices.updateGame(this.id, timeElapsed)
+            }
             // console.log(updatedPlayer.data)
-            await axios.patch(URL2 , {time: timeElapsed})
-            this.#setAnswersGrid(updatedPlayer.data.grid)
-            this.#setAnswersNumber(updatedPlayer.data.number)
+            if (updatedPlayer) {
+                this.#setAnswersGrid(updatedPlayer.data.grid)
+                this.#setAnswersNumber(updatedPlayer.data.number)
+            }
         } catch (err:any) {
             console.error(err)
         }

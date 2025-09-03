@@ -1,9 +1,8 @@
-import axios from "axios"
 import { useNavigate } from "react-router-dom"
-import variables from "../../../utils/variables"
 import { PuzzleS } from "../../models/dbTypes"
 import { useEffect } from "react"
 import { Game } from "../../models/classes"
+import { GamesServices, PlayersServices } from "../../services"
 
 interface GameOverProps {
     gameType: number,
@@ -15,7 +14,7 @@ interface GameOverProps {
 }
 
 /**
- * This component handls the game over user's decisions. If playing a single player game, he gets to choose between retry and quit, othrwise he'll be able to quit only.
+ * This component handles the game over user's decisions. If playing a single player game, he gets to choose between retry and quit, othrwise he'll be able to quit only.
  * @param GameOverProps - An object that contains gameType (number), game_id (string) and puzzle (Puzzle type) props. 
  * @returns 
  */
@@ -26,11 +25,11 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game , puzzle, setTimerOn, 
      * This resets the game data, in the player table: puzzle grid, puzzle number, number of errors and timer in the game table. Then reloads the whole window to play again.
      */
     async function retry () {
-        const URL = variables.url_prefix + `/api/v1/players/single/${game?.id}`
-        const URL2 = variables.url_prefix + `/api/v1/games/${game?.id}`
         try {
-            await axios.patch(URL , {grid: puzzle?.grid , number: puzzle?.number , errors:0, status:0})
-            await axios.patch(URL2 , {time:0 , status:1})
+            if (game && game.id && puzzle) {
+                await PlayersServices.updatePlayer(game.id, puzzle.grid , puzzle.number , 0, 0)
+                await GamesServices.updateGame(game.id, 0 , 1)
+            }
             window.location.reload()
         } catch (error) {
             console.error(error)

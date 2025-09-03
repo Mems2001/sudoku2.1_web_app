@@ -3,13 +3,13 @@ import variables from "../../../utils/variables"
 import Game from "./Game"
 import MultiplayerLogin from "./MultiplayerLogin"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Ids } from "../../models/types"
-import { PlayerData } from "../../models/dbTypes"
 import { io, Socket } from "socket.io-client"
 import { RootState } from "../../store/store"
 import { useAppSelector } from "../../models/hooks"
+import { useGetPlayers } from '../../hooks/useGetPlayers'
 
 interface MultiplayerGameProps {
     gameType: number
@@ -27,62 +27,11 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     const [timerOn , setTimerOn] = useState(false)
 
     const role = useAppSelector((state:RootState) => state.role.value)
-    const [players , setPlayers] = useState<PlayerData[]>([])
-    const handlePlayers = useCallback ((data?: PlayerData , dataA?: PlayerData[]) => {
-        // console.log('players data:', data, dataA)
-        try {
-            if (data) { // When data is an object then it pushes the object to the previous array
-                setPlayers(prevPlayers => [...prevPlayers , data])
-            } else { //If data is an array its values subtitue the previous array
-                setPlayers(() => dataA? [...dataA] : [])
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    } , [])
-    const [inList , setInList] = useState<boolean>(false)
+    
     const [socket , setSocket] = useState<Socket | undefined>(undefined)
 
     // In game functions
-
-    /**
-     * This function gets called two times. Once the "MultiplayerGame" component is rendered and it gets the list of players signed to the game, and then again when the list is set as a local state it verifies if the current user is a player of the game and update the "inList" state according to the case. This is crutial because the soduku game will be accesible only to those users who are verified players of the game.
-     * @param players - An array, the list of players of the game
-     */
-    function getPlayers (players:PlayerData[]) {
-        try {
-            if (players.length === 0) {
-                const URL = variables.url_prefix + `/api/v1/players/multi/${game_id}`
-                axios.get(URL)
-                    .then(res => {
-                        console.log( 'players list api response:', res.data)
-                        handlePlayers(undefined , res.data)
-                    })
-                    .catch(() => {
-                        handlePlayers(undefined, [])
-                    })
-            } else {
-                // console.log('current players:', players)
-                const URL = variables.url_prefix + `/api/v1/players/on_list/${game_id}`
-                axios.get(URL)
-                    .then(res => {
-                        console.log('player on list api response:', res)
-                        if (res.status === 200) {
-                            setInList(true)
-                            console.log('the player is on the list')
-                        } else {
-                            setInList(false)
-                            console.log('the player is not on the list')
-                        }
-                    })
-                    .catch(() => {
-                        setInList(false)
-                    })
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    const {handlePlayers, players, inList, setInList} = useGetPlayers({game_id})
 
      async function authSession ():Promise<any|undefined> {
                 const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
@@ -106,25 +55,6 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
             console.error(error)
         }
     }
-
-    useEffect (
-      () => {
-          getPlayers(players)
-          console.log('useEffect players list:', players, 'player on list:', inList)
-        }, [players]
-    )
-
-    useEffect(() => {
-        console.log('timer useEffect')
-      if (timerOn) {
-        console.log('timer is on')
-        const timer = setInterval(() => {
-          setTimeElapsed((time) => time + 1);
-        }, 1000);
-    
-        return () => clearInterval(timer); // Cleanup on unmount or when `timerOn` changes
-      }
-    }, [timerOn]);
 
     useEffect(
         () => {
