@@ -273,6 +273,13 @@
     width: 300px;
 }
 
+.game-settings > .settings-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 /* .game-settings .auxiliar {
     position: absolute;
     height: 100vh;

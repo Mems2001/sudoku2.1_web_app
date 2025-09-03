@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { isLoggedSlice } from "../features/isLogged.slice";
-import { roleSlice } from "../features/role.slice";
-import { gameSettingsSlice } from "../features/gameSettings.slice";
+import { isLoggedSlice } from "../store/isLogged.slice";
+import { roleSlice } from "../store/role.slice";
+import { gameSettingsSlice } from "../store/gameSettings.slice";
 
 export const store = configureStore({
     reducer: {

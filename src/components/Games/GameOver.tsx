@@ -1,9 +1,9 @@
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import variables from "../../../utils/variables"
-import { PuzzleS } from "../../app/dbTypes"
+import { PuzzleS } from "../../models/dbTypes"
 import { useEffect } from "react"
-import { Game } from "../../app/classes"
+import { Game } from "../../models/classes"
 
 interface GameOverProps {
     gameType: number,

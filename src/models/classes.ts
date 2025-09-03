@@ -103,7 +103,7 @@ export class Game {
     }
 
     /**
-     * Compares the provided value to the value from the corresponding sudoku at the providad location
+     * Compares the provided value to the value from the corresponding sudoku at the provided location
      * @param location - A string that represents the concatenation of a particular row and column of the grid.
      * @returns A boolean value being true if the provided value matches the corresponding sudoku value at the provided location (think of the sudoku object as the solved puzzle), and false otherwise.
      */

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { Ids } from "../app/types"
-import axios, { AxiosResponse } from "axios"
-import variables from "../../utils/variables"
-import { Game } from "../app/classes"
-import { PlayerData } from "../app/dbTypes"
+import { Ids } from "../models/types"
+import { AxiosResponse } from "axios"
+import { Game } from "../models/classes"
+import { PlayerData } from "../models/dbTypes"
+import { PlayersServices } from "../services"
 
 interface UsePuzzleProps {
-    game_id: Ids | undefined,
+    game_id: Ids,
     setTimeElapsed: (time:number) => void
 }
 
@@ -29,11 +29,10 @@ export const useGame = ({game_id , setTimeElapsed}:UsePuzzleProps) => {
      * @returns *{game , loading, error}: Since this hook is directly in charge to allow the "Game" component to be rendered it keeps track of the asynchronous fecthing operation state and informs it to the corresponding father component. Only when the "Game" class is fully instantiated with the backend-dataand returned to the "Game" component it is allowed to be rendered, otherwise it waits for results or doesn't render at all in cases of error.
      */
     const getGame = async() => {
-        const URL = variables.url_prefix + `/api/v1/players/single/${game_id}`
         setLoading(true)
         setError(null)
         try {
-            const res:AxiosResponse<PlayerData> = await axios.get(URL)
+            const res:AxiosResponse<PlayerData> = await PlayersServices.getPlayerByGameId(game_id)
             console.log(res.data)
             if (res.data) {
                 setGame(new Game(res.data.id, res.data.host, res.data.Game.Puzzle.Sudoku , res.data.Game.Puzzle , game_id , res.data.number , res.data.grid))

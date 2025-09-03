@@ -1,5 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { GameHeaderProps } from "../../app/types";
+import Timer from "./Timer";
+import { Game } from "../../models/classes";
+
+interface GameHeaderProps {
+    game: Game,
+    gameType: number,
+    turn?: boolean,
+    time: number,
+    pause: () => void,
+    play: () => void,
+    timerOn: boolean,
+    setTimeElapsed: React.Dispatch<React.SetStateAction<number>>
+}
 
 /**
  * This component shows the main puzzle solving information such as ammount of errors and time elapsed. It also provides related funcctions such as game saving.
@@ -13,16 +25,9 @@ import { GameHeaderProps } from "../../app/types";
  * @property timerOn - The father component local state wich controls the timer.
  * @returns 
  */
-const Header:React.FC<GameHeaderProps> = ({game , gameType, turn, time , pause , play , timerOn}) => {
+const Header:React.FC<GameHeaderProps> = ({game , gameType, turn, time , pause , play , timerOn, setTimeElapsed}) => {
 
     const navigate = useNavigate()
-
-    function formatTime(seconds:number):string {
-
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
 
     return (
         <div className="game-options">
@@ -35,7 +40,7 @@ const Header:React.FC<GameHeaderProps> = ({game , gameType, turn, time , pause ,
               </span>
               <span>{game.getErrors()}/3</span>
             </div>
-            <div className="chrono">{formatTime(time)}</div>
+            <Timer timeElapsed={time} timerOn={timerOn} setTimeElapsed={setTimeElapsed}/>
             {timerOn ?
                 <button onClick={pause}>
                     <i className="fa-solid fa-pause fa-xl"></i>  

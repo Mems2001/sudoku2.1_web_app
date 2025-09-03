@@ -1,23 +1,28 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import variables from "../../../utils/variables"
-import { PlayerData } from "../../app/dbTypes"
-import { Ids } from "../../app/types"
-import axios from "axios"
+import { PlayerData } from "../../models/dbTypes"
+import { Ids } from "../../models/types"
+import { AxiosError, AxiosResponse } from "axios"
+import { useGoToGame } from "../../hooks/useGoToGame"
+import { GamesServices } from "../../services/GamesServices"
 
 interface Props {
-    goToGame: (gameType:number) => void,
     closeModal: () => void
 }
 
-const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
+const GamesModal: React.FC<Props> = ({closeModal}) => {
 
     const [showSaved , setShowSaved] = useState(false)
     const [showNewGame , setShowNewGame] = useState(false)
     const [saved , setSaved] = useState<PlayerData[]>()
+    const {goToGame} = useGoToGame()
     const navigate = useNavigate()
 
-    function handleGameType(gameType:number) {
+    /**
+     * Returns the name of the game type according to it.
+     * @returns {string}
+     */
+    function handleGameTypeName(gameType:number) {
         switch (gameType) {
             case 0:
                 return 'Single player'
@@ -29,10 +34,11 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
     function goToSavedGames() {
         try {
             getMySavedGames()
+            setShowSaved(true)
         } catch (error) {
             console.error(error)
+            throw new Error("Couldn't get your saved games")
         }
-        setShowSaved(true)
     }
 
     function goToSavedGame(game_id:Ids , gameType:number) {
@@ -40,12 +46,14 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
     }
 
     function getMySavedGames() {
-        const URL = variables.url_prefix + '/api/v1/games/saved'
-        axios.get(URL)
-            .then(res => {
+        GamesServices.getSavedGames()
+            .then((res:AxiosResponse) => {
                 setSaved(res.data)
             })
-            .catch(err => {console.error(err)})
+            .catch((err:AxiosError) => {
+                console.error({message: err.message, err})
+            })
+           
     }
 
     return (
@@ -60,7 +68,7 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
             }
             {showSaved?
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game">{handleGameType(game.Game.type)} {saved.indexOf(game)+1}</button>)}
+                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1}</button>)}
                     <button className="saved-game" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
                 :
@@ -68,9 +76,9 @@ const GamesModal: React.FC<Props> = ({goToGame , closeModal}) => {
             }
             {showNewGame?
                 <div className="modal-window" id="new-game">
-                    <button onClick={() => goToGame(0)}>Single Player</button>
-                    <button onClick={() => goToGame(1)}>Multiplayer Time Attack</button>
-                    <button onClick={() => goToGame(2)}>Multiplayer Cooperative</button>
+                    <button onClick={() => goToGame({gameType: 0, closeModal})}>Single Player</button>
+                    <button onClick={() => goToGame({gameType:1, closeModal})}>Multiplayer Time Attack</button>
+                    <button onClick={() => goToGame({gameType:2, closeModal})}>Multiplayer Cooperative</button>
                     <button onClick={() => setShowNewGame(false)}>Back</button>
                 </div>
                 :

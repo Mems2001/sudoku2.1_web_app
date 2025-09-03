@@ -1,6 +1,6 @@
-import { Ids } from "../../app/types"
+import { Ids } from "../../models/types"
 import variables from "../../../utils/variables"
-import { PlayerData } from "../../app/dbTypes"
+import { PlayerData } from "../../models/dbTypes"
 import { Socket } from "socket.io-client"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"

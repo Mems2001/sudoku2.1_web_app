@@ -1,3 +1,4 @@
+import React from "react"
 import { Game } from "./classes"
 import { Sudoku } from "./dbTypes"
 
@@ -36,16 +37,6 @@ export type Grid = [
     [number ,number ,number ,number ,number ,number ,number ,number ,number],
     [number ,number ,number ,number ,number ,number ,number ,number ,number]
 ]
-
-export interface GameHeaderProps {
-    game: Game,
-    gameType: number,
-    turn?: boolean,
-    time: number,
-    pause: () => void,
-    play: () => void,
-    timerOn: boolean
-}
 
 export interface CurrentPlayer {
     player_id?: Ids,

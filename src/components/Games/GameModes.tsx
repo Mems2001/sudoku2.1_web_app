@@ -12,11 +12,11 @@ function GameModes () {
             )
         case '1': 
             return (
-                <MultiplayerGame gameType={1}/>
+                <MultiplayerGame gameType={parseInt(gameType)}/>
             )
         case '2':
             return (
-                <MultiplayerGame gameType={2}/>
+                <MultiplayerGame gameType={parseInt(gameType)}/>
             )
     }
 }

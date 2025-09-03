@@ -1,9 +1,9 @@
 import axios from "axios"
 import variables from '../../../utils/variables'
 import { Socket } from "socket.io-client"
-import { Ids } from "../../app/types"
-import { useAppDispatch } from "../../app/hooks"
-import { setRole } from "../../features/role.slice"
+import { Ids } from "../../models/types"
+import { useAppDispatch } from "../../models/hooks"
+import { setRole } from "../../store/role.slice"
 import LoginFormC from "../UserAuth/LoginForm"
 interface MultiplayerLoginProps {
     game_id: Ids,

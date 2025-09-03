@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useAppSelector } from "../../app/hooks";
-import { RootState } from "../../app/store";
+import { useAppSelector } from "../../models/hooks";
+import { RootState } from "../../store/store";
 import variables from '../../../utils/variables'
 
 interface GameSettingsProps {

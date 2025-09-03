@@ -5,18 +5,18 @@ import MultiplayerLogin from "./MultiplayerLogin"
 
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { Ids } from "../../app/types"
-import { PlayerData } from "../../app/dbTypes"
+import { Ids } from "../../models/types"
+import { PlayerData } from "../../models/dbTypes"
 import { io, Socket } from "socket.io-client"
-import { RootState } from "../../app/store"
-import { useAppSelector } from "../../app/hooks"
+import { RootState } from "../../store/store"
+import { useAppSelector } from "../../models/hooks"
 
 interface MultiplayerGameProps {
     gameType: number
 }
 
 /**
- * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component wil handle how the information received will be passed to the "Game" component if rendered.
+ * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component will handle how the information received will be passed to the "Game" component if rendered.
  * @returns Conditionally, if the user is a validated player this renders the Game component, otherwise this renders an auth UI wehter to log in or to continue as annonymous user.
  */
 const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
@@ -46,7 +46,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     // In game functions
 
     /**
-     * This function gets called two times. Once the "VsGame" component is rendered and it gets the list of players signed to the game, and then again when the list is set as a local state it verifies if the current user is a player of the game and update the "inList" state according to the case. This is crutial because the soduku game will be accesible only to those users who are verified players of the game.
+     * This function gets called two times. Once the "MultiplayerGame" component is rendered and it gets the list of players signed to the game, and then again when the list is set as a local state it verifies if the current user is a player of the game and update the "inList" state according to the case. This is crutial because the soduku game will be accesible only to those users who are verified players of the game.
      * @param players - An array, the list of players of the game
      */
     function getPlayers (players:PlayerData[]) {

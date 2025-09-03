@@ -1,33 +1,16 @@
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import variables from "../../../utils/variables";
-import { useDispatch } from "react-redux";
-import { setLoggedOut } from "../../features/isLogged.slice";
-import { setRole } from "../../features/role.slice";
-import { LoginForm } from "../../app/types";
+import { LoginForm } from "../../models/types";
+import { useAuth } from "../../hooks/useAuth";
 
 function Register() {
     const {handleSubmit , register , formState:{errors} , getValues} = useForm<LoginForm>()
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const { handleRegistration } = useAuth()
 
     const [disableButton, setDisableButton] = useState(true)
 
     function registerSubmit (data:LoginForm) {
-        const URL = variables.url_prefix + '/api/v1/users/register';
-
-        axios.post(URL , data)
-            .then(() => { 
-                console.log('User registered');
-                dispatch(setLoggedOut())
-                dispatch(setRole(null))
-                navigate('/login')
-            })
-            .catch(err => {
-                console.error('Error:', err)
-            }) 
+        handleRegistration(data)
     }
 
     function validateButton() {

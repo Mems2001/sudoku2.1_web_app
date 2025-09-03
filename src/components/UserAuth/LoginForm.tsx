@@ -1,14 +1,8 @@
 import { useState } from "react"
-import { useAppDispatch } from "../../app/hooks"
 import { useForm } from "react-hook-form"
-import { Ids, LoginForm } from "../../app/types"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import variables from '../../../utils/variables'
-import { setLoggedIn, setLoggedOut } from "../../features/isLogged.slice"
-import { setRole } from "../../features/role.slice"
+import { Ids, LoginForm } from "../../models/types"
 import { Socket } from "socket.io-client"
-import { setGameSettings } from "../../features/gameSettings.slice"
+import { useAuth } from "../../hooks/useAuth"
 
 interface LoginError {
     message: string,
@@ -21,12 +15,11 @@ interface LoginFormProps {
 }
 
 const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
-    const dispatch = useAppDispatch()
     const [useUsername, setUseUsername] = useState(true)
     const [disableButton, setDisableButton] = useState(true)
     const [loginError , setLoginError] = useState<LoginError | undefined>()
     const {register , handleSubmit , getValues , formState:{errors}} = useForm<LoginForm>()
-    const navigate = useNavigate()
+    const { handleLogin } = useAuth()
 
     function handleLoginType(event: React.ChangeEvent<HTMLInputElement>):void {
         setUseUsername(event.target.checked);
@@ -75,34 +68,7 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
         }
         newData['password'] = data.password
 
-        const URL = variables.url_prefix + '/api/v1/auth/login';
-        const URL2 = variables.url_prefix + '/api/v1/auth/authenticate_session';
-        axios.post(URL , newData)
-            .then(res => {
-                console.log(res.data.message , res.status)
-                axios.get(URL2)
-                .then((response) => {
-                    console.log(response.data.message , response.status)
-                    if (response.status == 200) {
-                        dispatch(setLoggedIn())
-                        dispatch(setRole(response.data.role))
-                        dispatch(setGameSettings(response.data.settings))               
-                        if (game_id) socket?.emit('create-player', response.data.user_id, game_id)
-                    } else {
-                        dispatch(setLoggedOut())
-                        
-                    }
-                    if (!game_id) navigate('/')
-                })
-                .catch((error) => {
-                    console.error('Error:', error)
-                    dispatch(setLoggedOut())
-                })
-            })
-            .catch(err => {
-                console.error('Error:', err)
-                setLoginError(err.response.data)
-            })
+        handleLogin({data:newData, game_id, socket, setLoginError})
         // console.log(errors)
     }
 
