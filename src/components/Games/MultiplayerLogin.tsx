@@ -1,17 +1,16 @@
-import axios from "axios"
-import variables from '../../../utils/variables'
 import { Socket } from "socket.io-client"
 import { Ids } from "../../models/types"
 import { useAppDispatch } from "../../models/hooks"
 import { setRole } from "../../store/role.slice"
 import LoginFormC from "../UserAuth/LoginForm"
+import AuthServices from "../../services/AuthServices"
+import { UsersServices } from "../../services"
 interface MultiplayerLoginProps {
     game_id: Ids,
-    authSession: ()=>Promise<any|undefined>
     socket?: Socket
 }
 
-const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, authSession, socket}) => {
+const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, socket}) => {
     const dispatch = useAppDispatch()
 
     /**
@@ -19,16 +18,16 @@ const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, authSession,
      */
     async function continueAsAnon () {
             try {
-                const auth:any = await authSession()
+                const auth = await AuthServices.getAuthenticateSession()
                 if (auth) {
-                    if (socket) socket.emit('create-player' , auth.user_id , game_id)
+                    if (socket) socket.emit('create-player' , auth.data.user_id , game_id)
                 } else {
-                    const URL = variables.url_prefix + '/api/v1/users/anon'
-                    await axios.get(URL).then(res => {
-                        console.log(res)
-                        dispatch(setRole('anon'))
-                        if (socket) socket.emit('create-player' , res.data.id , game_id)
-                    })
+                    await UsersServices.getAnon()
+                        .then(res => {
+                            console.log(res)
+                            dispatch(setRole('anon'))
+                            if (socket) socket.emit('create-player' , res.data.id , game_id)
+                        })
                 }
             } catch (error) {
                 console.error(error)

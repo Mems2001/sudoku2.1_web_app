@@ -1,4 +1,3 @@
-import axios from 'axios'
 import variables from "../../../utils/variables"
 import Game from "./Game"
 import MultiplayerLogin from "./MultiplayerLogin"
@@ -10,6 +9,7 @@ import { io, Socket } from "socket.io-client"
 import { RootState } from "../../store/store"
 import { useAppSelector } from "../../models/hooks"
 import { useGetPlayers } from '../../hooks/useGetPlayers'
+import AuthServices from '../../services/AuthServices'
 
 interface MultiplayerGameProps {
     gameType: number
@@ -33,24 +33,10 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     // In game functions
     const {handlePlayers, players, inList, setInList} = useGetPlayers({game_id})
 
-     async function authSession ():Promise<any|undefined> {
-                const URL = variables.url_prefix + '/api/v1/auth/authenticate_session'
-                let response = undefined
-                await axios.get(URL)
-                    .then(res => {
-                        if (res.status === 200) response = res.data
-                    })
-                    .catch(err => {
-                        console.error(err)
-                    })
-        
-                return response
-            }
-
     async function authenticatedUserContinue () {
         try {
-            const auth = await authSession()
-            if (socket && auth) socket?.emit('create-player' , auth.user_id, game_id)
+            const auth = await AuthServices.getAuthenticateSession()
+            if (socket && auth) socket?.emit('create-player' , auth.data.user_id, game_id)
         } catch (error) {
             console.error(error)
         }
@@ -131,7 +117,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
           <div className="vs-console">
                 <div id="pre-room" className="window">
                     {role === 'anon' || role === null?
-                        <MultiplayerLogin game_id={game_id} authSession={authSession} socket={socket}/>
+                        <MultiplayerLogin game_id={game_id} socket={socket}/>
                     :
                         <div className="pre-room-actions">
                             <button onClick={authenticatedUserContinue}>Aceptar invitación</button>

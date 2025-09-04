@@ -6,7 +6,7 @@ const api_prefix = variables.url_prefix + "/api/v1/auth"
 
 class AuthServices {
 
-    static async getAuthenticateSession():Promise<AxiosResponse> {
+    static async getAuthenticateSession():Promise<AxiosResponse<any>> {
         try {
             const response = await axios.get(`${api_prefix}/authenticate_session`)
             console.log(response)
