@@ -2,8 +2,12 @@
     display: flex;
     position: relative;
 
+    font-family: var(--orbitron-font);
+
     height: 100vh;
     width: 100vw;
+
+    background-color: var(--bg-light-beige);
 }
 
 h1 {
@@ -11,52 +15,145 @@ h1 {
     font-size: inherit;
 }
 
+.home-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+
+    z-index: 1;
+}
+
+.title-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    align-items: center;
+
+    user-select: none;
+}
+
+.logo {
+    position: relative;
+
+    display: grid;
+    grid-template-columns: 0.4fr 0.6fr;
+    grid-template-rows: 0.4fr 0.6fr;
+
+    height: 9vh;
+    width: 9vh;
+
+    border-radius: 15%;
+    border: 0.25rem solid var(--color-dark-navy)
+}
+
+.logo-1 {
+    background-color: var(--color-error);
+    border-bottom-left-radius: 15%;
+}
+.logo-2 {
+    background-color: var(--color-warning);
+    border-top-right-radius: 15%;
+}
+.logo-3 {
+    background-color: var(--color-warning);
+    border-bottom-left-radius: 15%;
+}
+.logo-4 {
+    background-color: var(--color-success);
+    border-bottom-right-radius: 15%;
+}
+.separator-v {
+    position: absolute;
+    border-color: var(--color-dark-navy);
+    border-width: 2px;
+    border-style: solid;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    left: 40%;
+}
+.separator-h {
+    position: absolute;
+    border-color: var(--color-dark-navy);
+    border-width: 2px;
+    border-style: solid;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    top: 40%
+}
+
+.home-text {
+    width: 60%;
+    font-size: var(--text-md);
+    font-weight: 500;
+}
+
 .game-title {
     display: block;
-    position: absolute;
 
-    top: 52px;
-    left: 130px;
+    font-size: var(--text-3xl);
 
-    font-size: 52px;
-    letter-spacing: 21px;
+    color: var(--lcolor-blue);
 }
 
 .game-version {
     display: block;
-    position: absolute;
 
-    top: 108px;
-    left: 70px;
+    font-size: var(--text-3xl);
 
-    font-size: 52px;
-    letter-spacing: 35px;
-
-    color: #c90000;
+    color: var(--lcolor-warning);
 }
 
 .home-buttons {
     display: flex;
     flex-direction: column;
-    position: absolute;
 
-    gap: 16px;
-
-    top: 234px;
-    left: 187px;
+    gap: 20px;
 
     align-items: flex-start;
 
-    font-size: 42px;
-    letter-spacing: 32px;
+    user-select: none;
+}
 
-    color: lightgray;
+.home-button {
+    font-family: var(--orbitron-font);
+    font-size: 24px;
 
-    z-index: 1;
+    padding: 0.75rem 0;
+    border-radius: 1rem;
+
+    width: 12rem;
+
+    color: white;
+    opacity: 65%;
+
+    transition: ease-in-out 0.2s;
+}
+
+.home-button.play {
+    background-color: var(--bcolor-blue);
+}
+
+.home-button.signin {
+    background-color: var(--bcolor-warning);
+}
+
+.home-button.logout {
+    background-color: var(--bcolor-error);
+}
+
+.home-button.signup {
+    background-color: var(--bcolor-success);
 }
 
 .home-button:hover{
-    color: #c90000;
+    color: var(--lcolor-dark-navy);
+    opacity: 100%;
     transition: ease-in-out 0.2s;
 }
 
@@ -70,6 +167,8 @@ h1 {
 
 .background {
     display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     position: absolute;
 
     justify-content: center;
@@ -93,6 +192,7 @@ h1 {
     width:509px;
     padding-top: 55px;
     padding-bottom: 55px;
+    opacity: 10%;
 }
 
 .background-v {
@@ -105,6 +205,7 @@ h1 {
     height: 509px;
     padding-left: 55px;
     padding-right: 55px;
+    opacity: 10%;
 }
 
 .line-h {

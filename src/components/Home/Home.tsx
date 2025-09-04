@@ -20,26 +20,40 @@ function Home() {
     return (
        <div className="home">
         <section className="background">
-            <h1 className="game-title">5UD0KU</h1>
-            <h1 className="game-version">2.1</h1>
- 
-            <div className="home-buttons">
-                <button className="home-button" onClick={openModal}>PLAY</button>
-                {isLogged ?
-                    <button className="home-button" id="logout-btn" onClick={logout}>LOGOUT</button>
-                    :
-                    <button className="home-button" onClick={() => navigate('/login')}>SIGNIN</button>
-                }
-                {isLogged ? 
-                    <></>
-                    :
-                    <button className="home-button" onClick={() => navigate('/register')}>SIGNUP</button>
-                }
-                {role == 'admin' ?
-                    <button id='admin-btn' className="home-button" onClick={() => navigate('/admin')}>ADMIN</button>
-                    :
-                    <></>
-                }
+            <div className="home-content">
+                <div className="title-container">
+                    <div className="logo">
+                        <span className="logo-1"></span>
+                        <span className="logo-2"></span>
+                        <span className="logo-3"></span>
+                        <span className="logo-4"></span>
+                        <hr className="separator-v"></hr>
+                        <hr className="separator-h"></hr>
+                    </div>
+                    <h1 className="game-title">Sudoku</h1>
+                    <h1 className="game-version">2.1</h1>
+                </div>
+
+                <p className="home-text">Test your mind or challenge your friends with a logic puzzle</p>
+    
+                <div className="home-buttons">
+                    <button type="button" className="home-button play" onClick={openModal}>Play</button>
+                    {isLogged ?
+                        <button type="button" className="home-button logout" id="logout-btn" onClick={logout}>Log out</button>
+                        :
+                        <button type="button" className="home-button signin" onClick={() => navigate('/login')}>Sign in</button>
+                    }
+                    {isLogged ? 
+                        <></>
+                        :
+                        <button className="home-button signup" onClick={() => navigate('/register')}>Sign up</button>
+                    }
+                    {role == 'admin' ?
+                        <button id='admin-btn' className="home-button" onClick={() => navigate('/admin')}>ADMIN</button>
+                        :
+                        <></>
+                    }
+                </div>
             </div>
 
             <div className="background-h">

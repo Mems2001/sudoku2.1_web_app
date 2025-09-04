@@ -20,6 +20,44 @@
   box-sizing: inherit;
 }
 
+:root {
+  --orbitron-font: "Orbitron", system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  /* COLORS */
+  --bg-light-beige: rgb(255, 248, 240);
+
+  --color-warning: rgb(249, 168, 37);
+  --color-success: rgb(77, 182, 172);
+  --color-error: rgb(236, 64, 122);
+  --color-informative: rgb(38, 198, 218);
+  --color-dark-navy: rgb(26, 35, 126);
+
+  --bcolor-blue:  rgb(30, 136, 229);
+  --bcolor-warning: rgb(249, 168, 37);
+  --bcolor-success: rgb(77, 182, 172);
+  --bcolor-error: rgb(236, 64, 122);
+
+  --lcolor-blue:  rgb(30, 136, 229);
+  --lcolor-warning: rgb(249, 168, 37);
+  --lcolor-success: rgb(77, 182, 172);
+  --lcolor-error: rgb(236, 64, 122);
+  --lcolor-dark-navy: rgb(26, 35, 126);
+
+  /* FONT SIZES */
+  --text-sm: 0.75rem;
+  --text-md: 1rem;
+  --text-ml: 1.25rem;
+  --text-lg: 1.5rem;
+  --text-xl: 2rem;
+  --text-2xl: 2.5rem;
+  --text-3xl: 3rem;
+}
+
+@font-face {
+  font-family: "Orbitron";
+  src: url(../src//assets//fonts/Orbitron/Orbitron-VariableFont_wght.ttf) format("truetype");
+}
+
 a {
   font-weight: 500;
   color: #646cff;
