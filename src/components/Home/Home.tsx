@@ -30,8 +30,10 @@ function Home() {
                         <hr className="separator-v"></hr>
                         <hr className="separator-h"></hr>
                     </div>
-                    <h1 className="game-title">Sudoku</h1>
-                    <h1 className="game-version">2.1</h1>
+                    <div className="title-texts">
+                        <h1 className="game-title">Sudoku</h1>
+                        <h1 className="game-version">2.1</h1>
+                    </div>
                 </div>
 
                 <p className="home-text">Test your mind or challenge your friends with a logic puzzle</p>

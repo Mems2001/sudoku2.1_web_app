@@ -8,6 +8,8 @@
     width: 100vw;
 
     background-color: var(--bg-light-beige);
+
+    overflow: hidden;
 }
 
 h1 {
@@ -34,6 +36,16 @@ h1 {
     user-select: none;
 }
 
+.title-texts{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    font-size: var(--text-3xl);
+
+    align-items: center;
+}
+
 .logo {
     position: relative;
 
@@ -45,24 +57,25 @@ h1 {
     width: 9vh;
 
     border-radius: 15%;
-    border: 0.25rem solid var(--color-dark-navy)
+    border: 0.25rem solid var(--color-dark-navy);
+    opacity: 0.6;
 }
 
 .logo-1 {
     background-color: var(--color-error);
-    border-bottom-left-radius: 15%;
+    border-top-left-radius: 20%;
 }
 .logo-2 {
     background-color: var(--color-warning);
-    border-top-right-radius: 15%;
+    border-top-right-radius: 20%;
 }
 .logo-3 {
     background-color: var(--color-warning);
-    border-bottom-left-radius: 15%;
+    border-bottom-left-radius: 20%;
 }
 .logo-4 {
     background-color: var(--color-success);
-    border-bottom-right-radius: 15%;
+    border-bottom-right-radius: 20%;
 }
 .separator-v {
     position: absolute;
@@ -96,15 +109,11 @@ h1 {
 .game-title {
     display: block;
 
-    font-size: var(--text-3xl);
-
     color: var(--lcolor-blue);
 }
 
 .game-version {
     display: block;
-
-    font-size: var(--text-3xl);
 
     color: var(--lcolor-warning);
 }
@@ -281,4 +290,69 @@ h1 {
 .inactive {
     display: none;
     transition: ease-in-out 0.5s;
+}
+
+@media screen and (max-width: 768px) {
+
+    .title-container {
+        flex-direction: column;
+    }
+
+    .logo {
+        height: 25vw;
+        width: 25vw;
+
+        border-width: 0.4rem;
+    }
+    .separator-h{
+        border-width: 3px;
+    }
+    .separator-v {
+        border-width: 3px;
+    }
+
+    .background {
+        height: 90vh;
+        width: 90vh;
+    }
+
+    .background-h{
+        height: inherit;
+        width: inherit;
+        gap: 0;
+        justify-content: space-around;
+        
+    }
+    .background-v {
+        height: inherit;
+        width: inherit;
+        gap: 0;
+        justify-content: space-around;
+        
+    }
+    .line-h {
+        height: 3px;
+    }
+    .line-v {
+        width: 3px;
+    }
+
+    .title-container{
+        gap: 1.5rem;
+    }
+    .title-texts {
+        font-size: var(--text-4xl);
+    }
+    .home-text {
+        font-size: var(--text-ml);
+    }
+
+    .home-buttons {
+        gap: 1.5rem;
+    }
+    .home-button {
+        padding: 1.2rem 0;
+        width: 65vw;
+    }
+
 }
