@@ -236,10 +236,21 @@ h1 {
     position: relative;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
     z-index: 10;
 
     transition: ease-in-out 0.5s;
+}
+
+.modal-button {
+    background-color: var(--bcolor-blue);
+    opacity: 1;
+
+    font-size: var(--text-md);
+    width: 18rem;
+
+    user-select: none;
 }
 
 .games-modal .modal-window {
@@ -266,20 +277,6 @@ h1 {
     height: 100%;
     width: 100%;
     z-index: 11;
-}
-
-.games-modal button {
-    background-color: cadetblue;
-    color: white;
-    height: 55px;
-    width: 20vw;
-    border-radius: 15px;
-    transition: ease-in-out 0.25s;
-}
-
-.games-modal button:hover {
-    box-shadow: 0 0 0 5px white;
-    transition: ease-in-out 0.25s;
 }
 
 .saved-game {

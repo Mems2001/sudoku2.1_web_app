@@ -60,26 +60,26 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
         <div className="games-modal inactive">
             {!showSaved && !showNewGame ?
                 <div id="games" className="modal-window">
-                    <button onClick={() => setShowNewGame(true)}>New Game</button>
-                    <button onClick={goToSavedGames}>Saved Games</button>
+                    <button className="home-button modal-button" onClick={() => setShowNewGame(true)}>New Game</button>
+                    <button className="home-button modal-button" onClick={goToSavedGames}>Saved Games</button>
                 </div>
                 :
                 <></>
             }
             {showSaved?
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1}</button>)}
-                    <button className="saved-game" onClick={() => setShowSaved(false)}>Back</button>
+                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1}</button>)}
+                    <button className="saved-game home-button modal-button" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
                 :
                 <></>
             }
             {showNewGame?
                 <div className="modal-window" id="new-game">
-                    <button onClick={() => goToGame({gameType: 0, closeModal})}>Single Player</button>
-                    <button onClick={() => goToGame({gameType:1, closeModal})}>Multiplayer Time Attack</button>
-                    <button onClick={() => goToGame({gameType:2, closeModal})}>Multiplayer Cooperative</button>
-                    <button onClick={() => setShowNewGame(false)}>Back</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType: 0, closeModal})}>Single Player</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType:1, closeModal})}>Multiplayer Time Attack</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType:2, closeModal})}>Multiplayer Cooperative</button>
+                    <button className="home-button modal-button" onClick={() => setShowNewGame(false)}>Back</button>
                 </div>
                 :
                 <></>
