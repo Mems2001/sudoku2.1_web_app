@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Cells } from "../models/types";
-import { Game } from "../models/classes";
+import { Game } from "../models/game";
 
 interface UseGridCells {
     game: Game|null,

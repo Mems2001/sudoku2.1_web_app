@@ -2,6 +2,7 @@ import GamesModal from "./GamesModal"
 
 import { useAuth } from "../../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
+import Logo from "../Shared/Logo"
 
 function Home() {
     const {role, isLogged, logout} = useAuth()
@@ -22,14 +23,7 @@ function Home() {
         <section className="background">
             <div className="home-content">
                 <div className="title-container">
-                    <div className="logo">
-                        <span className="logo-1"></span>
-                        <span className="logo-2"></span>
-                        <span className="logo-3"></span>
-                        <span className="logo-4"></span>
-                        <hr className="separator-v"></hr>
-                        <hr className="separator-h"></hr>
-                    </div>
+                    <Logo />
                     <div className="title-texts">
                         <h1 className="game-title">Sudoku</h1>
                         <h1 className="game-version">2.1</h1>

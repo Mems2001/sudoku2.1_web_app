@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Game } from "../models/classes"
+import { Game } from "../models/game"
 import { Socket } from "socket.io-client"
 import { Cells, Ids } from "../models/types"
 import { useAppSelector } from "../models/hooks"

@@ -29,6 +29,12 @@
   src: url(../src//assets/fonts/Roboto/Roboto-VariableFont_wdth\,wght.ttf) format("truetype");
 }
 
+/* Z-Indexes
+1 - 9: In Page
+10 - 99: Navs, menus, modals, etc...
++ 100: Toasters 
+ */
+
 :root {
   --orbitron-font: "Orbitron", system-ui, Avenir, Helvetica, Arial, sans-serif;
   --roboto-font: "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif;

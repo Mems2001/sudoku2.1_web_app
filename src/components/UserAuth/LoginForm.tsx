@@ -4,11 +4,6 @@ import { Ids, LoginForm } from "../../models/types"
 import { Socket } from "socket.io-client"
 import { useAuth } from "../../hooks/useAuth"
 
-interface LoginError {
-    message: string,
-    type: number
-}
-
 interface LoginFormProps {
     game_id?: Ids,
     socket?: Socket
@@ -17,7 +12,6 @@ interface LoginFormProps {
 const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
     const [useUsername, setUseUsername] = useState(true)
     const [disableButton, setDisableButton] = useState(true)
-    const [loginError , setLoginError] = useState<LoginError | undefined>() //Error type 1 (wrong email or username), error type 2 (wrong password)
     const {register , handleSubmit , getValues , formState:{errors}} = useForm<LoginForm>()
     const { handleLogin } = useAuth()
 
@@ -33,8 +27,6 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
      * @returns set the disabling button "disableButton" local state value
      */
     function validateButton () {
-        setLoginError(undefined)
-
         const username = getValues('username')
         const email = getValues('email')
         const password = getValues('password')
@@ -70,7 +62,7 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
         }
         newData['password'] = data.password
 
-        handleLogin({data:newData, game_id, socket, setLoginError})
+        handleLogin({data:newData, game_id, socket})
         
         setDisableButton(false)
     }
@@ -111,9 +103,6 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                 {errors.email?.type === "pattern" && (
                 <p className="form-error" role="alert">*Email format is not correct</p>
                 )}
-                {loginError?.type === 1 && (
-                    <p className="form-error" role="alert">*{loginError.message}</p>
-                )}
             </div>
 
             <div className="input-container">
@@ -132,9 +121,6 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                 )}
                 {errors.password?.type === "maxLength" && (
                     <p className="form-error" role="alert">*Password's max length is 8 characters</p>
-                )}
-                {loginError?.type === 2 && (
-                    <p className="form-error" role="alert">*{loginError.message}</p>
                 )}
             </div>
 

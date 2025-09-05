@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Timer from "./Timer";
-import { Game } from "../../models/classes";
+import { Game } from "../../models/game";
 
 interface GameHeaderProps {
     game: Game,

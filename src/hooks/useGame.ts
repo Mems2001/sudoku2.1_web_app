@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Ids } from "../models/types"
 import { AxiosResponse } from "axios"
-import { Game } from "../models/classes"
+import { Game } from "../models/game"
 import { PlayerData } from "../models/dbTypes"
 import { PlayersServices } from "../services"
 

@@ -1,0 +1,31 @@
+.toaster-container {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+
+    padding-inline: 1rem;
+
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    min-height: 9vh;
+    min-width: 96px;
+    max-width: 256px;
+    border-radius: 12px;
+
+    font-family: var(--roboto-font);
+    background-color: white;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.show-toaster {
+    display: flex;
+}
+
+.error-icon {
+    color: var(--color-error)
+}

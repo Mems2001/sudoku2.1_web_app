@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { PuzzleS } from "../../models/dbTypes"
 import { useEffect } from "react"
-import { Game } from "../../models/classes"
+import { Game } from "../../models/game"
 import { GamesServices, PlayersServices } from "../../services"
 
 interface GameOverProps {

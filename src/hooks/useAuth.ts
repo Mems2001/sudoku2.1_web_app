@@ -13,24 +13,20 @@ import { useNavigate } from "react-router-dom"
 
 import AuthServices from "../services/AuthServices"
 import { UsersServices } from "../services/UsersServices"
-
-interface LoginError {
-    message: string,
-    type: number
-}
+import { useToaster } from "./useToaster"
+import { AuthenticationResponse, LoginError, LoginErrorResponse } from "../models/errors"
 
 interface HandleLoginProps {
   data: LoginForm, 
   game_id?:Ids, 
-  socket?: Socket,
-  setLoginError:React.Dispatch<React.SetStateAction<LoginError | undefined>>
+  socket?: Socket
 }
 
 interface UseAuthReturn {
   role: string|null,
   isLogged: boolean,
   handleRegistration(data:LoginForm): void,
-  handleLogin({data, game_id, socket, setLoginError}:HandleLoginProps):void,
+  handleLogin({data, game_id, socket}:HandleLoginProps):void,
   logout():void
 }
 
@@ -42,6 +38,7 @@ export const useAuth = ():UseAuthReturn => {
     const role = useAppSelector((state:RootState) => state.role.value)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { openToaster } = useToaster()
 
     const api_prefix = "/api/v1/auth"
 
@@ -53,8 +50,8 @@ export const useAuth = ():UseAuthReturn => {
           const URL2 = variables.url_prefix + '/api/v1/users/anon'
 
           AuthServices.getAuthenticateSession()
-            .then((response:AxiosResponse) => {
-              console.log(response)
+            .then((response:AxiosResponse<AuthenticationResponse>) => {
+              // console.log(response)
               if (response && response.status == 200) {
                   dispatch(setRole(response.data.role))
                   //Only updates the loggged in state to true if the user is not an anon, to protect non anon user features.
@@ -67,7 +64,7 @@ export const useAuth = ():UseAuthReturn => {
                   }
                 }
               })
-            .catch((error) => {
+            .catch((error:AuthenticationResponse) => {
                 console.error('User authentication error:', error)
                 //Creates an anon user and and a session.
                 axios.get(URL2)
@@ -102,15 +99,14 @@ export const useAuth = ():UseAuthReturn => {
      * @param {LoginForm} data 
      * @param {Ids} game_id
      * @param {Socket} socket
-     * @param {any} setLoginError Manages the api call return errors, type 1 for wrong username or email and type 2 for wrong password
      */
-    function handleLogin({data, game_id, socket, setLoginError}:HandleLoginProps) {
+    function handleLogin({data, game_id, socket}:HandleLoginProps) {
       AuthServices.login(data)
-        .then(res => {
-            console.log(res.data.message , res.status)
+        .then(() => {
+            // console.log(res.data.message , res.status)
             AuthServices.getAuthenticateSession()
-              .then((response) => {
-                  console.log(response.data.message , response.status)
+              .then((response:AxiosResponse<AuthenticationResponse>) => {
+                  // console.log(response.data.message , response.status)
                   if (response.status == 200) {
                       dispatch(setLoggedIn())
                       dispatch(setRole(response.data.role))
@@ -118,18 +114,20 @@ export const useAuth = ():UseAuthReturn => {
                       if (game_id) socket?.emit('create-player', response.data.user_id, game_id)
                   } else {
                       dispatch(setLoggedOut())
-                      
                   }
                   if (!game_id) navigate('/')
+                  openToaster(response.data.message, "regular")
               })
-              .catch((error:LoginError) => {
-                  console.error('Error:', error.message, error.type)
+              .catch((error:LoginErrorResponse) => {
+                  // console.error('Error:', error.message, error.type)
                   dispatch(setLoggedOut())
+                  throw new LoginError(error.message)
               })
         })
-        .catch(err => {
-            console.error('Error:', err)
-            setLoginError(err.response.data)
+        .catch((err:LoginErrorResponse) => {
+          // console.log(err)
+          openToaster(err.message, "error")
+          throw new LoginError(err.message)
         })
     }
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { Game } from "./classes"
+import { Game } from "./game"
 import { Sudoku } from "./dbTypes"
 
 export type Ids = `${string}-${string}-${string}-${string}-${string}`
