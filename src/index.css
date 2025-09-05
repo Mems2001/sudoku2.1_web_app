@@ -20,8 +20,18 @@
   box-sizing: inherit;
 }
 
+@font-face {
+  font-family: "Orbitron";
+  src: url(../src//assets//fonts/Orbitron/Orbitron-VariableFont_wght.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Roboto";
+  src: url(../src//assets/fonts/Roboto/Roboto-VariableFont_wdth\,wght.ttf) format("truetype");
+}
+
 :root {
   --orbitron-font: "Orbitron", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --roboto-font: "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   /* COLORS */
   --bg-light-beige: rgb(255, 248, 240);
@@ -31,6 +41,7 @@
   --color-error: rgb(236, 64, 122);
   --color-informative: rgb(38, 198, 218);
   --color-dark-navy: rgb(26, 35, 126);
+  --color-gray: rgb(214, 214, 214);
 
   --bcolor-blue:  rgb(30, 136, 229);
   --bcolor-warning: rgb(249, 168, 37);
@@ -52,11 +63,6 @@
   --text-2xl: 2.5rem;
   --text-3xl: 3rem;
   --text-4xl: 3.5rem;
-}
-
-@font-face {
-  font-family: "Orbitron";
-  src: url(../src//assets//fonts/Orbitron/Orbitron-VariableFont_wght.ttf) format("truetype");
 }
 
 a {

@@ -76,19 +76,35 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
         <form onSubmit={handleSubmit(loginSubmit)} className="login-form">
             <div className="input-container">
                 <div className="label-container">
-                    <input className="checkbox" type="checkbox" checked={useUsername} onChange={handleLoginType}/>
                     <label htmlFor="username">Username</label> 
-                    <input className="checkbox" type="checkbox" checked={!useUsername} onChange={handleLoginType2}/>
+                    <input className="checkbox" type="checkbox" name="username-check" checked={useUsername} onChange={handleLoginType}/>
                     <label htmlFor="email">e-mail</label>
+                    <input className="checkbox" type="checkbox" name="email-check" checked={!useUsername} onChange={handleLoginType2}/>
                 </div>
-                {useUsername ? 
-                    <input type="text" id="username" placeholder="Type your username"
-                    {...register('username' , {required:true , onChange:validateButton})}/>
-                    :
-                    <input type="text" id="email" placeholder="Type your e-mail"  
-                    {...register('email' , {required:true , onChange:validateButton , pattern:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/})}
-                    aria-invalid={errors.email ? 'true' : 'false'}/>
-                }
+
+                {/* Custom Input */}
+                    {useUsername ?
+                        (
+                            <div className="custom-input">
+                                <input className="input-text" type="text" id="username" placeholder="Username"
+                                {...register('username' , {required:true , onChange:validateButton})}/>
+                                <div className="input-icon">
+                                    <i className="fa-solid fa-user fa-xl"></i>
+                                </div>
+                            </div>
+                        )
+                            :
+                        (
+                            <div className="custom-input">
+                                <input className="input-text" type="text" id="email" placeholder="E-mail"  
+                                {...register('email' , {required:true , onChange:validateButton , pattern:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/})}
+                                aria-invalid={errors.email ? 'true' : 'false'}/>
+                                <div className="input-icon">
+                                    <i className="fa-solid fa-envelope fa-xl"></i>
+                                </div>
+                            </div>
+                        )
+                    }
                 {errors.email?.type === "pattern" && (
                 <p className="form-error" role="alert">*Email format is not correct</p>
                 )}
@@ -96,13 +112,18 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                     <p className="form-error" role="alert">*{loginError.message}</p>
                 )}
             </div>
+
             <div className="input-container">
-                <label htmlFor="password">
-                    Password:
-                </label>
-                <input type="password" id="password" placeholder="Type a password"
-                {...register('password' , {required:true , onChange:validateButton , minLength:4 , maxLength:20})}
-                aria-invalid={errors.password ? 'true' : 'false'}/>
+
+                {/* Custom Input */}
+                <div className="custom-input">
+                    <input className="input-text" type="password" id="password" placeholder="Password"
+                    {...register('password' , {required:true , onChange:validateButton , minLength:4 , maxLength:20})}
+                    aria-invalid={errors.password ? 'true' : 'false'}/>
+                    <div className="input-icon">
+                        <i className="fa-solid fa-key fa-xl"></i>
+                    </div>
+                </div>
                 {errors.password?.type === "minLength" && (
                     <p className="form-error" role="alert">*Password's min length is 8 characters</p>
                 )}
@@ -113,7 +134,10 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                     <p className="form-error" role="alert">*{loginError.message}</p>
                 )}
             </div>
+
             <button disabled={disableButton} className={disableButton? 'disabled' : ''} type="submit">Inciar Sesión</button>
+
+            <p className="advertisement">Don't have an account? <a href="#/register">Sign Up</a></p>
         </form>
     )
 }
