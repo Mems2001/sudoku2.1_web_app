@@ -30,6 +30,17 @@ class AuthServices {
             throw altError.response?.data
         }
     }
+
+    static async logout():Promise<AxiosResponse<AuthenticationResponse, AuthenticationResponse>> {
+        try {
+            const response = await axios.get<AuthenticationResponse>(`${api_prefix}/logout`)
+            console.log(response)
+            return response
+        } catch (error) {
+            const altError = error as AxiosError<AuthenticationResponse>
+            throw altError.response?.data
+        }
+    }
     
 }
 

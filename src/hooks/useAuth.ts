@@ -1,7 +1,6 @@
-import variables from "../../utils/variables"
 import { useEffect } from "react"
 
-import axios, { AxiosResponse } from "axios"
+import { AxiosResponse } from "axios"
 import { useAppDispatch, useAppSelector } from "../models/hooks"
 import { RootState } from "../store/store"
 import { setRole } from "../store/role.slice"
@@ -14,7 +13,7 @@ import { useNavigate } from "react-router-dom"
 import AuthServices from "../services/AuthServices"
 import { UsersServices } from "../services/UsersServices"
 import { useToaster } from "./useToaster"
-import { AuthenticationResponse, LoginError, LoginErrorResponse } from "../models/errors"
+import { AuthenticationError, AuthenticationResponse, LoginError, LoginErrorResponse, LogoutError } from "../models/errors"
 
 interface HandleLoginProps {
   data: LoginForm, 
@@ -40,15 +39,9 @@ export const useAuth = ():UseAuthReturn => {
     const navigate = useNavigate()
     const { openToaster } = useToaster()
 
-    const api_prefix = "/api/v1/auth"
-
-
     function anonUserControl() {
-    
         //It there is no role it means the user is not logged in. It runs the authenticate session service to automatically log in if theres is the correponding cookie. If not, class the anon creation service to provide an anon session. 
         if (!role) {
-          const URL2 = variables.url_prefix + '/api/v1/users/anon'
-
           AuthServices.getAuthenticateSession()
             .then((response:AxiosResponse<AuthenticationResponse>) => {
               // console.log(response)
@@ -67,7 +60,7 @@ export const useAuth = ():UseAuthReturn => {
             .catch((error:AuthenticationResponse) => {
                 console.error('User authentication error:', error)
                 //Creates an anon user and and a session.
-                axios.get(URL2)
+                UsersServices.getAnon()
                     .then(res => {
                       console.log('Anon user "logged in"' , res.status)
                       dispatch(setRole('anon'))
@@ -121,7 +114,8 @@ export const useAuth = ():UseAuthReturn => {
               .catch((error:LoginErrorResponse) => {
                   // console.error('Error:', error.message, error.type)
                   dispatch(setLoggedOut())
-                  throw new LoginError(error.message)
+                  openToaster(error.message, "error")
+                  throw new AuthenticationError(error.message)
               })
         })
         .catch((err:LoginErrorResponse) => {
@@ -132,15 +126,16 @@ export const useAuth = ():UseAuthReturn => {
     }
 
     function logout():void {
-         const URL = variables.url_prefix + api_prefix + '/logout'
-         axios.get(URL)
-           .then(() => {
+         AuthServices.logout()
+           .then((res:AxiosResponse<AuthenticationResponse>) => {
              dispatch(setLoggedOut())
              dispatch(setRole(null))
-             console.log('user logged out')
+             openToaster(res.data.message, "regular")
            })
-           .catch(error => {
-             console.error('Error', error)
+           .catch((error:AuthenticationResponse) => {
+            //  console.error('Error', error)
+            openToaster(error.message, "error")
+            throw new LogoutError(error.message)
            })
       }
 
