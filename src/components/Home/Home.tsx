@@ -48,10 +48,10 @@ function Home() {
                     {isLogged ? 
                         <></>
                         :
-                        <button className="home-button signup" onClick={() => navigate('/register')}>Sign up</button>
+                        <button type="button" className="home-button signup" onClick={() => navigate('/register')}>Sign up</button>
                     }
                     {role == 'admin' ?
-                        <button id='admin-btn' className="home-button" onClick={() => navigate('/admin')}>ADMIN</button>
+                        <button type="button" className="home-button admin" onClick={() => navigate('/admin')}>ADMIN</button>
                         :
                         <></>
                     }

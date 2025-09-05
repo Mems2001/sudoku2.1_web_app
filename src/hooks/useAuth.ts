@@ -97,6 +97,13 @@ export const useAuth = ():UseAuthReturn => {
         }) 
     }
 
+    /**
+     * Handles the whole login process, making the api call and updating global states related, finally, redirects to home if successful. 
+     * @param {LoginForm} data 
+     * @param {Ids} game_id
+     * @param {Socket} socket
+     * @param {any} setLoginError Manages the api call return errors, type 1 for wrong username or email and type 2 for wrong password
+     */
     function handleLogin({data, game_id, socket, setLoginError}:HandleLoginProps) {
       AuthServices.login(data)
         .then(res => {

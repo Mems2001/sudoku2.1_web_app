@@ -147,31 +147,23 @@ h1 {
 .home-button.play {
     background-color: var(--bcolor-blue);
 }
-
 .home-button.signin {
     background-color: var(--bcolor-warning);
 }
-
 .home-button.logout {
     background-color: var(--bcolor-error);
 }
-
 .home-button.signup {
     background-color: var(--bcolor-success);
+}
+.home-button.admin {
+    background-color: var(--bcolor-warning);
 }
 
 .home-button:hover{
     color: var(--lcolor-dark-navy);
     opacity: 100%;
     transition: ease-in-out 0.2s;
-}
-
-#logout-btn {
-    letter-spacing: 26px;
-}
-
-#admin-btn {
-    letter-spacing: 26px;
 }
 
 .background {

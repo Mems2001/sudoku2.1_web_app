@@ -8,6 +8,7 @@ export interface LoginForm {
     username?: string,
     email?: string,
     password?: string,
+    confirm_password?: string,
     useUsername?: boolean
 }
 

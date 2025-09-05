@@ -17,7 +17,7 @@ interface LoginFormProps {
 const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
     const [useUsername, setUseUsername] = useState(true)
     const [disableButton, setDisableButton] = useState(true)
-    const [loginError , setLoginError] = useState<LoginError | undefined>()
+    const [loginError , setLoginError] = useState<LoginError | undefined>() //Error type 1 (wrong email or username), error type 2 (wrong password)
     const {register , handleSubmit , getValues , formState:{errors}} = useForm<LoginForm>()
     const { handleLogin } = useAuth()
 
@@ -51,6 +51,8 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
      * @param data Objet gotten from the form. Contains the username(string), email(string), password(string) and useUsername(boolean)
      */
     function loginSubmit (data:LoginForm) {
+        setDisableButton(true)
+
         let newData:LoginForm = {
             username: undefined,
             email: undefined,
@@ -69,7 +71,8 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
         newData['password'] = data.password
 
         handleLogin({data:newData, game_id, socket, setLoginError})
-        // console.log(errors)
+        
+        setDisableButton(false)
     }
 
     return (
@@ -86,8 +89,8 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
                     {useUsername ?
                         (
                             <div className="custom-input">
-                                <input className="input-text" type="text" id="username" placeholder="Username"
-                                {...register('username' , {required:true , onChange:validateButton})}/>
+                                <input className="input-text" type="text" id="username" placeholder="Username" autoComplete="username"
+                                {...register('username' , {required:true , onChange:validateButton})} aria-invalid = {errors.username ? 'true' : 'false'}/>
                                 <div className="input-icon">
                                     <i className="fa-solid fa-user fa-xl"></i>
                                 </div>

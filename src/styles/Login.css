@@ -49,7 +49,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 
 .label-container {
@@ -121,6 +121,7 @@
 
 .advertisement {
     margin: 0;
+    font-size: var(--text-md);
 }
 
 @media screen and (max-width:768px) {
