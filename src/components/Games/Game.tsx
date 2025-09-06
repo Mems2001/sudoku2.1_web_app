@@ -92,14 +92,16 @@ const Game:React.FC<GameProps> = ({
 
             <div className="remaining-numbers">
               <h2>Números restantes:</h2>
-              {game.remainingNumbers.map((n , index) => 
-                <button onClick={() => numberButton(index+1, timeElapsed)} className="remaining-number" key={index}
-                disabled={gameType===2 && !turn}>{n<9?index +1:''}</button>
-              )}
-              <button onClick={() => numberButton(10, timeElapsed)}
-                disabled={gameType===2 && !turn}>
-                <i className="fa-solid fa-eraser fa-xl"></i>
-              </button>
+              <div className="numbers">
+                {game.remainingNumbers.map((n , index) => 
+                  <button onClick={() => numberButton(index+1, timeElapsed)} className="remaining-number" key={index}
+                  disabled={gameType===2 && !turn}>{n<9?index +1:''}</button>
+                )}
+                <button onClick={() => numberButton(10, timeElapsed)}
+                  disabled={gameType===2 && !turn}>
+                  <i className="fa-solid fa-eraser fa-2xl"></i>
+                </button>
+              </div> 
             </div>
             <div id="x" onClick={() => focusOperations('x')} className="grid-auxiliar"></div>
 

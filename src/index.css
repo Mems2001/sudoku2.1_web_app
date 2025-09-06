@@ -54,6 +54,8 @@
   --bcolor-success: rgb(77, 182, 172);
   --bcolor-error: rgb(236, 64, 122);
 
+  --tcolor-blue:  rgb(30, 136, 229, 0.25);
+
   --lcolor-blue:  rgb(30, 136, 229);
   --lcolor-warning: rgb(249, 168, 37);
   --lcolor-success: rgb(77, 182, 172);
