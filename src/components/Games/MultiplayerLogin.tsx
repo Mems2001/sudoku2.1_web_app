@@ -22,11 +22,11 @@ const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, socket}) => 
                 if (auth) {
                     if (socket) socket.emit('create-player' , auth.data.user_id , game_id)
                 } else {
-                    await UsersServices.getAnon()
+                    await UsersServices.postAnon()
                         .then(res => {
                             console.log(res)
                             dispatch(setRole('anon'))
-                            if (socket) socket.emit('create-player' , res.data.id , game_id)
+                            if (socket) socket.emit('create-player' , res.data.user_id , game_id)
                         })
                 }
             } catch (error) {
