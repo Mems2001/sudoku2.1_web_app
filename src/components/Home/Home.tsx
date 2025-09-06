@@ -1,11 +1,16 @@
 import GamesModal from "./GamesModal"
 
-import { useAuth } from "../../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 import Logo from "../Shared/Logo"
+import React from "react"
 
-function Home() {
-    const {role, isLogged, logout} = useAuth()
+interface HomeProps {
+    role: string | null,
+    isLogged: boolean,
+    logout(): void
+}
+
+const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
     const navigate = useNavigate()
       // Games modal functions
 

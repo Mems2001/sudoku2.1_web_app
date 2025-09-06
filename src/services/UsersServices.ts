@@ -1,6 +1,8 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import variables from '../../utils/variables'
 import { LoginForm } from '../models/types'
+import { v4 } from 'uuid'
+import { AuthenticationResponse } from '../models/errors'
 
 interface GameSettingsBody {
     cellsHighlight: boolean, 
@@ -34,13 +36,18 @@ export class UsersServices {
         }
     }
 
-    static async getAnon():Promise<AxiosResponse<any>> {
+    static async postAnon():Promise<AxiosResponse<AuthenticationResponse, AuthenticationResponse>> {
+        let preId = localStorage.getItem("anon-sudoku")
         try {
-            const response = await axios.get(`${api_prefix}/anon`)
+            if (!preId) {
+                preId = v4()
+                localStorage.setItem("anon-sudoku", preId)
+            }
+            const response = await axios.post<AuthenticationResponse>(`${api_prefix}/anon`, {pre_id: preId})
             return response
-        } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Could not get the Anon user")
+        } catch (error) {
+            const altError = error as AxiosError<AuthenticationResponse>
+            throw altError.response?.data
         }
     }
 }

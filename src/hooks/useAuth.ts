@@ -40,38 +40,44 @@ export const useAuth = ():UseAuthReturn => {
     const { openToaster } = useToaster()
 
     function anonUserControl() {
-        //It there is no role it means the user is not logged in. It runs the authenticate session service to automatically log in if theres is the correponding cookie. If not, class the anon creation service to provide an anon session. 
-        if (!role) {
-          AuthServices.getAuthenticateSession()
-            .then((response:AxiosResponse<AuthenticationResponse>) => {
-              // console.log(response)
-              if (response && response.status == 200) {
-                  dispatch(setRole(response.data.role))
-                  //Only updates the loggged in state to true if the user is not an anon, to protect non anon user features.
-                  if (response.data.role && response.data.role != 'anon') {
-                    dispatch(setLoggedIn())
-                    dispatch(setGameSettings(response.data.settings))
-                  }
-                  else {
-                    dispatch(setLoggedOut())
-                  }
-                }
-              })
-            .catch((error:AuthenticationResponse) => {
-                console.error('User authentication error:', error)
-                //Creates an anon user and and a session.
-                UsersServices.getAnon()
-                    .then(res => {
-                      console.log('Anon user "logged in"' , res.status)
-                      dispatch(setRole('anon'))
-                    })
-                    .catch(error => {
-                      console.error(error)
-                    })
+      UsersServices.postAnon()
+          .then(res => {
+            // console.log('Anon user "logged in"' , res.status)
+            dispatch(setRole('anon'))
+            openToaster(res.data.message, "regular")
+          })
+          .catch((error:AuthenticationResponse) => {
+            // console.error(error)
+            openToaster(error.message, "error")
+            throw new AuthenticationError(error.message)
+          })
+    
+    }
+
+    function authenticateSession() {
+      AuthServices.getAuthenticateSession()
+        .then((response:AxiosResponse<AuthenticationResponse>) => {
+          // console.log(response)
+          if (response && response.status == 200) {
+              dispatch(setRole(response.data.role))
+              //Only updates the loggged in state to true if the user is not an anon, to protect non anon user features.
+              if (response.data.role && response.data.role != 'anon') {
+                dispatch(setLoggedIn())
+                dispatch(setGameSettings(response.data.settings))
+              }
+              else {
                 dispatch(setLoggedOut())
-              })
-            
-          }
+              }
+              return true
+            }
+          })
+        .catch((error:AuthenticationResponse) => {
+            console.error('User authentication error:', error)
+            //Creates an anon user and and a session.
+            dispatch(setLoggedOut())
+            anonUserControl()
+            return
+          })
     }
 
     function handleRegistration(data:LoginForm) {
@@ -140,7 +146,7 @@ export const useAuth = ():UseAuthReturn => {
       }
 
     useEffect(() => {
-        if (!role) anonUserControl()
+        if (!role) authenticateSession()
     }, [role])
 
     return {role, isLogged, handleRegistration, handleLogin, logout}

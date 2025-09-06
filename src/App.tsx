@@ -21,14 +21,14 @@ axios.defaults.withCredentials = true
 
 function App () {
 
-  useAuth()
+  const {isLogged, role, logout} = useAuth()
 
   return (
     <div className='App'>
       <Toaster />
 
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/game/:game_type/:game_id' element={<GameModes />} />
