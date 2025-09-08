@@ -56,6 +56,8 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
+
+    font-family: var(--roboto-font);
 }
 
 .vs-console .window {
@@ -193,12 +195,16 @@
 
 .game-over {
     position: absolute;
-    z-index: 20;
+    z-index: 10;
     height: 100vh;
     width: 100vw;
     top: 0;
     left: 0;
-    background-color: #500000dd;
+
+    background-color: var(--tbcolor-error);
+    backdrop-filter: blur(4px);
+
+    font-family: var(--orbitron-font);
 }
 
 .window {
@@ -214,7 +220,8 @@
 }
 
 .game-over h1 {
-    color: red;
+    color: var(--lcolor-error);
+    font-size: var(--text-lg);
 }
 
 .game-over button {
@@ -239,11 +246,12 @@
 }
 
 #retry {
-    background-color: cadetblue;
+    font-family: var(--orbitron-font);
 }
 
 #surrender {
-    background-color: red;
+    font-family: var(--orbitron-font);
+    background-color: var(--bcolor-error);
 }
 
 /* Completed Comp */
@@ -256,6 +264,7 @@
     top: 0;
     left: 0;
     background-color: var(--tbackground-blue);
+    font-family: var(--orbitron-font);
 }
 
 .completed h1 {
@@ -270,8 +279,8 @@
     border-radius: 25px;
     font-size: 1rem;
     background-color: var(--bg-light-beige);
+    font-family: var(--orbitron-font);
     transition: ease-in-out 0.25s;
-
 }
 
 .completed button:hover {
