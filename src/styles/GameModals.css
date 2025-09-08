@@ -31,7 +31,6 @@
 
     max-width: 375px;
 }
-
 .game-setting {
     display: flex;
     flex-direction: row;
@@ -40,9 +39,56 @@
 
     width: 100%;
 }
-
 .game-setting label {
     font-size: var(--text-md);
+}
+.highlight-colors {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.color-checkbox {
+    border-radius: 50%;
+    
+    height: 5vh;
+    width: 5vh;
+
+    cursor: pointer;
+
+    transition: all 200ms ease-in-out;
+}
+.color-checkbox.blue {
+    background-color: var(--tcolor-blue);
+}
+.color-checkbox.pink {
+    background-color: var(--tcolor-error);
+}
+.color-checkbox.green {
+    background-color: var(--tcolor-success);
+}
+.color-checkbox.yellow {
+    background-color: var(--tcolor-warning);
+}
+.color-checkbox.black {
+    background-color: var(--tcolor-black);
+}
+.color-checkbox.blue.selected {
+    background-color: var(--color-blue);
+}
+.color-checkbox.pink.selected {
+    background-color: var(--color-error);
+}
+.color-checkbox.green.selected {
+    background-color: var(--color-success);
+}
+.color-checkbox.yellow.selected {
+    background-color: var(--color-warning);
+}
+.color-checkbox.black.selected {
+    background-color: var(--color-black);
+}
+.checkbox-hidden {
+    display: none;
 }
 
 /* VS console */

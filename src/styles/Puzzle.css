@@ -79,7 +79,22 @@
 }
 
 .selected {
+    background-color: transparent;
+}
+.selected.blue {
     background-color: var(--tcolor-blue);
+}
+.selected.pink {
+    background-color: var(--tcolor-error);
+}
+.selected.green {
+    background-color: var(--tcolor-success);
+}
+.selected.yellow {
+    background-color: var(--tcolor-warning);
+}
+.selected.black {
+    background-color: var(--tcolor-black);
 }
 
 /* Header comp */

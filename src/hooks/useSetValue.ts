@@ -69,6 +69,10 @@ export const useSetValue = ({gameType, timerOn, game, socket, setTurn, turn, cel
           if (cell[0] === id[0] || cell[1] === id[1] || (Math.ceil((parseInt(cell[0])+1)/3) === Math.ceil((parseInt(id[0])+1)/3) && Math.ceil((parseInt(cell[1])+1)/3) === Math.ceil((parseInt(id[1])+1)/3))) {
             const div = document.getElementById(`c${cell}`) as HTMLDivElement
             div.classList.add('selected')
+            const divs = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
+            for (const c of divs) {
+              c.classList.add(gameSettings.highlight_color)
+            }
           } else {
             const div = document.getElementById(`c${cell}`) as HTMLDivElement
             div.classList.remove('selected')
@@ -103,12 +107,16 @@ export const useSetValue = ({gameType, timerOn, game, socket, setTurn, turn, cel
     }
 
     /**
-     * This function handles the highlighting functions acording to a concrete cell.
+     * This function handles the highlighting functions acording to a concrete cell, if the player's game settings allow it.
      * @param id - The cell id, which is its name and the positicion of the cell within a grid.
      */
     function focusOperations(id:string) {
       if (gameSettings.cells_highlight) {
         highlightCells(id)
+        const cells = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
+        for (const c of cells) {
+          c.classList.add(`${gameSettings.highlight_color}`)
+        }
       }
       if (gameSettings.numbers_highlight) {
         highlightSameNumbers(id)

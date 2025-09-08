@@ -6,7 +6,8 @@ import { AuthenticationResponse } from '../models/errors'
 
 interface GameSettingsBody {
     cellsHighlight: boolean, 
-    numbersHighlight: boolean
+    numbersHighlight: boolean,
+    highlightColor?: string
 }
 
 const api_prefix = variables.url_prefix + "/api/v1/users"
@@ -22,11 +23,12 @@ export class UsersServices {
         }
     }
 
-    static async updateGameSettings(cellsHighlight: boolean, numbersHighlight: boolean) {
+    static async updateGameSettings(cellsHighlight: boolean, numbersHighlight: boolean, highlightColor?:string) {
         try {
             const body: GameSettingsBody = {
                 cellsHighlight,
-                numbersHighlight
+                numbersHighlight,
+                highlightColor
             }
             const response = await axios.patch(`${api_prefix}/game_settings`, body)
             return response

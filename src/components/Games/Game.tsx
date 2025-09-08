@@ -7,12 +7,9 @@ import GameSettins from "./GameSettings"
 import React, { useState } from "react"
 import { useParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
-import { setGameSettings } from "../../store/gameSettings.slice"
 
 import { Ids } from "../../models/types"
-import { PlayerData } from "../../models/dbTypes"
 import { Socket } from "socket.io-client"
-import { useAppDispatch } from "../../models/hooks"
 import { useGridCells, usePlayPause, useGame, useSetValue } from "../../hooks"
 
 interface GameProps {
@@ -22,7 +19,6 @@ interface GameProps {
   timerOn: boolean
   setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
   //Multiplayer props
-  players?: PlayerData[],
   inList?: boolean,
   host?: boolean,
   socket?: Socket,
@@ -44,11 +40,10 @@ interface GameProps {
 const Game:React.FC<GameProps> = ({
   gameType, timeElapsed, setTimeElapsed, timerOn, setTimerOn,
   //Multiplayer props
-  players, inList, socket, multiplayerGameOver
+ inList, socket, multiplayerGameOver
   }) => {
     const game_id:Ids = useParams().game_id as Ids
     const {register} = useForm()
-    const dispatch = useAppDispatch()
 
     //General game functionality states
     const [openSettings , setOpenSettings] = useState(gameType===0?false:true)
@@ -61,7 +56,7 @@ const Game:React.FC<GameProps> = ({
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, gameSettings, highlightCells, highlightSameNumbers} = useSetValue({gameType, game, cells, setTurn, socket, timerOn, turn})
+    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers} = useSetValue({gameType, game, cells, setTurn, socket, timerOn, turn})
     //Provides play and pause game functions
     const { playGame, pauseGame } = usePlayPause({gameType, game_id, socket, setOpenSettings, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
@@ -107,13 +102,13 @@ const Game:React.FC<GameProps> = ({
 
             {/* Game menu for single player games */}
             {openSettings && gameType===0?
-              <GameSettins gameType={gameType} cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} setGameSettings={(payload)=>dispatch(setGameSettings(payload))} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
+              <GameSettins gameType={gameType} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
                 :
               <></>}
             
             {/* Game menu for multiplayer games */}
             {!timerOn && gameType!=0?
-              <VsRomm gameType={gameType} game_id={game_id} timeElapsed={timeElapsed} cellsHighlight={gameSettings.cells_highlight} numbersHighlight={gameSettings.numbers_highlight} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} setGameSettings={(payload) => dispatch(setGameSettings(payload))} players={players} inList={inList} host={game.host} socket={socket}/>
+              <VsRomm gameType={gameType} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket}/>
               :
               <></>
             }

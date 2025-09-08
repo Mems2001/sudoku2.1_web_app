@@ -3,7 +3,8 @@ import { Ids } from "./types"
 //Back-end
 export interface GameSettings {
     cells_highlight: boolean,
-    numbers_highlight: boolean
+    numbers_highlight: boolean,
+    highlight_color: string
 }
 
 export interface AuthenticationResponse {

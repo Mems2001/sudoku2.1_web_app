@@ -48,6 +48,8 @@
   --color-informative: rgb(38, 198, 218);
   --color-dark-navy: rgb(26, 35, 126);
   --color-gray: rgb(214, 214, 214);
+  --color-blue:  rgb(30, 136, 229);
+  --color-black: black;
 
   --bcolor-blue:  rgb(30, 136, 229);
   --bcolor-warning: rgb(249, 168, 37);
@@ -63,6 +65,9 @@
 
   --tcolor-blue:  rgb(30, 136, 229, 0.25);
   --tcolor-black: rgba(0, 0, 0, 0.2);
+  --tcolor-error: rgb(236, 64, 122, 0.25);
+  --tcolor-success: rgb(77, 182, 172, 0.25);
+  --tcolor-warning: rgb(249, 168, 37, 0.25);
 
   --tbackground-blue: rgb(30, 136, 229, 0.75);
 
