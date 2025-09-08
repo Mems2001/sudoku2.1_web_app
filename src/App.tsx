@@ -6,6 +6,7 @@ import './styles/Logo.css'
 import './styles/Home.css'
 import './styles/Login.css'
 import './styles/Puzzle.css'
+import './styles/GameModals.css'
 import './styles/Toaster.css'
 
 import Login from './components/UserAuth/Login'

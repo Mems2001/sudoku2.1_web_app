@@ -60,7 +60,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, cellsHighlight , num
                         <input type="checkbox" id="n-match" defaultChecked={numbersHighlight} onChange={() => handleNumberGuides(numbersHighlight)}/>
                     </div>
                 </div>
-                {/* <div className="auxiliar"></div> */}
+                
             </div>
         )
     } else {

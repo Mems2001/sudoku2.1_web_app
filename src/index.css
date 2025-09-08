@@ -53,14 +53,25 @@
   --bcolor-warning: rgb(249, 168, 37);
   --bcolor-success: rgb(77, 182, 172);
   --bcolor-error: rgb(236, 64, 122);
+  --bcolor-informative: rgb(38, 198, 218);
+  --bcolor-dark-navy: rgb(26, 35, 126);
+
+
+  --tbcolor-success: rgb(77, 182, 172, 0.4);
+  --tbcolor-error:  rgb(236, 64, 122, 0.4);
+  --tbcolor-informative: rgb(38, 198, 218, 0.4);
 
   --tcolor-blue:  rgb(30, 136, 229, 0.25);
+  --tcolor-black: rgba(0, 0, 0, 0.2);
+
+  --tbackground-blue: rgb(30, 136, 229, 0.75);
 
   --lcolor-blue:  rgb(30, 136, 229);
   --lcolor-warning: rgb(249, 168, 37);
   --lcolor-success: rgb(77, 182, 172);
   --lcolor-error: rgb(236, 64, 122);
   --lcolor-dark-navy: rgb(26, 35, 126);
+  --lcolor-light-beige: rgb(255, 248, 240);
 
   /* FONT SIZES */
   --text-sm: 0.75rem;
@@ -97,6 +108,7 @@ h1 {
 
 h2 {
   margin: unset;
+  font-size: unset;
 }
 
 button {

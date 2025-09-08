@@ -32,7 +32,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, gameType, timeElapsed, cellsHigh
             await navigator.share({
               title: 'Partida Vs en Sudoku 2.1',
               text: 'Fuiste invitado a una partida Vs en Sudoku 2.1, da click en el link para jugar',
-              url: variables.share_link_prefix + `/#/game_vs/${game_id}`,
+              url: variables.share_link_prefix + `/#/game/${gameType}/${game_id}`,
             });
             console.log('Enlace compartido con éxito');
           } catch (error) {
@@ -79,7 +79,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, gameType, timeElapsed, cellsHigh
                     </div>
 
                     <div className="room-actions">
-                        <button>Invitar</button>
+                        {/* <button>Invitar</button> */}
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
 

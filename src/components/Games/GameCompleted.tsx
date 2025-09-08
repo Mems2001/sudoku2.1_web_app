@@ -22,7 +22,7 @@ const GameCompleted:React.FC<GameCompletedProps> = ({gameType, pauseGame, socket
     return (
         <section className="completed">
             <div className="window">
-                <h1>¡Felicitaciones!</h1>
+                <h1>¡Congratulations!</h1>
                 <button onClick={() => navigate('/')}>Continuar</button>
             </div>
         </section>

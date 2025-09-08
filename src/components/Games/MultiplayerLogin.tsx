@@ -38,7 +38,7 @@ const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, socket}) => 
         <div className="pre-room-actions">
             <LoginFormC game_id={game_id} socket={socket}/>
 
-            <button onClick={continueAsAnon}>Continuar como anónimo</button>
+            <button className="anon-continue" type="button" onClick={continueAsAnon}>Continuar como anónimo</button>
         </div>
     )
 }
