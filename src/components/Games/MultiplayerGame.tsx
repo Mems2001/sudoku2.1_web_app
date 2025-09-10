@@ -110,7 +110,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
 
     if (inList) {
         return (
-          <Game gameType={gameType} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} players={players} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
+          <Game gameType={gameType} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
         )
     } else {
         return (
