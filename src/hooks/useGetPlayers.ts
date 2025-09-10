@@ -28,33 +28,34 @@ export const useGetPlayers = ({game_id}: UseGetPlayersProps) => {
         }
     }
 
-    function getPlayers () {
+    async function isPlayerOnList () {
+        try {
+            const res = await PlayersServices.getPlayerIsOnList(game_id)
+            console.log('player on list api response:', res)
+            if (res.status === 200) {
+                setInList(() => true)
+                console.log('the player is on the list')
+            } else {
+                setInList(() => false)
+                console.log('the player is not on the list')
+            }
+        } catch(error) {
+            console.log("the player is not on the list")
+            setInList(() => false)
+        } 
+           
+    }
+
+    async function getPlayers () {
         try {
             if (players.length === 0) {
-                PlayersServices.getGamePlayersList(game_id)
-                    .then(res => {
-                        console.log( 'players list api response:', res.data)
-                        handlePlayers(undefined , res.data)
-                    })
-                    .catch(() => {
-                        handlePlayers(undefined, [])
-                    })
+                const res = await PlayersServices.getGamePlayersList(game_id)
+                console.log( 'players list api response:', res.data)
+                await isPlayerOnList()
+                handlePlayers(undefined , res.data)
             } else {
-                // console.log('current players:', players)
-                PlayersServices.getPlayerIsOnList(game_id)
-                    .then(res => {
-                        console.log('player on list api response:', res)
-                        if (res.status === 200) {
-                            setInList(true)
-                            console.log('the player is on the list')
-                        } else {
-                            setInList(false)
-                            console.log('the player is not on the list')
-                        }
-                    })
-                    .catch(() => {
-                        setInList(false)
-                    })
+                console.log('current players:', players)
+                await isPlayerOnList()
             }
         } catch (err) {
             console.error(err)
@@ -63,8 +64,9 @@ export const useGetPlayers = ({game_id}: UseGetPlayersProps) => {
 
     useEffect (
           () => {
-              getPlayers()
-              console.log('useEffect players list:', players, 'player on list:', inList)
+                (async() => { await getPlayers() }
+                )
+              console.warn('useEffect players list:', players, 'player on list:', inList)
             }, [players]
         )
 

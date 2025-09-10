@@ -10,6 +10,7 @@ import { RootState } from "../../store/store"
 import { useAppSelector } from "../../models/hooks"
 import { useGetPlayers } from '../../hooks/useGetPlayers'
 import AuthServices from '../../services/AuthServices'
+import { useToaster } from "../../hooks/useToaster"
 
 /**
  * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component will handle how the information received will be passed to the "Game" component if rendered.
@@ -21,6 +22,8 @@ const MultiplayerGame = () => {
     const [multiplayerGameOver, setMultiPlayerGameOver] = useState(false)
     const [timeElapsed , setTimeElapsed] = useState(0)
     const [timerOn , setTimerOn] = useState(false)
+    const [socketConexionOn, setSocketConexionOn] = useState(false)
+    const { openToaster } = useToaster()
 
     const role = useAppSelector((state:RootState) => state.role.value)
     
@@ -42,18 +45,28 @@ const MultiplayerGame = () => {
         () => {
             const newSocket = io(variables.socket_url , {
                 transports: ['websocket'],
-                withCredentials: true
+                withCredentials: true,
+                reconnection: true,           
+                reconnectionAttempts: Infinity, 
+                reconnectionDelay: 2500,      
+                reconnectionDelayMax: 5000, 
             })
             setSocket(newSocket)
 
             newSocket.on('connect_error' , (err) => {
                 console.error('Socket error: ', err)
+                setSocketConexionOn(false)
+                openToaster("Conexion lost, trying to reconnect", "error")
             })
             
             /**
-             * Anytime the "VsGame" component it's rendered the user joins a room. This allows the backend to handle all kinds of user and player validations, needed to get access to the game data and the game itself.
+             * Anytime the "VsGame" component it's rendered or the server triggers a re-connection the user joins a room. This allows the backend to handle all kinds of user and player validations, needed to get access to the game data and the game itself.
              */
-            newSocket.emit('join-room' , game_id)
+            newSocket.on('connect', () => {
+              console.log('Connected with socket ID:', newSocket.id)
+              setSocketConexionOn(true)
+              newSocket.emit('join-room', game_id);
+            });
             newSocket.on('message' , data => console.log(data))
 
             /**
@@ -61,6 +74,7 @@ const MultiplayerGame = () => {
              */
             newSocket.on('updated-players' , data => {
                 handlePlayers(undefined , data)
+                newSocket.emit('pause-game' , game_id)
                 console.log('socket/new players:' , data)
             })
 
@@ -106,7 +120,7 @@ const MultiplayerGame = () => {
 
     if (inList) {
         return (
-          <Game setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver} players={players}/>
+          <Game setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver} players={players} socketConexionOn={socketConexionOn}/>
         )
     } else {
         return (

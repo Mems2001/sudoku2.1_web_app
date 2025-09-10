@@ -63,11 +63,11 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
             <div className="game-settings">
                 <div className="settings-window">
                     <div className="game-setting">
-                        <label htmlFor="n-match">Numbers highlighting</label>
+                        <label htmlFor="n-match">Highlight numbers</label>
                         <input type="checkbox" id="n-match" defaultChecked={game_settings.numbers_highlight} onChange={() => handleNumberGuides(game_settings.numbers_highlight)}/>
                     </div>
                     <div className="game-setting">
-                        <label htmlFor="rc-match">Cells highlighting</label>
+                        <label htmlFor="rc-match">Highlight cells</label>
                         <input type="checkbox" id="rc-match" defaultChecked={game_settings.cells_highlight} onChange={() => handleColorGuides(game_settings.cells_highlight)}/>
                     </div>
                     <div className="game-setting">
@@ -89,12 +89,23 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
         return (
             <div className="settings-window">
                 <div className="game-setting">
-                    <label htmlFor="rc-match">Cells highlighting</label>
+                    <label htmlFor="n-match">Highlight numbers</label>
+                    <input type="checkbox" id="n-match" defaultChecked={game_settings.numbers_highlight} onChange={() => handleNumberGuides(game_settings.numbers_highlight)}/>
+                </div>
+                <div className="game-setting">
+                    <label htmlFor="rc-match">Highlight cells</label>
                     <input type="checkbox" id="rc-match" defaultChecked={game_settings.cells_highlight} onChange={() => handleColorGuides(game_settings.cells_highlight)}/>
                 </div>
                 <div className="game-setting">
-                    <label htmlFor="n-match">Numbers highlighting</label>
-                    <input type="checkbox" id="n-match" defaultChecked={game_settings.numbers_highlight} onChange={() => handleNumberGuides(game_settings.numbers_highlight)}/>
+                    <label>Highlight color:</label>
+                </div>
+                <div className="game-setting">
+                    {highlight_colors.map(color => (
+                        <div key={color} className="highlight-colors">
+                            <label htmlFor={color} className={`color-checkbox ${color} ${color === game_settings.highlight_color && "selected"}`}></label>
+                            <input id={color} type="checkbox" className="checkbox-hidden" onChange={() => handleHighlightColor(color)} defaultChecked={color === game_settings.highlight_color}/>
+                        </div>
+                    ))}
                 </div>
             </div>
         )

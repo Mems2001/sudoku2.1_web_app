@@ -17,10 +17,11 @@ interface VsRommProps {
     players: PlayerData[] | undefined
     inList?: boolean,
     host?: boolean,
-    socket?: Socket
+    socket?: Socket,
+    socketConexionOn?: boolean
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCellsHighlighting, clearNumbersHighlighting, selectCells, sameNumbers, players , inList, host , socket }) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCellsHighlighting, clearNumbersHighlighting, selectCells, sameNumbers, players , inList, host , socket, socketConexionOn }) => {
     const navigate = useNavigate()
 
     const shareLink = async () => {
@@ -58,21 +59,25 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
                 <div className="window">
                     <div className="current-players">
                         <h2>Current Players:</h2>
-                        <div className="players-container">
-                            {players ? 
-                                players.map(player =>
-                                    <div key={player.id} className="player-info">
-                                        <span>{player.User?.username}</span>
-                                        {player.host?
-                                            <span className="host-medal">host</span>
-                                            :
-                                            <></>
-                                        }
-                                    </div>
-                                )
-                                : 
-                            <></>}
-                        </div>
+                        {socketConexionOn ? (
+                            <div className="players-container">
+                                {players ? 
+                                    players.map(player =>
+                                        <div key={player.id} className="player-info">
+                                            <span>{player.User?.username}</span>
+                                            {player.host?
+                                                <span className="host-medal">host</span>
+                                                :
+                                                <></>
+                                            }
+                                        </div>
+                                    )
+                                    : 
+                                <></>}
+                            </div>
+                        ) : (
+                            <h2 className="conexion-error-title">Server offline</h2>
+                        )}
                     </div>
 
                     <div className="room-actions">

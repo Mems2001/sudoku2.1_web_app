@@ -21,6 +21,7 @@ interface GameProps {
   //Multiplayer props
   inList?: boolean,
   socket?: Socket,
+  socketConexionOn?: boolean,
   multiplayerGameOver?: boolean,
   players?: PlayerData[]
 }
@@ -32,16 +33,17 @@ interface GameProps {
  * @property timerOn - A boolean that indicates if the timer is on or not.
  * @property setTimerOn - A function that sets the timer on or off.
  * @property (multiplayer only) inList - A boolean that indicates if the user is in the game list.
- * @property (mutiplayer only) socket - The socket objct that allos the user to comunicates with the game server for online playing.
+ * @property (mutiplayer only) socket - The socket objct that allows the user to comunicates with the game server for online playing.
+ * @property (mutiplayer only) socketConexionOn - Informs if the socket server is live.
  */
 const Game:React.FC<GameProps> = ({
   timeElapsed, setTimeElapsed, timerOn, setTimerOn,
   //Multiplayer props
- inList, socket, multiplayerGameOver, players
+ inList, socket, multiplayerGameOver, players, socketConexionOn
   }) => {
     const game_id:Ids = useParams().game_id as Ids 
     const game_type: number = parseInt(useParams().game_type as string)
-    console.log(game_type, timerOn)
+    console.log("---> game type and timer:",game_type, timerOn)
     const {register} = useForm()
 
     //General game functionality states
@@ -60,7 +62,7 @@ const Game:React.FC<GameProps> = ({
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
     // console.log("game_settings:", gameSettings)
 
-    if (!loading && game && game_type) {
+    if (!loading && game) {
         return (
           <div className="grid-container"> 
             <Header game={game} game_type={game_type} turn={turn} time={timeElapsed} pause={() => pauseGame()} play={() => playGame()} timerOn={timerOn} setTimeElapsed={setTimeElapsed}/>
@@ -106,7 +108,7 @@ const Game:React.FC<GameProps> = ({
             
             {/* Game menu for multiplayer games */}
             {!timerOn && game_type!==0?
-              <VsRomm game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket} players={players}/>
+              <VsRomm game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
               :
               <></>
             }

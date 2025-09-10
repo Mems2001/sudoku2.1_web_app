@@ -122,6 +122,10 @@
     gap: 1.5rem
 }
 
+.conexion-error-title {
+    color:  var(--lcolor-error)
+}
+
 .settings-window {
     width: 100%;
     border-radius: 10px;
