@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoginForm } from "../../models/types";
 import { useAuth } from "../../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 
 function Register() {
     const {handleSubmit , register , formState:{errors} , getValues, watch} = useForm<LoginForm>()
@@ -99,6 +100,8 @@ function Register() {
                 <p className="advertisement">Already have an account? <a href="#/login">Log In</a></p>
 
             </form>
+
+            <NavLink to={'/'}>Back to Home</NavLink>
         </div>
     );
 }

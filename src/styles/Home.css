@@ -121,8 +121,8 @@ h1 {
     justify-content: center;
     align-items: center;
 
-    width: 509px;
-    height: 509px;
+    width: fit-content;
+    height: fit-content;
 
     top:50%;
     left: 50%;
@@ -134,12 +134,16 @@ h1 {
     position: absolute;
 
     flex-direction: column;
-    gap: 55px;
+    gap: 75px;
 
-    width:509px;
-    padding-top: 55px;
-    padding-bottom: 55px;
-    opacity: 10%;
+    width:695px;
+    padding-top: 75px;
+    padding-bottom: 75px;
+}
+.background-h :nth-child(3),
+.background-h :nth-child(6) {
+    opacity: 20%;
+    height: 4px;
 }
 
 .background-v {
@@ -147,24 +151,30 @@ h1 {
     position: absolute;
 
     flex-direction: row;
-    gap: 55px;
+    gap: 75px;
 
-    height: 509px;
-    padding-left: 55px;
-    padding-right: 55px;
-    opacity: 10%;
+    height: 695px;
+    padding-left: 75px;
+    padding-right: 75px;
+}
+.background-v :nth-child(3),
+.background-v :nth-child(6) {
+    opacity: 20%;
+    width: 4px;
 }
 
 .line-h {
     background: radial-gradient(circle, rgba(0 , 0 , 0 , 1) 0%, rgba(0 , 0 , 0 , 0) 100%);
     width: 100%;
     height: 2px;
+    opacity: 10%;
 }
 
 .line-v {
     background: radial-gradient(circle, rgba(0 , 0 , 0 , 1) 0%, rgba(0 , 0 , 0 , 0) 100%);
     width: 2px;
     height: 100%;
+    opacity: 10%;
 }
 
 /* Games Modal */

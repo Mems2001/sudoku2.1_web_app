@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import LoginFormC from "./LoginForm"
 
 function Login() {
@@ -7,6 +8,8 @@ function Login() {
       <h1>Log In</h1>
     
       <LoginFormC />
+
+      <NavLink to={'/'}>Back to Home</NavLink>
     </div>
   );
 }
