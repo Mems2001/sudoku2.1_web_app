@@ -5,7 +5,7 @@ import { Game } from "../../models/game"
 import { GamesServices, PlayersServices } from "../../services"
 
 interface GameOverProps {
-    gameType: number,
+    game_type: number,
     game: Game | undefined,
     puzzle: PuzzleS | undefined,
     setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
@@ -18,7 +18,7 @@ interface GameOverProps {
  * @param GameOverProps - An object that contains gameType (number), game_id (string) and puzzle (Puzzle type) props. 
  * @returns 
  */
-const GameOver:React.FC<GameOverProps> = ({gameType, game , puzzle, setTimerOn, timeElapsed, multiplayerGameOver}) => {
+const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn, timeElapsed, multiplayerGameOver}) => {
     const navigate = useNavigate()
 
     /**
@@ -38,12 +38,12 @@ const GameOver:React.FC<GameOverProps> = ({gameType, game , puzzle, setTimerOn, 
 
     useEffect(
         () => {
-            if (gameType === 1 && multiplayerGameOver) game?.saveAnswers(game.answers.grid, game.answers.number, timeElapsed, 2)
+            if (game_type === 1 && multiplayerGameOver) game?.saveAnswers(game.answers.grid, game.answers.number, timeElapsed, 2)
             setTimerOn(false)
         }, []
     )
     
-    if (gameType === 0) {
+    if (game_type === 0) {
         return (
             <section className="game-over">
                 <div className="window">

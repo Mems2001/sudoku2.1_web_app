@@ -8,19 +8,19 @@ import GameSettins from "./GameSettings"
 
 interface VsRommProps {
     game_id: Ids,
-    gameType: number,
+    game_type: number,
     timeElapsed: number,
     clearCellsHighlighting: () => void,
     clearNumbersHighlighting: () => void,
     selectCells: () => void,
     sameNumbers: () => void,
-    players?: PlayerData[]
+    players: PlayerData[] | undefined
     inList?: boolean,
     host?: boolean,
     socket?: Socket
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, gameType, timeElapsed, clearCellsHighlighting, clearNumbersHighlighting, selectCells, sameNumbers, players , inList, host , socket }) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCellsHighlighting, clearNumbersHighlighting, selectCells, sameNumbers, players , inList, host , socket }) => {
     const navigate = useNavigate()
 
     const shareLink = async () => {
@@ -29,7 +29,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, gameType, timeElapsed, clearCell
             await navigator.share({
               title: 'Partida Vs en Sudoku 2.1',
               text: 'Fuiste invitado a una partida Vs en Sudoku 2.1, da click en el link para jugar',
-              url: variables.share_link_prefix + `/#/game/${gameType}/${game_id}`,
+              url: variables.share_link_prefix + `/#/game/${game_type}/${game_id}`,
             });
             console.log('Enlace compartido con éxito');
           } catch (error) {
@@ -80,7 +80,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, gameType, timeElapsed, clearCell
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
 
-                    <GameSettins gameType={gameType} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={sameNumbers} selectCells={selectCells}/>
+                    <GameSettins gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={sameNumbers} selectCells={selectCells}/>
 
                     <div id='main-room-actions' className="room-actions">
                         { timeElapsed === 0?

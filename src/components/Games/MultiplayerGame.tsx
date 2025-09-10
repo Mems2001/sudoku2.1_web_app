@@ -11,15 +11,11 @@ import { useAppSelector } from "../../models/hooks"
 import { useGetPlayers } from '../../hooks/useGetPlayers'
 import AuthServices from '../../services/AuthServices'
 
-interface MultiplayerGameProps {
-    gameType: number
-}
-
 /**
  * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component will handle how the information received will be passed to the "Game" component if rendered.
  * @returns Conditionally, if the user is a validated player this renders the Game component, otherwise this renders an auth UI wehter to log in or to continue as annonymous user.
  */
-const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
+const MultiplayerGame = () => {
     const game_id:Ids = useParams().game_id as Ids
 
     const [multiplayerGameOver, setMultiPlayerGameOver] = useState(false)
@@ -31,7 +27,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     const [socket , setSocket] = useState<Socket | undefined>(undefined)
 
     // In game functions
-    const {handlePlayers, inList, setInList} = useGetPlayers({game_id})
+    const {handlePlayers, inList, setInList, players} = useGetPlayers({game_id})
 
     async function authenticatedUserContinue () {
         try {
@@ -110,7 +106,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
 
     if (inList) {
         return (
-          <Game gameType={gameType} setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver}/>
+          <Game setTimeElapsed={setTimeElapsed} setTimerOn={setTimerOn} timeElapsed={timeElapsed} timerOn={timerOn} inList={inList} socket={socket} multiplayerGameOver={multiplayerGameOver} players={players}/>
         )
     } else {
         return (

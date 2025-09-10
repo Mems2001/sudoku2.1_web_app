@@ -6,7 +6,7 @@ import { useAppSelector } from "../models/hooks"
 import { RootState } from "../store/store"
 
 interface UseSetValue {
-    gameType: number,
+    game_type: number,
     game: Game|null,
     cells: Cells,
     socket?: Socket,
@@ -17,17 +17,19 @@ interface UseSetValue {
 
 /**
  * A hook that provides all the value setting related functions as the value setting itself, higlighting cells functions and related states as the current focused cell, and more. Pass the params as an object.
- * @param {number} gameType
+ * @param {number} game_type
  * @param {Game} game
  * @param {Socket} socket
  * @param {Cells} cells
  * @param {boolean} timerOn
+ * @param {boolean} turn
  * @param {React.Dispatch<React.SetStateAction<boolean | undefined>>} setTurn
  * @returns {UseSetValueReturn} 
  */
-export const useSetValue = ({gameType, timerOn, game, socket, setTurn, turn, cells}: UseSetValue) => {
+export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, cells}: UseSetValue) => {
     const [currentFocused , setCurrentFocus] = useState<string>()
     const [clickControl, setClickControl] = useState(false)
+    
     const gameSettings = useAppSelector((state:RootState) => state.gameSettings.value)
     
     /**
@@ -39,7 +41,7 @@ export const useSetValue = ({gameType, timerOn, game, socket, setTurn, turn, cel
       // console.log(currentFocused, value)
 
       //Prevents to add values to the puzzle if it's not the player's turn.
-      if (gameType===2 && !turn) {
+      if (game_type===2 && !turn) {
         return
       }
 
@@ -47,8 +49,8 @@ export const useSetValue = ({gameType, timerOn, game, socket, setTurn, turn, cel
         //We allow the change only when the previusly set value is not correct.
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
           game?.setValue(currentFocused , value, timeElapsed)
-          if (gameType===2 && socket) {
-            socket.emit('coop-save', {currentFocused, value, timeElapsed, gameType})
+          if (game_type===2 && socket) {
+            socket.emit('coop-save', {currentFocused, value, timeElapsed, game_type})
             if (game.verifyValue(currentFocused)) setTurn(false)
           }
           // setValueAtHtml(cell , value)

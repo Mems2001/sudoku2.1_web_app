@@ -6,7 +6,7 @@ function SinglePlayer () {
   const [timeElapsed , setTimeElapsed] = useState(0)
 
   return (
-    <Game gameType={0} timerOn={timerOn} setTimerOn={setTimerOn} timeElapsed={timeElapsed} setTimeElapsed={setTimeElapsed}/>
+    <Game timerOn={timerOn} setTimerOn={setTimerOn} timeElapsed={timeElapsed} setTimeElapsed={setTimeElapsed}/>
   )
 }
 

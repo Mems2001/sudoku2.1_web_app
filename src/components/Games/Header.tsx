@@ -4,7 +4,7 @@ import { Game } from "../../models/game";
 
 interface GameHeaderProps {
     game: Game,
-    gameType: number,
+    game_type: number,
     turn?: boolean,
     time: number,
     pause: () => void,
@@ -17,7 +17,7 @@ interface GameHeaderProps {
  * This component shows the main puzzle solving information such as ammount of errors and time elapsed. It also provides related funcctions such as game saving.
  * @param GameHeaderProps - An object containing the folowing props:
  * @property game - The Game class instance related to a concrete game_id.
- * @property gameType - The type of game being player.
+ * @property game_type - The type of game being player.
  * @property turn.
  * @property time - The time elapsed since the game started.
  * @property pause - A pause function given by the father component.
@@ -25,7 +25,7 @@ interface GameHeaderProps {
  * @property timerOn - The father component local state wich controls the timer.
  * @returns 
  */
-const Header:React.FC<GameHeaderProps> = ({game , gameType, turn, time , pause , play , timerOn, setTimeElapsed}) => {
+const Header:React.FC<GameHeaderProps> = ({game , game_type, turn, time , pause , play , timerOn, setTimeElapsed}) => {
 
     const navigate = useNavigate()
 
@@ -53,14 +53,14 @@ const Header:React.FC<GameHeaderProps> = ({game , gameType, turn, time , pause ,
             <button onClick={() => game.saveAnswers(game.answers.grid, game.answers.number, time)}>
                 <i className="fa-solid fa-floppy-disk fa-xl"></i>
             </button>
-            {gameType===2 && turn?
+            {game_type===2 && turn?
                 <span className="success-color">
                     <i className="fa-solid fa-stopwatch fa-xl"></i>
                 </span>
                 :
                 <></>
             }
-            {gameType===2 && !turn?
+            {game_type===2 && !turn?
                 <span className="error-color">
                     <i className="fa-solid fa-hand fa-xl"></i>
                 </span>
