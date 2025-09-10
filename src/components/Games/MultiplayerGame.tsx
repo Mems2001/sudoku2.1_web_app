@@ -31,7 +31,7 @@ const MultiplayerGame:React.FC<MultiplayerGameProps> = ({gameType}) => {
     const [socket , setSocket] = useState<Socket | undefined>(undefined)
 
     // In game functions
-    const {handlePlayers, players, inList, setInList} = useGetPlayers({game_id})
+    const {handlePlayers, inList, setInList} = useGetPlayers({game_id})
 
     async function authenticatedUserContinue () {
         try {
