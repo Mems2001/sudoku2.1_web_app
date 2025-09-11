@@ -12,6 +12,7 @@ import { Ids } from "../../models/types"
 import { Socket } from "socket.io-client"
 import { useGridCells, usePlayPause, useGame, useSetValue } from "../../hooks"
 import { PlayerData } from "../../models/dbTypes"
+import { GameType } from "../../models/game"
 
 interface GameProps {
   timeElapsed: number
@@ -42,12 +43,12 @@ const Game:React.FC<GameProps> = ({
  inList, socket, multiplayerGameOver, players, socketConexionOn
   }) => {
     const game_id:Ids = useParams().game_id as Ids 
-    const game_type: number = parseInt(useParams().game_type as string)
+    const game_type: GameType = parseInt(useParams().game_type as string) as GameType
     console.log("---> game type and timer:",game_type, timerOn)
     const {register} = useForm()
 
     //General game functionality states
-    const {game , loading} = useGame({game_id , setTimeElapsed})
+    const {game , loading} = useGame({game_id, game_type , setTimeElapsed})
     const [turn, setTurn] = useState<boolean|undefined>(undefined)
     
     //Set the cells grid object
@@ -89,10 +90,10 @@ const Game:React.FC<GameProps> = ({
               <h2>Números restantes:</h2>
               <div className="numbers">
                 {game.remainingNumbers.map((n , index) => 
-                  <button onClick={() => numberButton(index+1, timeElapsed)} className="remaining-number" key={index}
+                  <button onClick={async () => await numberButton(index+1, timeElapsed)} className="remaining-number" key={index}
                   disabled={game_type===2 && !turn}>{n<9?index +1:''}</button>
                 )}
-                <button onClick={() => numberButton(10, timeElapsed)}
+                <button onClick={async () => await numberButton(10, timeElapsed)}
                   disabled={game_type===2 && !turn}>
                   <i className="fa-solid fa-eraser fa-2xl"></i>
                 </button>

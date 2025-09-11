@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { Ids } from "../models/types"
 import { AxiosResponse } from "axios"
-import { Game } from "../models/game"
+import { Game, GameType } from "../models/game"
 import { PlayerData } from "../models/dbTypes"
 import { PlayersServices } from "../services"
 
 interface UsePuzzleProps {
     game_id: Ids,
+    game_type: GameType,
     setTimeElapsed: (time:number) => void
 }
 
@@ -16,10 +17,11 @@ interface ErrorLog {
 }
 
 /**The main purpouse of this hook is to instantiate a Game object with server data and to provide its main methods and functions. For more information about them consult the "Game" class documentation.
- * @param game_id - Unique identifier for the game wich is used for api calls.
+ * @param {Ids} game_id - Unique identifier for the game wich is used for api calls.
+ * @param {GameType} game_type
  * @param setTimeElapsed - Sets the time elapsed in a previously saved game if it is the case.
 */
-export const useGame = ({game_id , setTimeElapsed}:UsePuzzleProps) => {
+export const useGame = ({game_id, game_type , setTimeElapsed}:UsePuzzleProps) => {
     const [game , setGame] = useState<Game|null>(null)
     const [loading , setLoading] = useState(true)
     const [error , setError] = useState<ErrorLog|null>(null)
@@ -35,7 +37,7 @@ export const useGame = ({game_id , setTimeElapsed}:UsePuzzleProps) => {
             const res:AxiosResponse<PlayerData> = await PlayersServices.getPlayerByGameId(game_id)
             console.log(res.data)
             if (res.data) {
-                setGame(new Game(res.data.id, res.data.host, res.data.Game.Puzzle.Sudoku , res.data.Game.Puzzle , game_id , res.data.number , res.data.grid))
+                setGame(new Game(game_type, res.data.id, res.data.host, res.data.Game.Puzzle.Sudoku , res.data.Game.Puzzle , game_id , res.data.number , res.data.grid))
                 setTimeElapsed(res.data.Game.time)
             } else {
                 setError({message:"Error getting the game, it doesn't exist"})

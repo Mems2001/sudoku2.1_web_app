@@ -2,6 +2,8 @@ import { PuzzleS, Sudoku } from "./dbTypes"
 import { Grid, Ids, numbers } from "./types"
 import { GamesServices, PlayersServices } from "../services"
 
+export type GameType = 0 | 1 | 2
+
 /**
  * This class represents a full Sudoku game and implements the sudoku's rules and preserves its correct structure. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the sudoku's rules related logic, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
  * @property id - The unique identifier for the game table.
@@ -14,6 +16,7 @@ import { GamesServices, PlayersServices } from "../services"
  */
 export class Game {
     id: Ids | undefined
+    game_type: GameType
     player_id: Ids
     host: boolean
     #sudoku: Sudoku
@@ -25,8 +28,9 @@ export class Game {
     remainingNumbers: numbers
     #errors: number
 
-    constructor(player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
+    constructor(game_type: GameType,player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
         this.id = id
+        this.game_type = game_type
         this.player_id = player_id
         this.host = host
         this.#sudoku = sudoku
@@ -119,7 +123,8 @@ export class Game {
      * @param value  - The desired value to be set.
      * @param timeElapsed - The time elapsed since the game started.
      */
-    setValue (location:string , value:number, timeElapsed:number) {
+    async setValue (location:string , value:number, timeElapsed:number) {
+        // console.log("---> setting value", value, location)
         let parsedValue = value
         if (value === 10) {
             parsedValue = 0
@@ -137,45 +142,63 @@ export class Game {
         this.#setRemainingNumbers(this.answers.number)
 
         //Value checking
-       
+        let updatedPlayer
         if (this.verifyValue(location)) {
-            if (this.completedGameCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
-            else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+            if (this.completedGameCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
+            else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
         } else {
             if (value != 10) {
                 this.#setErrors(this.#errors + 1)
-                if (this.gameOverCheck()) this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
-                else this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+                if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
+                else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
             } else {
-                this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+                updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
             }
+        }
+
+        return {
+            updatedGrid: updatedPlayer?.updatedGrid,
+            updatedNumber: updatedPlayer?.updatedNumber,
+            updatedErrors: updatedPlayer?.updatedErrors
         }
     }
 
     /**
-     * This function is used to save the game in the database acording to the game_id
+     * This function is used to save the game in the database acording to the game_id and game_type
      * @param grid Matrix of sudoku values updated by the user.
      * @param errors Number of errors that th user committed.
      * @param timeElapsed Time run to the point of this saving. 
      * @param playerStatus A number that represents if the player is still playing(0), won(1) or lost(2) the game.
      */
     async saveAnswers (grid:Grid, number:string, timeElapsed:number, playerStatus?:number) {
-        // console.log('Saving game...' , this)
+        // console.warn('Saving game...' , grid, number, playerStatus)
         try {
             let updatedPlayer
-            if (this.id && playerStatus) {
-                updatedPlayer = await PlayersServices.updatePlayer(this.id, grid, number,playerStatus, this.#errors)
+            if (this.id) {
+                updatedPlayer = await PlayersServices.updatePlayer(this.id, this.game_type, grid, number, this.#errors, playerStatus)
                 await GamesServices.updateGame(this.id, timeElapsed)
             }
             // console.log(updatedPlayer.data)
             if (updatedPlayer) {
-                this.#setAnswersGrid(updatedPlayer.data.grid)
-                this.#setAnswersNumber(updatedPlayer.data.number)
+                this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors)
+                return {
+                    updatedGrid: updatedPlayer.data.grid,
+                    updatedNumber: updatedPlayer.data.number,
+                    updatedErrors: updatedPlayer.data.errors
+                }
             }
+
         } catch (err:any) {
             console.error(err)
         }
-      }
+    }
+
+    setAnswers(updatedGrid: Grid, updatedNumber: string, updatedErrors: number) {
+        this.#setAnswersGrid(updatedGrid)
+        this.#setAnswersNumber(updatedNumber)
+        this.#errors = updatedErrors
+        this.#setRemainingNumbers(updatedNumber)
+    }
     
     completedGameCheck() {
         if (this.sudoku.number === this.answers.number) {

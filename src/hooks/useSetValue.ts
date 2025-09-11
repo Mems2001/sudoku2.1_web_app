@@ -37,8 +37,8 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
      * @param {number} value - A number that the user intends to put into the corresponding cell or sudoku's grid position. 
      * @param {number} timeElapsed - The time elapsed since the game started.
      */
-    function numberButton (value:number, timeElapsed:number) {
-      // console.log(currentFocused, value)
+    async function numberButton (value:number, timeElapsed:number) {
+      // console.warn("---> number button clicked:", currentFocused, value)
 
       //Prevents to add values to the puzzle if it's not the player's turn.
       if (game_type===2 && !turn) {
@@ -46,12 +46,12 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
       }
 
       if (currentFocused && value && timerOn) {
-        //We allow the change only when the previusly set value is not correct.
+        //We allow the change only when the previously set value is different from the new one.
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
-          game?.setValue(currentFocused , value, timeElapsed)
+          const saving_data = await game.setValue(currentFocused , value, timeElapsed)
           if (game_type===2 && socket) {
-            socket.emit('coop-save', {currentFocused, value, timeElapsed, game_type})
-            if (game.verifyValue(currentFocused)) setTurn(false)
+            socket.emit('coop-save', {...saving_data, setTurn: value !== 10})
+            setTurn(value == 10)
           }
           // setValueAtHtml(cell , value)
           setClickControl(!clickControl)
@@ -155,8 +155,8 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
 
         const coopSave = (data: any) => {
           console.log('cooperative game data:', data)
-          game.setValue(data.currentFocused, data.value, data.timeElapsed)
-          if (game.verifyValue(data.currentFocused))  setTurn(true)
+          game.setAnswers(data.updatedGrid, data.updatedNumber, data.updatedErrors)
+          setTurn(data.setTurn)
           setClickControl(!clickControl)
         }
         function newHost (newHostId:Ids) {

@@ -2,9 +2,10 @@ import axios, { AxiosResponse } from "axios"
 import { Grid, Ids } from "../models/types"
 import { PlayerData } from "../models/dbTypes"
 import variables from '../../utils/variables'
+import { GameType } from "../models/game"
 
 interface UpdatePlayerBody {
-    grid: Grid, number:string, errors: number, status: number
+    game_type: GameType, grid: Grid, number:string, errors: number, status?: number
 }
 
 const api_prefix = variables.url_prefix + '/api/v1/players'
@@ -31,9 +32,10 @@ export class PlayersServices {
            }
        }
 
-    static async updatePlayer(game_id: Ids, grid: Grid, number: string, errors: number, status: number):Promise<AxiosResponse<PlayerData>> {
+    static async updatePlayer(game_id: Ids, game_type: GameType, grid: Grid, number: string, errors: number, status?: number):Promise<AxiosResponse<PlayerData>> {
         try {
             const body:UpdatePlayerBody = {
+                game_type,
                 grid,
                 number,
                 errors,
