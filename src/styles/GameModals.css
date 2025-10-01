@@ -5,9 +5,8 @@
     z-index: 8;
     top: 0;
     left: 0;
-    height: 100vh;
-    width: 100vw;
-    max-width: 1280px;
+    height: 100dvh;
+    width: 100dvw;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
 }
@@ -95,9 +94,8 @@
 /* VS console */
 
 .vs-console {
-    width: 100vw;
-    max-width: 1280px;
-    height: 100vh;
+    width: 100dvw;
+    height: 100dvh;
     z-index: 8;
     
     position: absolute;

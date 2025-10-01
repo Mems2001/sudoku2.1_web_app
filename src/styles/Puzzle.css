@@ -1,7 +1,6 @@
 .grid-container {
-    height: 100vh;
-    width: 100vw;
-    max-width: 1280px;
+    height: 100dvh;
+    width: 100dvw;
 }
 
 .grid {

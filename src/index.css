@@ -104,9 +104,9 @@ body {
   justify-content: center;
   align-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  height: 100dvh;
 
-  background-color: var(--bg-light-beige);
+  /* background-color: var(--bg-light-beige); */
 }
 
 h1 {
