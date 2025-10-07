@@ -14,3 +14,21 @@
 
   position: relative;
 }
+
+.menu-button {
+  font-family: var(--orbitron-font);
+  font-size: var(--text-md);
+
+  background-color: var(--bcolor-blue);
+  color: white;
+  
+  width: 18rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+
+  user-select: none;
+  transition: all 200ms ease-in-out;
+}
+.menu-button:hover {
+  color: var(--lcolor-dark-navy)
+}

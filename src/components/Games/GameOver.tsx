@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom"
 import { PuzzleS } from "../../models/dbTypes"
 import { useEffect } from "react"
-import { Game } from "../../models/game"
+import { Game, GameType } from "../../models/game"
 import { GamesServices, PlayersServices } from "../../services"
 
 interface GameOverProps {
-    game_type: number,
+    game_type: GameType,
     game: Game | undefined,
     puzzle: PuzzleS | undefined,
     setTimerOn: React.Dispatch<React.SetStateAction<boolean>>
@@ -27,7 +27,7 @@ const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn,
     async function retry () {
         try {
             if (game && game.id && puzzle) {
-                await PlayersServices.updatePlayer(game.id, puzzle.grid , puzzle.number , 0, 0)
+                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , 0, 0)
                 await GamesServices.updateGame(game.id, 0 , 1)
             }
             window.location.reload()

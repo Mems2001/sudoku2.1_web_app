@@ -124,7 +124,7 @@ export class Game {
      * @param timeElapsed - The time elapsed since the game started.
      */
     async setValue (location:string , value:number, timeElapsed:number) {
-        // console.log("---> setting value", value, location)
+        // console.warn("---> setting value", value, location)
         let parsedValue = value
         if (value === 10) {
             parsedValue = 0
@@ -178,7 +178,7 @@ export class Game {
                 updatedPlayer = await PlayersServices.updatePlayer(this.id, this.game_type, grid, number, this.#errors, playerStatus)
                 await GamesServices.updateGame(this.id, timeElapsed)
             }
-            // console.log(updatedPlayer.data)
+            // console.warn(updatedPlayer?.data)
             if (updatedPlayer) {
                 this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors)
                 return {
@@ -196,7 +196,7 @@ export class Game {
     setAnswers(updatedGrid: Grid, updatedNumber: string, updatedErrors: number) {
         this.#setAnswersGrid(updatedGrid)
         this.#setAnswersNumber(updatedNumber)
-        this.#errors = updatedErrors
+        this.#setErrors(updatedErrors)
         this.#setRemainingNumbers(updatedNumber)
     }
     

@@ -3,11 +3,12 @@ import { Cells } from "../models/types";
 import { Game } from "../models/game";
 
 interface UseGridCells {
-    game: Game|null,
-    setTurn: React.Dispatch<React.SetStateAction<boolean | undefined>>
+    game?: Game|null,
+    setTurn?: React.Dispatch<React.SetStateAction<boolean | undefined>>,
+    isLab?:boolean 
 }
 
-export const useGridCells = ({game, setTurn}: UseGridCells):{cells: Cells} => {
+export const useGridCells = ({game, setTurn, isLab=false}: UseGridCells):{cells: Cells} => {
     const cells:Cells = [];
 
     /**
@@ -50,9 +51,12 @@ export const useGridCells = ({game, setTurn}: UseGridCells):{cells: Cells} => {
 
     useEffect(
           () => {
-            if (game) {
+            if (game && setTurn) {
               cellsBorders(cells)
               setTurn(game.host)
+            }
+            if (isLab) {
+              cellsBorders(cells)
             }
           } , [game]
         )

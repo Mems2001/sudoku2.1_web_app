@@ -42,6 +42,7 @@ export class PlayersServices {
                 status
             }
             const response = await axios.patch<PlayerData>(`${api_prefix}/single/${game_id}`, body)
+            console.warn(response)
             return response
         } catch (error:any) {
             console.error({message: error.message})

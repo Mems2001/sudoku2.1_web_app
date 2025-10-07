@@ -1,5 +1,7 @@
 import {Grid, Ids} from './types'
 
+type RoleType = "admin" | "user" | "anon" 
+
 // Puzzles
 
 export interface Puzzle {

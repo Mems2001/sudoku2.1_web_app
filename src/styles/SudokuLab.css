@@ -1,0 +1,25 @@
+.grid-container-lab {
+    height: 100dvh;
+    width: 100dvw;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.grid-lab {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    /* grid-gap: 1px; */
+    width: 500px;
+    height: 500px;
+}
+
+.lab-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

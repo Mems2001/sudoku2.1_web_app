@@ -280,7 +280,9 @@
     width: fit-content;
     padding: 0 25px;
     border-radius: 25px;
-    font-size: 1rem;
+    font-size: var(--text-ml);
+    font-weight: 500;
+
     transition: ease-in-out 0.25s;
 }
 
@@ -328,7 +330,9 @@
     width: fit-content;
     padding: 0 25px;
     border-radius: 25px;
-    font-size: 1rem;
+    font-size: var(--text-ml);
+    font-weight: 500;
+    
     background-color: var(--bg-light-beige);
     font-family: var(--orbitron-font);
     transition: ease-in-out 0.25s;

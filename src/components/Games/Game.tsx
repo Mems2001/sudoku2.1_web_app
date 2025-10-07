@@ -44,7 +44,7 @@ const Game:React.FC<GameProps> = ({
   }) => {
     const game_id:Ids = useParams().game_id as Ids 
     const game_type: GameType = parseInt(useParams().game_type as string) as GameType
-    console.log("---> game type and timer:",game_type, timerOn)
+    // console.log("---> game type and timer:",game_type, timerOn)
     const {register} = useForm()
 
     //General game functionality states
@@ -65,7 +65,7 @@ const Game:React.FC<GameProps> = ({
 
     if (!loading && game) {
         return (
-          <div className="grid-container"> 
+          <section className="grid-container"> 
             <Header game={game} game_type={game_type} turn={turn} time={timeElapsed} pause={() => pauseGame()} play={() => playGame()} timerOn={timerOn} setTimeElapsed={setTimeElapsed}/>
 
             <div className="grid">
@@ -124,7 +124,7 @@ const Game:React.FC<GameProps> = ({
               :
               <></>
             }
-          </div>
+          </section>
         )
     }
   }

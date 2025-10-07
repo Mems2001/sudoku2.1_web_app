@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "./store"
+import { RoleType } from "../models/dbTypes"
 
 interface Role {
-    value: string | null
+    value: RoleType | null
 }
 const initialState:Role = {
     value: null
@@ -12,7 +13,7 @@ export const roleSlice = createSlice({
     name: 'role',
     initialState,
     reducers: {
-        setRole : (state , action: PayloadAction<string | null>) => {state.value = action.payload}
+        setRole : (state , action: PayloadAction<RoleType>) => {state.value = action.payload}
     }
 })
 
