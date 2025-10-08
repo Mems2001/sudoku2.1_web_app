@@ -16,6 +16,7 @@ export interface Puzzle {
 export interface PuzzleData {
     id:         Ids;
     sudokuId:   Ids;
+    difficulty: number;
     number:     string;
     grid:       Grid;
     created_at: Date;
@@ -91,4 +92,5 @@ export interface PuzzleS {
     grid:   Grid;
     number: string;
     Sudoku: Sudoku;
+    difficulty: number
 }

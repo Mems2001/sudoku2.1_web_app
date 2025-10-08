@@ -86,6 +86,7 @@ h1 {
 
     color: white;
     opacity: 65%;
+    box-shadow: 0 0 6px 0 var(--color-black);
 
     transition: ease-in-out 0.2s;
 }
@@ -194,6 +195,7 @@ h1 {
 .modal-button {
     background-color: var(--bcolor-blue);
     opacity: 1;
+    box-shadow: unset;
 
     font-size: var(--text-md);
     width: 18rem;

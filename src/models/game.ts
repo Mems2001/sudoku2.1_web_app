@@ -4,6 +4,12 @@ import { GamesServices, PlayersServices } from "../services"
 
 export type GameType = 0 | 1 | 2
 
+export interface UpdatedGameData {
+    updatedGrid: Grid,
+    updatedNumber: string,
+    updatedErrors: number
+}
+
 /**
  * This class represents a full Sudoku game and implements the sudoku's rules and preserves its correct structure. All the properties that are objects contain properties such as grid (wich represents the values of the sudoku, puzzle or answers arranged as an array of arrays according to the 9x9 sudoku official dimmensions) and a number (wich is  string that concatenates all the values of the grid). This class sort of mirrors the player and game tables in the database, with the objective to simplify and modularize the sudoku's rules related logic, encapsulating it as methods that prevents us to rewrite logic in every component that uses a sudoku puzzle.
  * @property id - The unique identifier for the game table.
@@ -119,11 +125,12 @@ export class Game {
 
     /**
      * Sets a particular value to any desired position of the anwsers grid. It also checks the correctness of the value and finally saves the game.
-     * @param location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
-     * @param value  - The desired value to be set.
-     * @param timeElapsed - The time elapsed since the game started.
+     * @param {string} location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
+     * @param {number} value  - The desired value to be set.
+     * @param {number} timeElapsed - The time elapsed since the game started.
+     * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
-    async setValue (location:string , value:number, timeElapsed:number) {
+    async setValue (location:string , value:number, timeElapsed:number):Promise<UpdatedGameData|undefined> {
         // console.warn("---> setting value", value, location)
         let parsedValue = value
         if (value === 10) {
@@ -156,21 +163,22 @@ export class Game {
             }
         }
 
-        return {
-            updatedGrid: updatedPlayer?.updatedGrid,
-            updatedNumber: updatedPlayer?.updatedNumber,
-            updatedErrors: updatedPlayer?.updatedErrors
+        if (updatedPlayer) return {
+            updatedGrid: updatedPlayer.updatedGrid,
+            updatedNumber: updatedPlayer.updatedNumber,
+            updatedErrors: updatedPlayer.updatedErrors
         }
     }
 
     /**
      * This function is used to save the game in the database acording to the game_id and game_type
-     * @param grid Matrix of sudoku values updated by the user.
-     * @param errors Number of errors that th user committed.
-     * @param timeElapsed Time run to the point of this saving. 
-     * @param playerStatus A number that represents if the player is still playing(0), won(1) or lost(2) the game.
+     * @param {Grid} grid Matrix of sudoku values updated by the user.
+     * @param {string} number
+     * @param {number} timeElapsed Time run to the point of this saving. 
+     * @param {number} playerStatus A number that represents if the player is still playing(0), won(1) or lost(2) the game.
+     * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
-    async saveAnswers (grid:Grid, number:string, timeElapsed:number, playerStatus?:number) {
+    async saveAnswers (grid:Grid, number:string, timeElapsed:number, playerStatus?:number):Promise<UpdatedGameData|undefined> {
         // console.warn('Saving game...' , grid, number, playerStatus)
         try {
             let updatedPlayer

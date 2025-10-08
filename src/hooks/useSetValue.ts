@@ -38,7 +38,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
      * @param {number} timeElapsed - The time elapsed since the game started.
      */
     async function numberButton (value:number, timeElapsed:number) {
-      console.warn("---> number button clicked:", currentFocused, value)
+      // console.warn("---> number button clicked:", currentFocused, value)
 
       //Prevents to add values to the puzzle if it's not the player's turn.
       if (game_type===2 && !turn) {
@@ -49,6 +49,8 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
         //We allow the change only when the previously set value is different from the new one.
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
           const saving_data = await game.setValue(currentFocused , value, timeElapsed)
+
+          if (!saving_data) throw new Error('Unable to set the value and save the data')
 
           if (game_type===2 && socket) {
             socket.emit('coop-save', {...saving_data, setTurn: value !== 10})

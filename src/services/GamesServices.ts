@@ -21,6 +21,7 @@ export class GamesServices {
     static async getSavedGames ():Promise<AxiosResponse<GameData>> {
         try {
             const response = await axios.get<GameData>(`${api_prefix}/saved`)
+            console.warn(response)
             return response
         } catch (error:any) {
             console.error({message: error.message})

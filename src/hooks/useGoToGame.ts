@@ -6,6 +6,7 @@ import { AxiosResponse } from 'axios'
 
 interface UseGoToGameProps {
     gameType: number,
+    difficulty: number,
     closeModal():void
 }
 
@@ -15,13 +16,13 @@ interface UseGoToGameProps {
 export const useGoToGame = () => {
     const navigate = useNavigate()
 
-    async function goToGame ({gameType, closeModal}:UseGoToGameProps) {
+    async function goToGame ({gameType, difficulty, closeModal}:UseGoToGameProps) {
         try {
-          const puzzle:AxiosResponse<PuzzleData> = await PuzzlesServices.getRandomPuzzle()
+          const puzzle:AxiosResponse<PuzzleData> = await PuzzlesServices.getRandomPuzzle(difficulty)
           const body:PostGameBody = {
             puzzle_id: puzzle.data.id,
             gameType,
-            status: gameType===0?1:0
+            status: gameType===0 ? 1 : 0 // If the game is a single player game it automatically starts the game
           }
           const game:AxiosResponse<GameData> = await GamesServices.createGame(body)
           closeModal()

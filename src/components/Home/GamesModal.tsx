@@ -5,6 +5,7 @@ import { Ids } from "../../models/types"
 import { AxiosError, AxiosResponse } from "axios"
 import { useGoToGame } from "../../hooks/useGoToGame"
 import { GamesServices } from "../../services/GamesServices"
+import { GameType } from "../../models/game"
 
 interface Props {
     closeModal: () => void
@@ -14,6 +15,8 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
 
     const [showSaved , setShowSaved] = useState(false)
     const [showNewGame , setShowNewGame] = useState(false)
+    const [showDifficulties, setShowDifficulties] = useState(false)
+    const [gameType, setGameType] = useState<GameType|null>(null)
     const [saved , setSaved] = useState<PlayerData[]>()
     const {goToGame} = useGoToGame()
     const navigate = useNavigate()
@@ -22,12 +25,31 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
      * Returns the name of the game type according to it.
      * @returns {string}
      */
-    function handleGameTypeName(gameType:number) {
+    function handleGameTypeName(gameType:number):string|undefined {
         switch (gameType) {
             case 0:
                 return 'Single player'
             case 1:
                 return 'Vs time attack'
+            case 2:
+                return 'Cooperative'
+        }
+    }
+
+    function handleDifficultyName(difficulty:number):string|undefined {
+        switch (difficulty) {
+            case 0:
+                return 'Novice'
+            case 1:
+                return 'Easy'
+            case 2: 
+                return 'Normal'
+            case 3: 
+                return 'Hard'
+            case 4:
+                return 'Expert'
+            case 5:
+                return 'Master'
         }
     }
 
@@ -58,33 +80,41 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
 
     return (
         <div className="games-modal inactive">
-            {!showSaved && !showNewGame ?
+            {!showSaved && !showNewGame && !showDifficulties && (
                 <div id="games" className="modal-window">
                     <button className="home-button modal-button" onClick={() => setShowNewGame(true)}>New Game</button>
                     <button className="home-button modal-button" onClick={goToSavedGames}>Saved Games</button>
                 </div>
-                :
-                <></>
+                )
             }
-            {showSaved?
+            {showSaved && (
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1}</button>)}
+                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>)}
                     <button className="saved-game home-button modal-button" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
-                :
-                <></>
+                )
             }
-            {showNewGame?
+            {showNewGame && (
                 <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType: 0, closeModal})}>Single Player</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType:1, closeModal})}>Multiplayer Time Attack</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType:2, closeModal})}>Multiplayer Cooperative</button>
+                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(0)}}>Single Player</button>
+                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(1)}}>Multiplayer Time Attack</button>
+                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(2)}}>Multiplayer Cooperative</button>
                     <button className="home-button modal-button" onClick={() => setShowNewGame(false)}>Back</button>
                 </div>
-                :
-                <></>
+                )
             }
-            <div onClick={() => {closeModal();setShowSaved(false)}} className="modal-auxiliar">
+            {showDifficulties && gameType !== null && (
+                <div className="modal-window" id="new-game">
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
+                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
+                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(false);setGameType(null)}}>Back</button>
+                </div>
+            )}
+            <div onClick={() => {closeModal();setShowSaved(false);setShowNewGame(false);setShowDifficulties(false);setGameType(null)}} className="modal-auxiliar">
 
             </div>
         </div>
