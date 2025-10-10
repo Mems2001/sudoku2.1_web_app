@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { Game } from "../models/game"
+import { Game, UpdatedGameData } from "../models/game"
 import { Socket } from "socket.io-client"
-import { Cells, Ids } from "../models/types"
+import { CellAnnotation, Cells, Ids } from "../models/types"
 import { useAppSelector } from "../models/hooks"
 import { RootState } from "../store/store"
 
@@ -15,8 +15,12 @@ interface UseSetValue {
     setTurn: React.Dispatch<React.SetStateAction<boolean | undefined>>,
 }
 
+interface CoopGameSavingData extends UpdatedGameData {
+  setTurn: boolean
+}
+
 /**
- * A hook that provides all the value setting related functions as the value setting itself, higlighting cells functions and related states as the current focused cell, and more. Pass the params as an object.
+ * A hook that provides all the value setting related functions (specially game saving handling) as the value setting itself, higlighting cells functions and related states as the current focused cell, and more. Pass the params as an object.
  * @param {number} game_type
  * @param {Game} game
  * @param {Socket} socket
@@ -34,10 +38,10 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
     
     /**
      * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
-     * @param {number} value - A number that the user intends to put into the corresponding cell or sudoku's grid position. 
+     * @param {number|CellAnnotation} value - A number that the user intends to put into the corresponding cell or sudoku's grid position, or a cell annotation
      * @param {number} timeElapsed - The time elapsed since the game started.
      */
-    async function numberButton (value:number, timeElapsed:number) {
+    async function numberButton (value:number|CellAnnotation, timeElapsed:number) {
       // console.warn("---> number button clicked:", currentFocused, value)
 
       //Prevents to add values to the puzzle if it's not the player's turn.
@@ -53,8 +57,8 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
           if (!saving_data) throw new Error('Unable to set the value and save the data')
 
           if (game_type===2 && socket) {
-            socket.emit('coop-save', {...saving_data, setTurn: value !== 10})
-            setTurn(value == 10)
+            socket.emit('coop-save', {...saving_data, setTurn: value !== 10 && typeof value == "number"} as CoopGameSavingData)
+            setTurn(value == 10 || typeof value !== "number")
           }
           setClickControl(!clickControl)
         }
@@ -107,6 +111,20 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
           const div = document.getElementById(`c${cell}`) as HTMLDivElement
           div.classList.remove('font-bold')
         }
+
+        for (let i = 1; i < 10; i ++) {
+          const annotation = document.getElementById(`${cell}${i}`)
+          if (annotation) {
+            const annotation_number = annotation.innerText
+            if (annotation_number === number) {
+              const span = document.getElementById(`${cell}${i}`) as HTMLSpanElement
+              span.classList.add('font-bold')
+            } else {
+              const span = document.getElementById(`${cell}${i}`) as HTMLSpanElement
+              span.classList.remove('font-bold')
+            }
+          }
+        }
       }
     }
 
@@ -155,9 +173,9 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
     useEffect(() => {
         if (!socket || !game) return
 
-        const coopSave = (data: any) => {
+        const coopSave = (data: CoopGameSavingData) => {
           console.log('cooperative game data:', data)
-          game.setAnswers(data.updatedGrid, data.updatedNumber, data.updatedErrors)
+          game.setAnswers(data.updatedGrid, data.updatedNumber, data.updatedErrors, data.updatedAnnotations)
           setTurn(data.setTurn)
           setClickControl(!clickControl)
         }
@@ -169,7 +187,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
           }
         }
     
-        socket.on('coop-save-2', data => {coopSave(data)})
+        socket.on('coop-save-2', (data:CoopGameSavingData) => {coopSave(data)})
         socket.on('new-host', data => {newHost(data)})
     
         // Limpia el handler cuando cambie el socket/game o se desmonte el componente

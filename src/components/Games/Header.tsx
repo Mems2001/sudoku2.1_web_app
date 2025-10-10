@@ -10,7 +10,9 @@ interface GameHeaderProps {
     pause: () => void,
     play: () => void,
     timerOn: boolean,
-    setTimeElapsed: React.Dispatch<React.SetStateAction<number>>
+    setTimeElapsed: React.Dispatch<React.SetStateAction<number>>,
+    notebookMode: boolean,
+    setNotebookMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -25,7 +27,7 @@ interface GameHeaderProps {
  * @property timerOn - The father component local state wich controls the timer.
  * @returns 
  */
-const Header:React.FC<GameHeaderProps> = ({game , game_type, turn, time , pause , play , timerOn, setTimeElapsed}) => {
+const Header:React.FC<GameHeaderProps> = ({game , game_type, turn, time , pause , play , timerOn, setTimeElapsed, notebookMode, setNotebookMode}) => {
 
     const navigate = useNavigate()
 
@@ -50,9 +52,21 @@ const Header:React.FC<GameHeaderProps> = ({game , game_type, turn, time , pause 
                     <i className="fa-solid fa-play fa-xl"></i>  
                 </button>
             }
-            <button onClick={() => game.saveAnswers(game.answers.grid, game.answers.number, time)}>
+            <button onClick={() => game.saveAnswers(game.answers.grid, game.answers.number, game.annotations, time)}>
                 <i className="fa-solid fa-floppy-disk fa-xl"></i>
             </button>
+            {notebookMode ? (
+                    <button type="button" onClick={() => setNotebookMode(false)}>
+                        <i className="fa-solid fa-pen-nib fa-xl"></i>
+                    </button>
+                )
+                :
+                (
+                    <button type="button" onClick={() => setNotebookMode(true)}>
+                        <i className="fa-solid fa-pencil fa-xl"></i>
+                    </button>
+                )
+                }
             {game_type===2 && turn?
                 <span className="success-color">
                     <i className="fa-solid fa-stopwatch fa-xl"></i>

@@ -13,7 +13,7 @@ export const roleSlice = createSlice({
     name: 'role',
     initialState,
     reducers: {
-        setRole : (state , action: PayloadAction<RoleType>) => {state.value = action.payload}
+        setRole : (state , action: PayloadAction<RoleType|null>) => {state.value = action.payload}
     }
 })
 

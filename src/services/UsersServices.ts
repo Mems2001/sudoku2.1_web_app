@@ -2,12 +2,13 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import variables from '../../utils/variables'
 import { LoginForm } from '../models/types'
 import { v4 } from 'uuid'
-import { AuthenticationResponse } from '../models/errors'
+import { AuthenticationResponse } from '../models/dbTypes'
 
 interface GameSettingsBody {
     cellsHighlight: boolean, 
     numbersHighlight: boolean,
-    highlightColor?: string
+    highlightColor?: string,
+    inputMode?: number
 }
 
 const api_prefix = variables.url_prefix + "/api/v1/users"
@@ -23,12 +24,13 @@ export class UsersServices {
         }
     }
 
-    static async updateGameSettings(cellsHighlight: boolean, numbersHighlight: boolean, highlightColor?:string) {
+    static async updateGameSettings(cellsHighlight: boolean, numbersHighlight: boolean, highlightColor?:string, inputMode?:number) {
         try {
             const body: GameSettingsBody = {
                 cellsHighlight,
                 numbersHighlight,
-                highlightColor
+                highlightColor, 
+                inputMode
             }
             const response = await axios.patch(`${api_prefix}/game_settings`, body)
             return response

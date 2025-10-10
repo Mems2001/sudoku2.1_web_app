@@ -1,5 +1,5 @@
 import { PuzzleS, Sudoku } from "./dbTypes"
-import { Grid, Ids, numbers } from "./types"
+import { AnnotationsGrid, CellAnnotation, Grid, Ids, numbers } from "./types"
 import { GamesServices, PlayersServices } from "../services"
 
 export type GameType = 0 | 1 | 2
@@ -7,7 +7,8 @@ export type GameType = 0 | 1 | 2
 export interface UpdatedGameData {
     updatedGrid: Grid,
     updatedNumber: string,
-    updatedErrors: number
+    updatedErrors: number,
+    updatedAnnotations: AnnotationsGrid
 }
 
 /**
@@ -31,10 +32,11 @@ export class Game {
         number: string,
         grid: Grid
     }
+    #annotations: AnnotationsGrid
     remainingNumbers: numbers
     #errors: number
 
-    constructor(game_type: GameType,player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid ) {
+    constructor(game_type: GameType, player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid, annotations: AnnotationsGrid ) {
         this.id = id
         this.game_type = game_type
         this.player_id = player_id
@@ -45,6 +47,7 @@ export class Game {
             number: answersN,
             grid: answersGrid
         }
+        this.#annotations = annotations
         this.remainingNumbers = this.#checkRemainingNumbers(this.answers.number)
         this.#errors = 0
     }
@@ -59,6 +62,10 @@ export class Game {
 
     get answers() {
         return this.#answers
+    }
+
+    get annotations() {
+        return this.#annotations
     }
 
     getAnswersValueByPosition(position:string) {
@@ -83,6 +90,10 @@ export class Game {
 
     #setAnswersNumber (number:string) {
         this.answers.number = number
+    }
+
+    #setAnnotations (annotations: AnnotationsGrid) {
+        this.#annotations = annotations
     }
 
     /**
@@ -124,49 +135,58 @@ export class Game {
     }
 
     /**
-     * Sets a particular value to any desired position of the anwsers grid. It also checks the correctness of the value and finally saves the game.
+     * Sets a particular value to any desired position of the anwsers grid or the annotations grid. It also checks the correctness of the value (if it is a number) and finally saves the game.
      * @param {string} location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
-     * @param {number} value  - The desired value to be set.
+     * @param {number|CellAnnotation} value  - The desired value to be set.
      * @param {number} timeElapsed - The time elapsed since the game started.
      * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
-    async setValue (location:string , value:number, timeElapsed:number):Promise<UpdatedGameData|undefined> {
+    async setValue (location:string , value:number|CellAnnotation, timeElapsed:number):Promise<UpdatedGameData|undefined> {
         // console.warn("---> setting value", value, location)
-        let parsedValue = value
-        if (value === 10) {
-            parsedValue = 0
-        }
-        const row = parseInt(location[0])
-        const col = parseInt(location[1])
-        this.answers.grid[row].splice(col , 1 , parsedValue)
-        let newNumber = ''
-        for (let row of this.answers.grid) {
-            for (let n of row) {
-                newNumber += String(n)
+        if (typeof value === "number") {
+            let parsedValue = value
+            if (value === 10) {
+                parsedValue = 0
             }
+            const row = parseInt(location[0])
+            const col = parseInt(location[1])
+            this.answers.grid[row].splice(col , 1 , parsedValue)
+            let newNumber = ''
+            for (let row of this.answers.grid) {
+                for (let n of row) {
+                    newNumber += String(n)
+                }
+            }
+            this.answers.number = newNumber
+            this.#setRemainingNumbers(this.answers.number)
+        } else {
+            this.#annotations[parseInt(location[0])][parseInt(location[1])] = value
         }
-        this.answers.number = newNumber
-        this.#setRemainingNumbers(this.answers.number)
 
         //Value checking
         let updatedPlayer
-        if (this.verifyValue(location)) {
-            if (this.completedGameCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 1)
-            else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
-        } else {
-            if (value != 10) {
-                this.#setErrors(this.#errors + 1)
-                if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed, 2)
-                else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+        if (typeof value === 'number') {
+            if (this.verifyValue(location)) {
+                if (this.completedGameCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 1)
+                else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
             } else {
-                updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, timeElapsed)
+                if (value != 10) {
+                    this.#setErrors(this.#errors + 1)
+                    if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 2)
+                    else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
+                } else {
+                    updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
+                }
             }
+        } else {
+            updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
         }
 
         if (updatedPlayer) return {
             updatedGrid: updatedPlayer.updatedGrid,
             updatedNumber: updatedPlayer.updatedNumber,
-            updatedErrors: updatedPlayer.updatedErrors
+            updatedErrors: updatedPlayer.updatedErrors,
+            updatedAnnotations: updatedPlayer.updatedAnnotations
         }
     }
 
@@ -178,21 +198,22 @@ export class Game {
      * @param {number} playerStatus A number that represents if the player is still playing(0), won(1) or lost(2) the game.
      * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
-    async saveAnswers (grid:Grid, number:string, timeElapsed:number, playerStatus?:number):Promise<UpdatedGameData|undefined> {
+    async saveAnswers (grid:Grid, number:string, annotations: AnnotationsGrid, timeElapsed:number, playerStatus?:number):Promise<UpdatedGameData|undefined> {
         // console.warn('Saving game...' , grid, number, playerStatus)
         try {
             let updatedPlayer
             if (this.id) {
-                updatedPlayer = await PlayersServices.updatePlayer(this.id, this.game_type, grid, number, this.#errors, playerStatus)
+                updatedPlayer = await PlayersServices.updatePlayer(this.id, this.game_type, grid, number, annotations, this.#errors, playerStatus)
                 await GamesServices.updateGame(this.id, timeElapsed)
             }
             // console.warn(updatedPlayer?.data)
             if (updatedPlayer) {
-                this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors)
+                this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors, updatedPlayer.data.annotations)
                 return {
                     updatedGrid: updatedPlayer.data.grid,
                     updatedNumber: updatedPlayer.data.number,
-                    updatedErrors: updatedPlayer.data.errors
+                    updatedErrors: updatedPlayer.data.errors,
+                    updatedAnnotations: updatedPlayer.data.annotations
                 }
             }
 
@@ -201,11 +222,12 @@ export class Game {
         }
     }
 
-    setAnswers(updatedGrid: Grid, updatedNumber: string, updatedErrors: number) {
+    setAnswers(updatedGrid: Grid, updatedNumber: string, updatedErrors: number, updatedAnnotations: AnnotationsGrid) {
         this.#setAnswersGrid(updatedGrid)
         this.#setAnswersNumber(updatedNumber)
         this.#setErrors(updatedErrors)
         this.#setRemainingNumbers(updatedNumber)
+        this.#setAnnotations(updatedAnnotations)
     }
     
     completedGameCheck() {

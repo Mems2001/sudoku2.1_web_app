@@ -21,6 +21,8 @@ export type UseUsername = Pick<LoginForm , 'useUsername'>
 
 export type Cells = Array<string>
 
+export type CellAnnotation = [number, number, number, number, number, number, number, number, number]
+
 export type Grid = [
     [number, number, number, number, number, number, number, number, number],
     [number, number, number, number, number, number, number, number, number],
@@ -31,6 +33,18 @@ export type Grid = [
     [number, number, number, number, number, number, number ,number ,number],
     [number ,number ,number ,number ,number ,number ,number ,number ,number],
     [number ,number ,number ,number ,number ,number ,number ,number ,number]
+]
+
+export type AnnotationsGrid = [
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
+    [CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation, CellAnnotation],
 ]
 
 export interface CurrentPlayer {

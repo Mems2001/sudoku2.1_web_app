@@ -34,9 +34,45 @@
     border: 1px solid rgb(0, 0, 0 , 0.1);
     cursor: pointer;
 }
+.cell-auxiliar-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-.cell input {
-    background-color: unset;
+    height: 100%;
+    width: 100%;
+}
+.cell-annotations {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: grid;
+    grid-template-rows: repeat(3, 30%);
+    grid-template-columns: repeat(3, 30%);
+    align-content: center;
+    justify-content: center;
+
+    color: var(--lcolor-dark-gray)
+}
+.cell-annotation {
+    height: 100%;
+    width: 100%;
+
+    font-size: var(--text-sm);
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cell-annotation.font-bold {
+    color: black;
 }
 
 .border-left {
@@ -59,17 +95,21 @@
     text-align: center;
     font-size: 20px;
     cursor: pointer;
-}
+    background-color: unset;
 
+    position: absolute;
+    z-index: 1;
+}
+.cell input:focus {
+    background-color: #ffffff99;
+}
 .cell p {
     margin: 0;
 }
-
 .cell .incorrect {
     color: var(--lcolor-error);
     font-size: var(--text-ml);
 }
-
 .cell .correct {
     color: black
 }
@@ -134,7 +174,7 @@
 }
 
 .game-options button:hover {
-    background-color: cadetblue;
+    background-color: var(--bcolor-warning);
     transition: ease-in-out 0.25s;
 }
 
@@ -175,6 +215,9 @@
     width: 0.5rem;
 
     margin: 0;
+}
+.remaining-number:disabled {
+    cursor: not-allowed;
 }
 
 .remaining-numbers > h2 {

@@ -14,13 +14,14 @@ interface GameSettingsProps {
 const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers}) => {
     const isLogged = useAppSelector((state:RootState) => state.isLogged.value)
     const game_settings = useAppSelector((state:RootState) => state.gameSettings.value)
+
     const dispatch = useAppDispatch()
     const highlight_colors = ["blue", "pink", "green", "yellow", "black"]
 
-    async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean, highlightColor?:string) {
+    async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean, highlightColor?:string, inputMode?: number) {
         if (isLogged) {
             try {
-                const newSettings = await UsersServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor)
+                const newSettings = await UsersServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode)
                 return console.log('new_game_settings:' , newSettings.data)
             } catch (error) {
                 return console.error(error)
@@ -30,7 +31,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
 
     function handleColorGuides (cellsHighlight:boolean) {
         saveGameSettings(!cellsHighlight, game_settings.numbers_highlight)
-        dispatch(setGameSettings({cells_highlight:!cellsHighlight, numbers_highlight:game_settings.numbers_highlight, highlight_color: game_settings.highlight_color}))
+        dispatch(setGameSettings({cells_highlight:!cellsHighlight, numbers_highlight:game_settings.numbers_highlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
         if (cellsHighlight) {
             clearCellsHighlighting()
         } else {
@@ -39,7 +40,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
     }
     function handleNumberGuides (numbersHighlight:boolean) {
         saveGameSettings(game_settings.cells_highlight, !numbersHighlight)
-        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight:!numbersHighlight, highlight_color: game_settings.highlight_color}))
+        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight:!numbersHighlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
         if (numbersHighlight) {
             clearNumbersHighlighting()
         } else {
@@ -54,7 +55,19 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
             c.classList.add(highlightColor)
         }
         saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, highlightColor)
-        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor}))
+        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor, input_mode: game_settings.input_mode}))
+    }
+
+    function setInputModeButtons(e:React.ChangeEvent<HTMLInputElement>) {
+        const value = e.target.checked ? 0 : 1
+        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
+        return dispatch(setGameSettings({...game_settings, input_mode: value}))
+    }
+
+    function setInputModeKeyboard(e:React.ChangeEvent<HTMLInputElement>) {
+        const value = e.target.checked ? 1 : 0
+        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
+        return dispatch(setGameSettings({...game_settings, input_mode: value}))
     }
     
     if (gameType === 0) 
@@ -81,6 +94,19 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                             </div>
                         ))}
                     </div>
+                    <div className="game-setting">
+                        <label>Input mode:</label>
+                    </div>
+                    <div className="game-setting">
+                        <div>
+                            <label htmlFor="input-buttons">Buttons</label>
+                            <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                        </div>
+                        <div>
+                            <label htmlFor="input-keyboard">Keyboard</label>
+                            <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
+                        </div>
+                    </div>
                 </div>
                 
             </div>
@@ -106,6 +132,19 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                             <input id={color} type="checkbox" className="checkbox-hidden" onChange={() => handleHighlightColor(color)} defaultChecked={color === game_settings.highlight_color}/>
                         </div>
                     ))}
+                </div>
+                <div className="game-setting">
+                    <label>Input mode:</label>
+                </div>
+                <div className="game-setting">
+                    <div>
+                        <label htmlFor="input-buttons">Buttons</label>
+                        <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                    </div>
+                    <div>
+                        <label htmlFor="input-keyboard">Keyboard</label>
+                        <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
+                    </div>
                 </div>
             </div>
         )

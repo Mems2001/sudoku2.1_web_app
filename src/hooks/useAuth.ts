@@ -13,7 +13,8 @@ import { useNavigate } from "react-router-dom"
 import AuthServices from "../services/AuthServices"
 import { UsersServices } from "../services/UsersServices"
 import { useToaster } from "./useToaster"
-import { AuthenticationError, AuthenticationResponse, LoginError, LoginErrorResponse, LogoutError } from "../models/errors"
+import { AuthenticationError, LoginError, LoginErrorResponse, LogoutError } from "../models/errors"
+import { AuthenticationResponse } from "../models/dbTypes"
 
 interface HandleLoginProps {
   data: LoginForm, 
@@ -136,7 +137,7 @@ export const useAuth = ():UseAuthReturn => {
            .then((res:AxiosResponse<AuthenticationResponse>) => {
              dispatch(setLoggedOut())
              dispatch(setRole(null))
-             dispatch(setGameSettings({cells_highlight: true, numbers_highlight: true, highlight_color: "blue"}))
+             dispatch(setGameSettings({cells_highlight: true, numbers_highlight: true, highlight_color: "blue", input_mode: 0}))
              openToaster(res.data.message, "regular")
            })
            .catch((error:AuthenticationResponse) => {

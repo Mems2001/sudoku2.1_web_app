@@ -1,6 +1,22 @@
-import {Grid, Ids} from './types'
+import {AnnotationsGrid, Grid, Ids} from './types'
 
-type RoleType = "admin" | "user" | "anon" 
+type RoleType = "admin" | "user" | "anon"
+
+export interface GameSettings {
+    cells_highlight: boolean,
+    numbers_highlight: boolean,
+    highlight_color: string,
+    input_mode: number
+}
+
+export interface AuthenticationResponse {
+    message: string,
+    settings: GameSettings,
+    class?: string
+    type?: number,
+    user_id?: Ids,
+    role: RoleType,
+}
 
 // Puzzles
 
@@ -64,6 +80,7 @@ export interface PlayerData {
     gameId:     Ids;
     grid:       Grid;
     number:     string;
+    annotations: AnnotationsGrid;
     errors:     number;
     status:     number;
     is_connected: boolean;

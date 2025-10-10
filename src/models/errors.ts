@@ -1,20 +1,4 @@
-import { Ids } from "./types"
-
 //Back-end
-export interface GameSettings {
-    cells_highlight: boolean,
-    numbers_highlight: boolean,
-    highlight_color: string
-}
-
-export interface AuthenticationResponse {
-    message: string,
-    settings: GameSettings,
-    class?: string
-    type?: number,
-    user_id?: Ids,
-    role: string | null,
-}
 
 export interface LoginErrorResponse {
     message: string,

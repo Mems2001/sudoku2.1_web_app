@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import variables from '../../utils/variables'
 import { LoginForm } from "../models/types"
-import { AuthenticationResponse, LoginErrorResponse } from "../models/errors"
+import { LoginErrorResponse } from "../models/errors"
+import { AuthenticationResponse } from "../models/dbTypes"
 
 const api_prefix = variables.url_prefix + "/api/v1/auth"
 

@@ -27,7 +27,7 @@ const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn,
     async function retry () {
         try {
             if (game && game.id && puzzle) {
-                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , 0, 0)
+                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , game.annotations, 0, 0)
                 await GamesServices.updateGame(game.id, 0 , 1)
             }
             window.location.reload()
@@ -38,7 +38,7 @@ const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn,
 
     useEffect(
         () => {
-            if (game_type === 1 && multiplayerGameOver) game?.saveAnswers(game.answers.grid, game.answers.number, timeElapsed, 2)
+            if (game_type === 1 && multiplayerGameOver) game?.saveAnswers(game.answers.grid, game.answers.number, game.annotations, timeElapsed, 2)
             setTimerOn(false)
         }, []
     )

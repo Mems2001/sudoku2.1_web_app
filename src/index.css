@@ -77,8 +77,10 @@
   --lcolor-error: rgb(236, 64, 122);
   --lcolor-dark-navy: rgb(26, 35, 126);
   --lcolor-light-beige: rgb(255, 248, 240);
+  --lcolor-dark-gray: gray;
 
   /* FONT SIZES */
+  --text-xs: 0.5rem;
   --text-sm: 0.75rem;
   --text-md: 1rem;
   --text-ml: 1.25rem;
@@ -129,6 +131,14 @@ button {
   border: unset;
   background-color: unset;
   cursor: pointer;
+}
+
+input::-webkit-inner-spin-button, input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0
+}
+input[type=number] {
+  appearance: textfield;
 }
 
 @media (prefers-color-scheme: light) {
