@@ -5,10 +5,13 @@
     z-index: 8;
     top: 0;
     left: 0;
+
     height: 100dvh;
     width: 100dvw;
+
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
+    overflow: hidden;
 }
 .game-settings .window {
     position: absolute;
@@ -26,8 +29,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--bg-light-beige);
+    
     padding: 1rem;
+    background-color: var(--bg-light-beige);
+    box-shadow: var(--pause-box-shadow);
 
     max-width: 375px;
 }
@@ -41,6 +46,11 @@
 }
 .game-setting label {
     font-size: var(--text-md);
+}
+.input-mode-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 .highlight-colors {
     display: flex;
@@ -103,24 +113,26 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
+    overflow: hidden;
 
     font-family: var(--roboto-font);
 }
 
 .vs-console .window {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50% , -50%);
     
     background-color: var(--bg-light-beige);
+    box-shadow: var(--pause-box-shadow);
     
     min-width: 375px;
     border-radius: 10px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem
+    gap: 1.25rem
 }
 
 .conexion-error-title {
@@ -154,6 +166,10 @@
     flex-direction: column;
     align-items: start;
     gap: 0.5rem;
+
+    max-height: 6rem;
+    overflow-y: auto;
+
     background-color: var(--bg-light-beige);
     padding: 0.75rem;
     border-radius: 5px;

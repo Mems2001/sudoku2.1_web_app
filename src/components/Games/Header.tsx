@@ -32,7 +32,7 @@ const Header:React.FC<GameHeaderProps> = ({game , game_type, turn, time , pause 
     const navigate = useNavigate()
 
     return (
-        <div className="game-options">
+        <div className={`game-options ${!timerOn && 'paused'}`}>
             <button onClick={() => navigate('/')}>
                 <i className="fa-sharp fa-solid fa-door-open fa-xl"></i>
             </button>

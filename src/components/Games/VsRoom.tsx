@@ -1,10 +1,14 @@
-import { Ids } from "../../models/types"
 import variables from "../../../utils/variables"
+
+import { Ids } from "../../models/types"
 import { PlayerData } from "../../models/dbTypes"
+
 import { Socket } from "socket.io-client"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import {motion} from 'framer-motion'
 import GameSettins from "./GameSettings"
+import { GameModalProps, GameModalWindowProps } from "../../assets/animations"
 
 interface VsRommProps {
     game_id: Ids,
@@ -55,8 +59,11 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
 
     if (inList && players && players.length > 0) {
         return (
-            <section className="vs-console">
-                <div className="window">
+            <motion.section className="vs-console"
+            {...GameModalProps}>
+
+                <motion.div className="window"
+                {...GameModalWindowProps}>
                     <div className="current-players">
                         <h2>Current Players:</h2>
                         {socketConexionOn ? (
@@ -95,8 +102,9 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
                         }
                         <button className="cancel" onClick={() => navigate('/')}>Salir</button>
                     </div>
-                </div>
-            </section>
+                </motion.div>
+
+            </motion.section>
         )
     }
 }

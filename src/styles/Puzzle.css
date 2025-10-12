@@ -103,6 +103,9 @@
 .cell input:focus {
     background-color: #ffffff99;
 }
+.cell input:focus-visible {
+    outline: none;
+}
 .cell p {
     margin: 0;
 }
@@ -150,8 +153,18 @@
     flex-direction: row;
     align-items: center;
     gap: 50px;
-}
 
+    max-width: 100dvw;
+
+    transition: all 150ms ease-in-out;
+}
+.game-options.paused {
+    background-color: var(--bg-light-beige);
+    box-shadow: var(--pause-box-shadow);
+    padding: 0.5rem 1rem;
+
+    border-radius: 0.5rem;
+}
 .game-options .errores {
     display: flex;
     flex-direction: row;
@@ -159,11 +172,9 @@
     gap: 10px;
     color: red;
 }
-
 .game-options .chrono {
     font-size: 1rem;
 }
-
 .game-options button {
     display: flex;
     height: 30px;
@@ -172,20 +183,16 @@
     justify-content: center;
     border-radius: 25%;
 }
-
 .game-options button:hover {
     background-color: var(--bcolor-warning);
     transition: ease-in-out 0.25s;
 }
-
 .errores span {
     font-size: 1rem;
 }
-
 .error-color {
     color: red
 }
-
 .success-color {
     color: teal
 }
@@ -229,6 +236,15 @@
 @media screen and (max-width: 768px) {
     .game-options {
         top: 18%;
+
+        width: 100dvw;
+
+        gap: unset;
+        justify-content: space-around;
+    }
+    .game-options.paused {
+        border-radius: unset;
+        padding-inline: 0;
     }
 
     .remaining-numbers {

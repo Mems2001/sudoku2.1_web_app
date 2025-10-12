@@ -1,8 +1,9 @@
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosError, AxiosResponse } from "axios"
 import { AnnotationsGrid, Grid, Ids } from "../models/types"
 import { PlayerData } from "../models/dbTypes"
 import variables from '../../utils/variables'
 import { GameType } from "../models/game"
+import { PlayersServicesError } from "../models/errors"
 
 interface UpdatePlayerBody {
     game_type: GameType, 
@@ -22,8 +23,9 @@ export class PlayersServices {
             const response = await axios.get<PlayerData[]>(`${api_prefix}/multi/${game_id}`)
             return response
         } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Couldn't get the game's player list")
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new PlayersServicesError(altError.message)
         }
     }
 
@@ -32,8 +34,9 @@ export class PlayersServices {
                const response = await axios.get<PlayerData>(`${api_prefix}/single/${game_id}`)
                return response
            } catch (error:any) {
-               console.error({message: error.message})
-               throw new Error("Couldn't get the player data")
+            //    console.error({message: error.message})
+               const altError = error as AxiosError
+               throw new PlayersServicesError(altError.message)
            }
        }
 
@@ -51,8 +54,9 @@ export class PlayersServices {
             // console.warn(response)
             return response
         } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Failed user update")
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new PlayersServicesError(altError.message)
         }   
     }
 
@@ -61,8 +65,9 @@ export class PlayersServices {
             const response = await axios.get<boolean>(`${api_prefix}/on_list/${game_id}`)
             return response
         } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Couldn't check if the player is on the list")
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new PlayersServicesError(altError.message)
         }
     }
 }

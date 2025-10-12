@@ -16,6 +16,7 @@ import { GameType } from "../../models/game"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 import NumberButtons from "./NumberButtons"
+import { AnimatePresence } from "framer-motion"
 
 interface GameProps {
   timeElapsed: number
@@ -84,17 +85,18 @@ const Game:React.FC<GameProps> = ({
             <div id="x" onClick={() => focusOperations('x')} className="grid-auxiliar"></div>
 
             {/* Game menu for single player games */}
-            {openSettings && game_type===0?
-              <GameSettins gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
-                :
-              <></>}
+            <AnimatePresence>
+              {openSettings && game_type===0 && (
+                <GameSettins key='sp-game-settings' gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
+              )}
+            </AnimatePresence>
             
             {/* Game menu for multiplayer games */}
-            {!timerOn && game_type!==0?
-              <VsRomm game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
-              :
-              <></>
-            }
+            <AnimatePresence>
+              {!timerOn && game_type!==0 && !game.gameOverCheck() && !multiplayerGameOver && (
+                <VsRomm key='mp-game-settings' game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
+              )}
+            </AnimatePresence>
 
             {game.gameOverCheck() || multiplayerGameOver?
               <GameOver game_type={game_type} game={game} puzzle={game.puzzle} setTimerOn={setTimerOn} timeElapsed={timeElapsed} multiplayerGameOver={multiplayerGameOver}/>

@@ -71,13 +71,14 @@ export const useAuth = ():UseAuthReturn => {
               }
               return true
             }
-          })
+          return false
+        })
         .catch((error:AuthenticationResponse) => {
             console.error('User authentication error:', error)
             //Creates an anon user and and a session.
             dispatch(setLoggedOut())
             anonUserControl()
-            return
+            return false
           })
     }
 

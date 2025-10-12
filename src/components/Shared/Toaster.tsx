@@ -1,26 +1,26 @@
-import { useSelector } from "react-redux"
-import { RootState } from "../store/store"
-import Logo from "./Shared/Logo"
-import { ToasterSingleton, ToasterType } from "../models/toaster"
+import Logo from "./Logo"
+import {motion} from 'framer-motion'
+
+import { ToasterSingleton, ToasterType } from "../../models/toaster"
+import { ToasterAnimationProps } from "../../assets/animations"
 
 const Toaster = () => {
     ToasterSingleton.init()
-    const showToaster = useSelector((state:RootState) => state.showToaster.value)
-    const showToasterClass = showToaster ? "show-toaster" : ""
     const type = ToasterSingleton.type
     const message = ToasterSingleton.message
 
     function handleToasterType(type: ToasterType) {
         switch (type) {
             case "regular":
-                return `toaster-container ${showToasterClass} toaster-regular`
+                return `toaster-container toaster-regular`
             case "error":
-                return `toaster-container ${showToasterClass} toaster-error`
+                return `toaster-container toaster-error`
         }
     }
 
     return (
-        <div className={handleToasterType(type)}>
+        <motion.div className={handleToasterType(type)}
+        {...ToasterAnimationProps}>
             {type === "regular" ? 
                 <Logo size="small"/>
                     :
@@ -29,7 +29,7 @@ const Toaster = () => {
                 </div>
             }
             <p>{message}</p>
-        </div>
+        </motion.div>
     )
 }
 

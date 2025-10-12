@@ -6,6 +6,7 @@ import { AxiosError, AxiosResponse } from "axios"
 import { useGoToGame } from "../../hooks/useGoToGame"
 import { GamesServices } from "../../services/GamesServices"
 import { GameType } from "../../models/game"
+import { GamesServicesError } from "../../models/errors"
 
 interface Props {
     closeModal: () => void
@@ -73,9 +74,19 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
                 setSaved(res.data)
             })
             .catch((err:AxiosError) => {
-                console.error({message: err.message, err})
+                throw new GamesServicesError(err.message)
             })
            
+    }
+
+    function deleteSavedGame(player_id:Ids){
+        GamesServices.deleteGame(player_id)
+            .then(() => {
+                getMySavedGames()
+            })
+            .catch((err:AxiosError) => {
+                throw new GamesServicesError(err.message)
+            })
     }
 
     return (
@@ -89,7 +100,14 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
             }
             {showSaved && (
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => <button key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>)}
+                    {saved?.map(game => 
+                        (<div className="saved-game-buttons">
+                            <button type="button" key={game.Game.id} onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>
+                            <button type="button" className="delete" onClick={() => deleteSavedGame(game.id)}>
+                                <i className="fa-solid fa-trash fa-lg"></i>
+                            </button>
+                        </div>)
+                    )}
                     <button className="saved-game home-button modal-button" onClick={() => setShowSaved(false)}>Back</button>
                 </div>
                 )
@@ -105,12 +123,12 @@ const GamesModal: React.FC<Props> = ({closeModal}) => {
             }
             {showDifficulties && gameType !== null && (
                 <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
-                    <button className="home-button modal-button" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
+                    <button className="home-button modal-button signup" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
+                    <button className="home-button modal-button signup" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
+                    <button className="home-button modal-button signin" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
+                    <button className="home-button modal-button signin" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
+                    <button className="home-button modal-button logout" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
+                    <button className="home-button modal-button master-difficulty" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
                     <button className="home-button modal-button" onClick={() => {setShowDifficulties(false);setGameType(null)}}>Back</button>
                 </div>
             )}

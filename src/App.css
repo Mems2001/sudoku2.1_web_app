@@ -9,10 +9,13 @@
 .App {
   height: 100dvh;
   width: 100%;
+  max-width: 100dvw;
 
   background-color: var(--bg-light-beige);
 
   position: relative;
+
+  /* overflow: hidden; */
 }
 
 .menu-button {

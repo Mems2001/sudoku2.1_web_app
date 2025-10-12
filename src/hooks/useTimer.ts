@@ -7,10 +7,10 @@ interface UseTimerProps {
 
 export function useTimer({timerOn, setTimeElapsed}:UseTimerProps) {
     useEffect(() => {
-        console.log('timer useEffect')
+        // console.log('timer useEffect')
         let timer: NodeJS.Timeout | undefined
         if (timerOn) {
-            console.log('timer is on')
+            // console.log('timer is on')
             timer = setInterval(() => {
               setTimeElapsed((time) => time + 1);
             }, 1000);

@@ -17,21 +17,29 @@ import GameModes from './components/Games/GameModes'
 
 import axios from 'axios'
 import { useAuth } from './hooks/useAuth'
-import Toaster from './components/Toaster'
+import Toaster from './components/Shared/Toaster'
 import ProtectedRoute from './components/Shared/ProtectedRoute'
 import AdminConsole from './components/Admin/AdminConsole'
 import SudokuLab from './components/Admin/SudokuLab'
+import { AnimatePresence } from 'framer-motion'
+import { useSelector } from 'react-redux'
+import { RootState } from './store/store'
 
 axios.defaults.withCredentials = true
 
 
 function App () {
 
+  const showToaster = useSelector((state:RootState) => state.showToaster.value)
   const {isLogged, role, logout} = useAuth()
 
   return (
     <div className='App'>
-      <Toaster />
+      <AnimatePresence>
+        {showToaster && (
+          <Toaster key='toaster'/>
+        )}
+      </AnimatePresence>
 
       <Routes>
         <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />

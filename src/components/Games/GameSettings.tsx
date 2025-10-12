@@ -2,6 +2,8 @@ import { useAppDispatch, useAppSelector } from "../../models/hooks";
 import { RootState } from "../../store/store";
 import { UsersServices } from "../../services";
 import { setGameSettings } from "../../store/gameSettings.slice";
+import { motion } from 'framer-motion'
+import { GameModalProps, GameModalWindowProps } from "../../assets/animations";
 
 interface GameSettingsProps {
     gameType: number,
@@ -73,8 +75,22 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
     if (gameType === 0) 
     {
         return (
-            <div className="game-settings">
-                <div className="settings-window">
+            <motion.div className="game-settings"
+            {...GameModalProps}>
+
+                <motion.div className="settings-window"
+                {...GameModalWindowProps}>
+                    <div className="game-setting">
+                        <label>Input mode:</label>
+                        <div className="input-mode-container">
+                            <label htmlFor="input-buttons">Buttons</label>
+                            <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                        </div>
+                        <div className="input-mode-container">
+                            <label htmlFor="input-keyboard">Keyboard</label>
+                            <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
+                        </div>
+                    </div>
                     <div className="game-setting">
                         <label htmlFor="n-match">Highlight numbers</label>
                         <input type="checkbox" id="n-match" defaultChecked={game_settings.numbers_highlight} onChange={() => handleNumberGuides(game_settings.numbers_highlight)}/>
@@ -94,26 +110,24 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                             </div>
                         ))}
                     </div>
-                    <div className="game-setting">
-                        <label>Input mode:</label>
-                    </div>
-                    <div className="game-setting">
-                        <div>
-                            <label htmlFor="input-buttons">Buttons</label>
-                            <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
-                        </div>
-                        <div>
-                            <label htmlFor="input-keyboard">Keyboard</label>
-                            <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
-                        </div>
-                    </div>
-                </div>
+                </motion.div>
                 
-            </div>
+            </motion.div>
         )
     } else {
         return (
             <div className="settings-window">
+                <div className="game-setting">
+                    <label>Input mode:</label>
+                    <div className="input-mode-container">
+                        <label htmlFor="input-buttons">Buttons</label>
+                        <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                    </div>
+                    <div className="input-mode-container">
+                        <label htmlFor="input-keyboard">Keyboard</label>
+                        <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
+                    </div>
+                </div>
                 <div className="game-setting">
                     <label htmlFor="n-match">Highlight numbers</label>
                     <input type="checkbox" id="n-match" defaultChecked={game_settings.numbers_highlight} onChange={() => handleNumberGuides(game_settings.numbers_highlight)}/>
@@ -132,19 +146,6 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                             <input id={color} type="checkbox" className="checkbox-hidden" onChange={() => handleHighlightColor(color)} defaultChecked={color === game_settings.highlight_color}/>
                         </div>
                     ))}
-                </div>
-                <div className="game-setting">
-                    <label>Input mode:</label>
-                </div>
-                <div className="game-setting">
-                    <div>
-                        <label htmlFor="input-buttons">Buttons</label>
-                        <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
-                    </div>
-                    <div>
-                        <label htmlFor="input-keyboard">Keyboard</label>
-                        <input id='input-keyboard' type="checkbox" checked={game_settings.input_mode === 1} onChange={setInputModeKeyboard}/>
-                    </div>
                 </div>
             </div>
         )

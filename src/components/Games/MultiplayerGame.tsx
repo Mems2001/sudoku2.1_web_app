@@ -11,6 +11,7 @@ import { useAppSelector } from "../../models/hooks"
 import { useGetPlayers } from '../../hooks/useGetPlayers'
 import AuthServices from '../../services/AuthServices'
 import { useToaster } from "../../hooks/useToaster"
+import { AuthenticationError } from "../../models/errors"
 
 /**
  * This component is in charge of socket handling for multiplayer games. That includes timer functions, players data, play or pause functions, and specially the player validation functions needed to access a game. We'll find here any .on socket event and this component will handle how the information received will be passed to the "Game" component if rendered.
@@ -36,8 +37,8 @@ const MultiplayerGame = () => {
         try {
             const auth = await AuthServices.getAuthenticateSession()
             if (socket && auth) socket?.emit('create-player' , auth.data.user_id, game_id)
-        } catch (error) {
-            console.error(error)
+        } catch (error:any) {
+            throw new AuthenticationError(error.message)
         }
     }
 

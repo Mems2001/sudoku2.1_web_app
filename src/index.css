@@ -39,6 +39,8 @@
   --orbitron-font: "Orbitron", system-ui, Avenir, Helvetica, Arial, sans-serif;
   --roboto-font: "Roboto", system-ui, Avenir, Helvetica, Arial, sans-serif;
 
+  --pause-box-shadow: 0 0 5px 1px black;
+
   /* COLORS */
   --bg-light-beige: rgb(255, 248, 240);
 
@@ -57,7 +59,7 @@
   --bcolor-error: rgb(236, 64, 122);
   --bcolor-informative: rgb(38, 198, 218);
   --bcolor-dark-navy: rgb(26, 35, 126);
-
+  --bcolor-black: black;
 
   --tbcolor-success: rgb(77, 182, 172, 0.4);
   --tbcolor-error:  rgb(236, 64, 122, 0.5);

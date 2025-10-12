@@ -3,6 +3,7 @@ import variables from '../../utils/variables'
 import { LoginForm } from '../models/types'
 import { v4 } from 'uuid'
 import { AuthenticationResponse } from '../models/dbTypes'
+import { UsersServicesError } from '../models/errors'
 
 interface GameSettingsBody {
     cellsHighlight: boolean, 
@@ -19,8 +20,9 @@ export class UsersServices {
             const response = await axios.post(`${api_prefix}/register`, data)
             return response
         } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Not registered")
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new UsersServicesError(altError.message)
         }
     }
 
@@ -35,8 +37,9 @@ export class UsersServices {
             const response = await axios.patch(`${api_prefix}/game_settings`, body)
             return response
         } catch (error:any) {
-            console.error({message: error.message})
-            throw new Error("Could not update the game settings")
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new UsersServicesError(altError.message)
         }
     }
 
@@ -51,7 +54,8 @@ export class UsersServices {
             return response
         } catch (error) {
             const altError = error as AxiosError<AuthenticationResponse>
-            throw altError.response?.data
+            // console.error(altError)
+            throw new UsersServicesError(altError.response?.data.message ?? "Couldn't create the anonymous user")
         }
     }
 }

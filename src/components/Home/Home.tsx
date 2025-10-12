@@ -55,6 +55,13 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                         <></>
                     }
                 </div>
+
+                {role === 'anon' && (
+                    <p>*Playing as an anonymous user</p>
+                )}
+                {!role && (
+                    <p>*Something went wrong, please reload the page</p>
+                )}
             </div>
 
             <div className="background-h">

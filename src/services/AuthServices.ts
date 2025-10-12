@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import variables from '../../utils/variables'
 import { LoginForm } from "../models/types"
-import { LoginErrorResponse } from "../models/errors"
+import { AuthenticationError, LoginError, LoginErrorResponse } from "../models/errors"
 import { AuthenticationResponse } from "../models/dbTypes"
 
 const api_prefix = variables.url_prefix + "/api/v1/auth"
@@ -16,7 +16,7 @@ class AuthServices {
         } catch (error) {
             const altError = error as AxiosError<AuthenticationResponse>
             // console.error(altError)
-            throw altError.response?.data
+            throw new AuthenticationError(altError.response?.data.message ?? "Couldn't authenticate the user")
         }
     }
 
@@ -28,7 +28,7 @@ class AuthServices {
         } catch(error) {
             const altError = error as AxiosError<LoginErrorResponse>
             // console.error(altError.response)
-            throw altError.response?.data
+            throw new LoginError(altError.response?.data.message ?? "Couldn't login")
         }
     }
 

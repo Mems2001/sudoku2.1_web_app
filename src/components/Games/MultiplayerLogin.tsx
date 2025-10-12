@@ -5,6 +5,7 @@ import { setRole } from "../../store/role.slice"
 import LoginFormC from "../UserAuth/LoginForm"
 import AuthServices from "../../services/AuthServices"
 import { UsersServices } from "../../services"
+import { AuthenticationError } from "../../models/errors"
 interface MultiplayerLoginProps {
     game_id: Ids,
     socket?: Socket
@@ -19,6 +20,7 @@ const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, socket}) => 
     async function continueAsAnon () {
             try {
                 const auth = await AuthServices.getAuthenticateSession()
+                
                 if (auth) {
                     if (socket) socket.emit('create-player' , auth.data.user_id , game_id)
                 } else {
@@ -29,8 +31,8 @@ const MultiplayerLogin:React.FC<MultiplayerLoginProps> = ({game_id, socket}) => 
                             if (socket) socket.emit('create-player' , res.data.user_id , game_id)
                         })
                 }
-            } catch (error) {
-                console.error(error)
+            } catch (error:any) {
+                throw new AuthenticationError(error.message)
             }
         }
 
