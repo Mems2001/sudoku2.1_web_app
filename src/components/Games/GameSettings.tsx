@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../../models/hooks";
 import { RootState } from "../../store/store";
-import { UsersServices } from "../../services";
 import { setGameSettings } from "../../store/gameSettings.slice";
 import { motion } from 'framer-motion'
 import { GameModalProps, GameModalWindowProps } from "../../assets/animations";
+import { ProfilesServices } from "../../services/ProfilesServices";
 
 interface GameSettingsProps {
     gameType: number,
@@ -23,8 +23,8 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
     async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean, highlightColor?:string, inputMode?: number) {
         if (isLogged) {
             try {
-                const newSettings = await UsersServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode)
-                return console.log('new_game_settings:' , newSettings.data)
+                const newSettings = await ProfilesServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode)
+                return console.log('new_game_settings:' , newSettings?.data)
             } catch (error) {
                 return console.error(error)
             }

@@ -45,9 +45,9 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
         }
       }
 
-    function playGame (socket:Socket | undefined) {
+    function playGame (socket:Socket | undefined, init:boolean = false) {
         if (socket) {
-            socket.emit('play-game' , game_id)
+            socket.emit('play-game' , {game_id, init})
         }
     }
 
@@ -96,9 +96,9 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
 
                     <div id='main-room-actions' className="room-actions">
                         { timeElapsed === 0?
-                            <button className="continue" onClick={() => playGame(socket)} disabled={(players && players.length < 2) || !host}>Iniciar</button>
+                            <button className="continue" onClick={() => playGame(socket, true)} disabled={(players && players.length < 2) || !host}>Start</button>
                             :
-                            <button className="continue" disabled={!host} onClick={() => playGame(socket)}>Continuar</button>
+                            <button className="continue" disabled={!host} onClick={() => playGame(socket, false)}>Continue</button>
                         }
                         <button className="cancel" onClick={() => navigate('/')}>Salir</button>
                     </div>

@@ -172,6 +172,7 @@ export class Game {
             } else {
                 if (value != 10) {
                     this.#setErrors(this.#errors + 1)
+                    
                     if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 2)
                     else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
                 } else {
@@ -204,6 +205,7 @@ export class Game {
             let updatedPlayer
             if (this.id) {
                 updatedPlayer = await PlayersServices.updatePlayer(this.id, this.game_type, grid, number, annotations, this.#errors, playerStatus)
+                // Game status will be handled at the back-end.
                 await GamesServices.updateGame(this.id, timeElapsed)
             }
             // console.warn(updatedPlayer?.data)

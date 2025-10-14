@@ -1,5 +1,12 @@
 //Back-end
 
+import { AxiosError } from "axios"
+
+export interface GeneralErrorResponse {
+    message: string,
+    error: any
+}
+
 export interface LoginErrorResponse {
     message: string,
     class: string,
@@ -59,5 +66,35 @@ export class UsersServicesError extends Error {
     constructor (message: string) {
         super(message)
         this.name = "Users Services Error"
+    }
+}
+
+export class ProfilesServicesError extends Error {
+    constructor (message: string) {
+        super(message)
+        this.name = "Profiles Services Error"
+    }
+}
+
+const errorTypes = {
+    "login": LoginError,
+    "logout": LogoutError,
+    "authentication": AuthenticationError,
+    "games-services": GamesServicesError,
+    "players-services": PlayersServicesError,
+    "puzzles-services": PuzzlesServicesError,
+    "sudokus-services": SudokusServicesError,
+    "users-services": UsersServicesError,
+    "profiles-services": ProfilesServicesError
+} as const
+
+export function handleErrorType (type: keyof typeof errorTypes, error:any):any {
+    let altError
+    if (error.response.data.message) {
+        altError = error as AxiosError<GeneralErrorResponse>
+        throw new errorTypes[type](`${altError.message}: ${altError.response!.data.message}`)
+    } else {
+        altError = error as AxiosError
+        throw new errorTypes[type](altError.message!)
     }
 }

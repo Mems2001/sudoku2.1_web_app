@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom"
 import AuthServices from "../services/AuthServices"
 import { UsersServices } from "../services/UsersServices"
 import { useToaster } from "./useToaster"
-import { AuthenticationError, LoginError, LoginErrorResponse, LogoutError } from "../models/errors"
+import { AuthenticationError, LoginError, LogoutError, UsersServicesError } from "../models/errors"
 import { AuthenticationResponse } from "../models/dbTypes"
 
 interface HandleLoginProps {
@@ -44,15 +44,12 @@ export const useAuth = ():UseAuthReturn => {
       UsersServices.postAnon()
           .then(res => {
             // console.log('Anon user "logged in"' , res.status)
-            dispatch(setRole('anon'))
+            dispatch(setRole(res.data.role))
             openToaster(res.data.message, "regular")
           })
-          .catch((error:AuthenticationResponse) => {
-            // console.error(error)
-            openToaster(error.message, "error")
-            throw new AuthenticationError(error.message)
+          .catch((error:UsersServicesError) => {
+            console.error(error)
           })
-    
     }
 
     function authenticateSession() {
@@ -73,8 +70,8 @@ export const useAuth = ():UseAuthReturn => {
             }
           return false
         })
-        .catch((error:AuthenticationResponse) => {
-            console.error('User authentication error:', error)
+        .catch((error:UsersServicesError) => {
+            console.error(error)
             //Creates an anon user and and a session.
             dispatch(setLoggedOut())
             anonUserControl()
@@ -90,8 +87,8 @@ export const useAuth = ():UseAuthReturn => {
             dispatch(setRole(null))
             navigate('/login')
         })
-        .catch(err => {
-            console.error('Error:', err)
+        .catch((error:UsersServicesError) => {
+            console.error(error)
         }) 
     }
 
@@ -119,17 +116,15 @@ export const useAuth = ():UseAuthReturn => {
                   if (!game_id) navigate('/')
                   openToaster(response.data.message, "regular")
               })
-              .catch((error:LoginErrorResponse) => {
-                  // console.error('Error:', error.message, error.type)
+              .catch((error:AuthenticationError) => {
+                  console.error(error)
                   dispatch(setLoggedOut())
                   openToaster(error.message, "error")
-                  throw new AuthenticationError(error.message)
               })
         })
-        .catch((err:LoginErrorResponse) => {
-          // console.log(err)
-          openToaster(err.message, "error")
-          throw new LoginError(err.message)
+        .catch((error:LoginError) => {
+          console.error(error)
+          openToaster(error.message, "error")
         })
     }
 
@@ -141,10 +136,9 @@ export const useAuth = ():UseAuthReturn => {
              dispatch(setGameSettings({cells_highlight: true, numbers_highlight: true, highlight_color: "blue", input_mode: 0}))
              openToaster(res.data.message, "regular")
            })
-           .catch((error:AuthenticationResponse) => {
-            //  console.error('Error', error)
+           .catch((error:LogoutError) => {
+             console.error(error)
             openToaster(error.message, "error")
-            throw new LogoutError(error.message)
            })
       }
 

@@ -16,6 +16,11 @@ interface UseGoToGameProps {
 export const useGoToGame = () => {
     const navigate = useNavigate()
 
+    /**
+     * This function tries to find a random puzzle for the player to solve, if it does it tries to create a game given the game type. 
+     * @param {object} UseGoToGameProps
+     * @returns 
+     */
     async function goToGame ({gameType, difficulty, closeModal}:UseGoToGameProps) {
         try {
           const puzzle:AxiosResponse<PuzzleData> = await PuzzlesServices.getRandomPuzzle(difficulty)
