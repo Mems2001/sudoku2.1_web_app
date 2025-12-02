@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { useAuth } from "../../hooks"
 
-function ProtectedRoute () {
+function ProtectedRouteAdmin () {
     const { isLogged, role } = useAuth()
     
-    if (isLogged && role === 'user') return (
+    if (isLogged && role === 'admin') return (
         <Outlet />
     ) 
     else return (
@@ -12,4 +12,4 @@ function ProtectedRoute () {
     )
 }
 
-export default ProtectedRoute
+export default ProtectedRouteAdmin

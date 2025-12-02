@@ -94,7 +94,8 @@ export interface PlayerData {
 }
 
 export interface User {
-    username: string
+    username: string,
+    email: string
 }
 
 export interface GameS {
@@ -110,4 +111,29 @@ export interface PuzzleS {
     number: string;
     Sudoku: Sudoku;
     difficulty: number
+}
+
+// Profiles
+
+interface Stat {
+    [key:string]: number
+}
+
+export interface GameStats {
+    single_player?: Stat,
+    time_vs?: Stat,
+    cooperative?: Stat
+}
+
+export interface ProfileData {
+    id: Ids,
+    user_id: Ids,
+    game_stats: GameStats,
+    cells_highlight: boolean,
+    numbers_highlight: boolean,
+    highlight_color: string,
+    input_mode: number,
+    created_at: Date,
+    updated_at: Date,
+    User: User
 }

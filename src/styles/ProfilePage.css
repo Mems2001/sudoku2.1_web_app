@@ -1,0 +1,203 @@
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: fit-content;
+    width: 100%;
+}
+
+.profile-container {
+    background-color: unset;
+
+    height: fit-content;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: white;
+    box-shadow: var(--profile-box-shadow);
+
+    border-radius: 1.5rem;
+    padding: 1rem;
+}
+.profile-avatar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    height: 16vh;
+    width: 16vh;
+    margin-bottom: 1.5rem;
+
+    border-radius: 50%;
+    border:1px solid transparent;
+    background: linear-gradient(45deg, var(--color-blue), var(--color-warning), var(--color-error));
+    background-clip: border-box;
+}
+.avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 15vh;
+    width: 15vh;
+
+    border-radius: 50%;
+    background-color: white;
+
+    font-size: var(--text-4xl);
+}
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    height: fit-content;
+    width: 100%;
+}
+.input-container > span {
+    color: var(--lcolor-dark-gray)
+}
+.input-container > input {
+    border: 2px solid transparent;
+    border-bottom: 2px solid var(--color-dark-navy); 
+    padding-inline: 1rem;
+    outline: none;
+    background-color: white;
+
+    height: 2rem;
+    width: 100%;
+
+    transition: all 200ms ease-in-out;
+}
+.input-container > input:disabled {
+    height: 1.5rem;
+
+    border-radius: 0;
+    border: 2px solid transparent;
+    padding-inline: unset;
+    background-color: white;
+    
+    text-align: center;
+    color: var(--lcolor-dark-navy);
+}
+.input-container  #profile-username:disabled {
+    font-weight: 600;
+    font-size: var(--text-lg);
+}
+.input-container  #profile-email:disabled {
+    font-weight: 500;
+    font-size: var(--text-sm);;
+}
+.input-container > input:focus {
+    border-radius: 0.5rem;
+    border: 2px solid var(--color-dark-navy);
+    border-bottom: 2px solid var(--color-dark-navy); 
+    background-color: white;
+}
+.profile-edit-button {
+    margin-top: 1rem;
+
+    font-size: var(--text-lg);
+}
+
+.profile-title {
+    font-size: var(--text-ml);
+    color: var(--lcolor-dark-navy);
+    margin-bottom: 0.5rem;
+}
+.game-stats {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+.game-stats-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    width: 100%;
+}
+.game-stats-option {
+    background-color: white;
+    color: var(--lcolor-dark-navy);
+    padding-top: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    
+    width: 40%;
+    box-shadow: var(--profile-box-shadow);
+
+    cursor: pointer;
+
+    transition: all 200ms ease-in-out;
+}
+.game-stats-option.disabled {
+    background-color: var(--bcolor-light-beige);
+}
+.detailed-stats{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    background-color: white;
+    padding: 1rem;
+    box-shadow: var(--profile-box-shadow);
+    border-radius: 1rem;
+
+    user-select: none;
+}
+.difficulty-container {
+    width: 80%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.difficulty-label {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.difficulty-label > i {
+    cursor: pointer;
+}
+.stat {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 100%;
+
+    transition: all 150ms ease-in-out;
+}
+.stat.hidden {
+    display: none;
+
+    transition: all 150ms ease-in-out;
+}

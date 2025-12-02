@@ -38,6 +38,11 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                 <p className="home-text">Test your mind or challenge your friends with a logic puzzle</p>
     
                 <div className="home-buttons">
+                    {isLogged && (
+                        <button type="button" className="home-button user" onClick={() => navigate('/my-profile')}>
+                            <i className="fa-solid fa-user-tie fa-lg"></i>
+                        </button>
+                    )}
                     <button type="button" className="home-button play" onClick={openModal}>Play</button>
                     {isLogged ?
                         <button type="button" className="home-button logout" id="logout-btn" onClick={logout}>Log out</button>
@@ -57,10 +62,10 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                 </div>
 
                 {role === 'anon' && (
-                    <p>*Playing as an anonymous user</p>
+                    <p className='home-user-warning'>*Playing as an anonymous user</p>
                 )}
                 {!role && (
-                    <p>*Something went wrong, please reload the page</p>
+                    <p className='home-user-warning'>*Something went wrong, please reload the page</p>
                 )}
             </div>
 

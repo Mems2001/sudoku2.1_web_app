@@ -7,7 +7,7 @@
 }
 
 .App {
-  height: 100dvh;
+  min-height: 100dvh;
   width: 100%;
   max-width: 100dvw;
 
@@ -15,7 +15,11 @@
 
   position: relative;
 
-  /* overflow: hidden; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  overflow: hidden;
 }
 
 .menu-button {

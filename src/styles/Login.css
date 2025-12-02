@@ -32,7 +32,7 @@
     cursor: pointer;
 }
 
-.disabled {
+.login-container button.disabled {
     background-color: gray !important;
     color: gray !important;
 }

@@ -85,6 +85,7 @@ export const useAuth = ():UseAuthReturn => {
             console.log('User registered')
             dispatch(setLoggedOut())
             dispatch(setRole(null))
+            localStorage.removeItem('anon-sudoku')
             navigate('/login')
         })
         .catch((error:UsersServicesError) => {
@@ -108,11 +109,13 @@ export const useAuth = ():UseAuthReturn => {
                   if (response.status == 200) {
                       dispatch(setLoggedIn())
                       dispatch(setRole(response.data.role))
-                      dispatch(setGameSettings(response.data.settings))               
+                      dispatch(setGameSettings(response.data.settings))
+                      localStorage.removeItem('anon-sudoku')
                       if (game_id) socket?.emit('create-player', response.data.user_id, game_id)
                   } else {
                       dispatch(setLoggedOut())
                   }
+
                   if (!game_id) navigate('/')
                   openToaster(response.data.message, "regular")
               })
