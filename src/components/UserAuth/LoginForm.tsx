@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Ids, LoginForm } from "../../models/types"
 import { Socket } from "socket.io-client"
@@ -15,11 +15,12 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
     const {register , handleSubmit , getValues , formState:{errors}} = useForm<LoginForm>()
     const { handleLogin } = useAuth()
 
-    function handleLoginType(event: React.ChangeEvent<HTMLInputElement>):void {
-        setUseUsername(event.target.checked);
+    //For hidden checkbox inputs
+    function handleLoginType():void {
+        setUseUsername(true);
     }
-    function handleLoginType2(event: React.ChangeEvent<HTMLInputElement>):void {
-        setUseUsername(!event.target.checked);
+    function handleLoginType2():void {
+        setUseUsername(false);
     }
 
     /**
@@ -70,11 +71,12 @@ const LoginFormC:React.FC<LoginFormProps> = ({game_id, socket}) => {
     return (
         <form onSubmit={handleSubmit(loginSubmit)} className="login-form">
             <div className="input-container">
-                <div className="label-container">
-                    <label htmlFor="username">Username</label> 
-                    <input className="checkbox" type="checkbox" name="username-check" checked={useUsername} onChange={handleLoginType}/>
-                    <label htmlFor="email">e-mail</label>
-                    <input className="checkbox" type="checkbox" name="email-check" checked={!useUsername} onChange={handleLoginType2}/>
+                <div className="label-container" data-active={useUsername}>
+                    <div className="toggle-slider"></div>
+                    <label role="button" aria-pressed={useUsername} onKeyDown={(e) => {if (e.key === 'Enter') handleLoginType()}} tabIndex={0} htmlFor="username" onClick={handleLoginType}>username</label> 
+                    <input className="checkbox" type="checkbox" name="username-check" checked={useUsername}/>
+                    <label role="button" aria-pressed={!useUsername} onKeyDown={(e) => {if (e.key === 'Enter') handleLoginType2()}} tabIndex={0} htmlFor="email" onClick={handleLoginType2}>e-mail</label>
+                    <input className="checkbox" type="checkbox" name="email-check" checked={!useUsername}/>
                 </div>
 
                 {/* Custom Input */}

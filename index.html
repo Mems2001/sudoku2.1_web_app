@@ -1,11 +1,19 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        // Dark theme disabled for now
+        const theme = 'light';
+        document.documentElement.classList.add(theme);
+        document.documentElement.setAttribute('data-theme', theme);
+      })()
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <script src="https://kit.fontawesome.com/badb15c08d.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Sudoku 2.1</title>
   </head>
   <body>
     <main id="root"></main>
