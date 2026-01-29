@@ -6,58 +6,79 @@ import { GameModalProps, GameModalWindowProps } from "../../assets/animations";
 import { ProfilesServices } from "../../services/ProfilesServices";
 
 interface GameSettingsProps {
-    gameType: number,
-    clearCellsHighlighting: () => void,
-    clearNumbersHighlighting: () => void,
-    selectCells: () => void,
-    sameNumbers: () => void
+    gameType?: number,
+    clearCellsHighlighting?: () => void,
+    clearNumbersHighlighting?: () => void,
+    selectCells?: () => void,
+    sameNumbers?: () => void,
+    homeCloseButton?: () => void
 }
 
-const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers}) => {
-    const isLogged = useAppSelector((state:RootState) => state.isLogged.value)
+/**
+ * This component allows the user to change his game preferences. Works both in game or at the home screen.
+ * @returns 
+ */
+const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers, homeCloseButton}) => {
     const game_settings = useAppSelector((state:RootState) => state.gameSettings.value)
 
     const dispatch = useAppDispatch()
     const highlight_colors = ["blue", "pink", "green", "yellow", "black"]
 
+    function closeSettingsModal() {
+        if (homeCloseButton !== undefined) homeCloseButton()
+    }
+
+    /***
+     * Saves the game settings to the profile, even for anon users.
+     */
     async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean, highlightColor?:string, inputMode?: number) {
-        if (isLogged) {
             try {
                 const newSettings = await ProfilesServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode)
                 return console.log('new_game_settings:' , newSettings?.data)
             } catch (error) {
                 return console.error(error)
             }
-        }
     }
 
     function handleColorGuides (cellsHighlight:boolean) {
         saveGameSettings(!cellsHighlight, game_settings.numbers_highlight)
         dispatch(setGameSettings({cells_highlight:!cellsHighlight, numbers_highlight:game_settings.numbers_highlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
-        if (cellsHighlight) {
+
+        // Controlls the function behavior when used inside a game or from the home screen.
+        if (!gameType) return
+
+        if (cellsHighlight && clearCellsHighlighting) {
             clearCellsHighlighting()
-        } else {
+        } else if (selectCells) {
             selectCells()
         }
     }
     function handleNumberGuides (numbersHighlight:boolean) {
         saveGameSettings(game_settings.cells_highlight, !numbersHighlight)
         dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight:!numbersHighlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
-        if (numbersHighlight) {
+
+        // Controlls the function behavior when used inside a game or from the home screen.
+        if (!gameType) return
+
+        if (numbersHighlight && clearNumbersHighlighting) {
             clearNumbersHighlighting()
-        } else {
+        } else if (sameNumbers) {
             sameNumbers()
         }
     }
 
     function handleHighlightColor (highlightColor:string) {
+        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, highlightColor)
+        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor, input_mode: game_settings.input_mode}))
+
+        // Controlls the function behavior when used inside a game or from the home screen.
+        if (!gameType) return
+
         const cells = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
         for (const c of cells) {
             c.classList.remove(game_settings.highlight_color)
             c.classList.add(highlightColor)
         }
-        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, highlightColor)
-        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor, input_mode: game_settings.input_mode}))
     }
 
     function setInputModeButtons(e:React.ChangeEvent<HTMLInputElement>) {
@@ -71,9 +92,8 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
         saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
         return dispatch(setGameSettings({...game_settings, input_mode: value}))
     }
-    
-    if (gameType === 0) 
-    {
+
+    if (gameType === undefined || gameType === 0) {
         return (
             <motion.div className="game-settings"
             {...GameModalProps}>
@@ -110,6 +130,8 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                             </div>
                         ))}
                     </div>
+
+                    {gameType === undefined && <button onClick={closeSettingsModal}>save & close</button>}
                 </motion.div>
                 
             </motion.div>

@@ -4,8 +4,8 @@ import { handleErrorType } from '../models/errors'
 import { ProfileData } from '../models/dbTypes'
 
 interface GameSettingsBody {
-    cellsHighlight: boolean, 
-    numbersHighlight: boolean,
+    cellsHighlight?: boolean, 
+    numbersHighlight?: boolean,
     highlightColor?: string,
     inputMode?: number
 }
@@ -22,7 +22,7 @@ export class ProfilesServices {
         }
     }
 
-    static async updateGameSettings(cellsHighlight: boolean, numbersHighlight: boolean, highlightColor?:string, inputMode?:number) {
+    static async updateGameSettings(cellsHighlight?: boolean, numbersHighlight?: boolean, highlightColor?:string, inputMode?:number) {
         try {
             const body: GameSettingsBody = {
                 cellsHighlight,

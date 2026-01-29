@@ -58,10 +58,10 @@ export const useAuth = ():UseAuthReturn => {
           // console.log(response)
           if (response && response.status == 200) {
               dispatch(setRole(response.data.role))
+              dispatch(setGameSettings(response.data.settings))
               //Only updates the loggged in state to true if the user is not an anon, to protect non anon user features.
               if (response.data.role && response.data.role != 'anon') {
                 dispatch(setLoggedIn())
-                dispatch(setGameSettings(response.data.settings))
               }
               else {
                 dispatch(setLoggedOut())

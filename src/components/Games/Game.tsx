@@ -2,7 +2,7 @@ import Header from "./Header"
 import GameOver from "./GameOver"
 import VsRomm from "./VsRoom"
 import GameCompleted from "./GameCompleted"
-import GameSettins from "./GameSettings"
+import GameSettings from "./GameSettings"
 import Cell from "./Cell"
 
 import React, { useState } from "react"
@@ -87,7 +87,7 @@ const Game:React.FC<GameProps> = ({
             {/* Game menu for single player games */}
             <AnimatePresence>
               {openSettings && game_type===0 && (
-                <GameSettins key='sp-game-settings' gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
+                <GameSettings key='sp-game-settings' gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
               )}
             </AnimatePresence>
             
