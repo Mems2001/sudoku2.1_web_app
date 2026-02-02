@@ -65,7 +65,7 @@ function SudokuLab() {
         <section className="grid-container-lab">
             <div className="grid-lab">
                 {cells.map((cell, index) => (
-                    <div key={`c${cell}`} id={`c${cell}`} className="cell">{shownGrid && shownGrid[parseInt(cell[0])][parseInt(cell[1])] ? `${shownGrid[parseInt(cell[0])][parseInt(cell[1])]}`: ''}</div>
+                    <div key={`c${cell}${index}`} id={`c${cell}`} className="cell">{shownGrid && shownGrid[parseInt(cell[0])][parseInt(cell[1])] ? `${shownGrid[parseInt(cell[0])][parseInt(cell[1])]}`: ''}</div>
                 ))}
             </div>
             <div className="lab-buttons-container">
