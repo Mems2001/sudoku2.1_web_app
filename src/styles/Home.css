@@ -77,34 +77,21 @@ h1 {
 
 .home-button {
     font-family: var(--orbitron-font);
-    font-size: 24px;
+    font-size: var(--text-md);
+    font-weight: 600;
 
     padding: 0.75rem 0;
     border-radius: 1rem;
 
-    width: 12rem;
+    width: 10rem;
 
     color: white;
-    opacity: 65%;
-    box-shadow: 0 0 6px 0 var(--color-black);
-
+    opacity: 75%;
     transition: ease-in-out 150ms;
 }
-
 .home-button.play {
-    background-color: var(--bcolor-blue);
-}
-.home-button.signin {
-    background-color: var(--bcolor-warning);
-}
-.home-button.logout {
-    background-color: var(--bcolor-error);
-}
-.home-button.signup {
-    background-color: var(--bcolor-success);
-}
-.home-button.admin {
-    background-color: var(--bcolor-warning);
+    width: 14rem;
+    font-size: var(--text-lg);
 }
 .home-button.user {
     display: flex;
@@ -117,13 +104,26 @@ h1 {
 
     color: unset;
 }
-.home-button.master-difficulty {
+.home-button.blue {
+    background-color: var(--bcolor-blue);
+}
+.home-button.green {
+    background-color: var(--bcolor-success);
+}
+.home-button.yellow {
+    background-color: var(--bcolor-warning);
+}
+.home-button.red {
+    background-color: var(--bcolor-error);
+}
+.home-button.black {
     background-color: var(--bcolor-black);
 }
 
 .home-button:hover{
     color: var(--lcolor-dark-navy);
     opacity: 100%;
+    box-shadow: 0 0 6px 0 var(--color-black);
     transition: ease-in-out 0.2s;
 }
 

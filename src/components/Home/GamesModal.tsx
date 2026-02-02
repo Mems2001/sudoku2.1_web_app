@@ -168,12 +168,12 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
             }
             {showDifficulties && gameType !== null && (
                 <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button signup" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
-                    <button className="home-button modal-button signup" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
-                    <button className="home-button modal-button signin" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
-                    <button className="home-button modal-button signin" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
-                    <button className="home-button modal-button logout" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
-                    <button className="home-button modal-button master-difficulty" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
+                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
+                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
+                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
+                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
+                    <button className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
+                    <button className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
                     <button className="home-button modal-button" onClick={() => {setShowDifficulties(false);setGameType(null); setAnnouncement("Back to game type selection")}}>Back</button>
                 </div>
             )}

@@ -12,6 +12,9 @@
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     overflow: hidden;
+
+    font-family: var(--roboto-font);
+    font-weight: 400;
 }
 .game-settings .window {
     position: absolute;
@@ -99,6 +102,46 @@
 }
 .checkbox-hidden {
     display: none;
+}
+
+.settings-button.blue {
+    background-color: var(--tcolor-blue);
+}
+.settings-button.pink {
+    background-color: var(--tcolor-error);
+}
+.settings-button.green {
+    background-color: var(--tcolor-success);
+}
+.settings-button.yellow {
+    background-color: var(--tcolor-warning);
+}
+.settings-button.black {
+    background-color: var(--tcolor-black);
+}
+.settings-button.blue:hover {
+    background-color: var(--color-blue);
+}
+.settings-button.pink:hover {
+    background-color: var(--color-error);
+}
+.settings-button.green:hover {
+    background-color: var(--color-success);
+}
+.settings-button.yellow:hover {
+    background-color: var(--color-warning);
+}
+.settings-button.black:hover {
+    background-color: var(--color-black);
+}
+.settings-button {
+    color: var(--lcolor-light-beige);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: var(--text-md);
+    font-weight: 600;
+
+    transition: ease 0.2s;   
 }
 
 /* VS console */

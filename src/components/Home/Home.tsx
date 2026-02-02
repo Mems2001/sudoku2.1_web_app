@@ -53,20 +53,20 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                             <i className="fa-solid fa-user-tie fa-lg" aria-hidden='true'></i>
                         </button>
                     )}
-                    <button type="button" ref={playButtonRef} className="home-button play" onClick={openModal}>Play</button>
+                    <button type="button" ref={playButtonRef} className="home-button red play" onClick={openModal}>PLAY</button>
                     {isLogged ?
-                        <button type="button" className="home-button logout" id="logout-btn" onClick={logout}>Log out</button>
+                        <button type="button" className="home-button yellow" id="logout-btn" onClick={logout}>Log out</button>
                         :
-                        <button type="button" className="home-button signin" onClick={() => navigate('/login')}>Sign in</button>
+                        <button type="button" className="home-button green" onClick={() => navigate('/login')}>Sign in</button>
                     }
                     {isLogged ? 
                         <></>
                         :
-                        <button type="button" className="home-button signup" onClick={() => navigate('/register')}>Sign up</button>
+                        <button type="button" className="home-button yellow" onClick={() => navigate('/register')}>Sign up</button>
                     }
-                    <button className="home-button play" type="button" aria-label="Open settings" onClick={() => {setOpenSettings(prev => !prev)}}>Settings</button>
+                    <button className="home-button settings blue" type="button" aria-label="Open settings" onClick={() => {setOpenSettings(prev => !prev)}}>Settings</button>
                     {role == 'admin' ?
-                        <button type="button" className="home-button admin" onClick={() => navigate('/admin')}>ADMIN</button>
+                        <button type="button" className="home-button yellow" onClick={() => navigate('/admin')}>ADMIN</button>
                         :
                         <></>
                     }

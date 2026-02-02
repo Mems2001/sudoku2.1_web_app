@@ -4,6 +4,7 @@ import { setGameSettings } from "../../store/gameSettings.slice";
 import { motion } from 'framer-motion'
 import { GameModalProps, GameModalWindowProps } from "../../assets/animations";
 import { ProfilesServices } from "../../services/ProfilesServices";
+import { useEffect } from "react";
 
 interface GameSettingsProps {
     gameType?: number,
@@ -27,6 +28,22 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
     function closeSettingsModal() {
         if (homeCloseButton !== undefined) homeCloseButton()
     }
+
+     //Esc key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Check if modal is open before proceeding
+            if (e.key === "Escape" && homeCloseButton !== undefined) {
+                e.preventDefault()
+                homeCloseButton()
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown)
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [])
 
     /***
      * Saves the game settings to the profile, even for anon users.
@@ -72,7 +89,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
         dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor, input_mode: game_settings.input_mode}))
 
         // Controlls the function behavior when used inside a game or from the home screen.
-        if (!gameType) return
+        if (gameType === undefined) return
 
         const cells = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
         for (const c of cells) {
@@ -131,7 +148,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                         ))}
                     </div>
 
-                    {gameType === undefined && <button onClick={closeSettingsModal}>save & close</button>}
+                    {gameType === undefined && <button type="button" className={`settings-button ${game_settings.highlight_color}`} onClick={closeSettingsModal}>save & close</button>}
                 </motion.div>
                 
             </motion.div>
