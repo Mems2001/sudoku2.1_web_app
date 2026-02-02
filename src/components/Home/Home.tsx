@@ -66,7 +66,7 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                     }
                     <button className="home-button settings blue" type="button" aria-label="Open settings" onClick={() => {setOpenSettings(prev => !prev)}}>Settings</button>
                     {role == 'admin' ?
-                        <button type="button" className="home-button yellow" onClick={() => navigate('/admin')}>ADMIN</button>
+                        <button type="button" className="home-button red" onClick={() => navigate('/admin')}>ADMIN</button>
                         :
                         <></>
                     }
