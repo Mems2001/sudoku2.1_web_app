@@ -54,7 +54,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
         if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
           const saving_data = await game.setValue(currentFocused , value, timeElapsed)
 
-          if (!saving_data) throw new Error('Unable to set the value and save the data')
+          if (!saving_data) throw new Error('Unable to set the value or save the data')
 
           if (game_type===2 && socket) {
             socket.emit('coop-save', {...saving_data, setTurn: value !== 10 && typeof value == "number"} as CoopGameSavingData)

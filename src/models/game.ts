@@ -36,7 +36,7 @@ export class Game {
     remainingNumbers: numbers
     #errors: number
 
-    constructor(game_type: GameType, player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid, annotations: AnnotationsGrid ) {
+    constructor(game_type: GameType, player_id:Ids , host:boolean , sudoku: Sudoku , puzzle: PuzzleS , id: Ids | undefined , answersN: string, answersGrid: Grid, annotations: AnnotationsGrid, errors: number ) {
         this.id = id
         this.game_type = game_type
         this.player_id = player_id
@@ -49,7 +49,7 @@ export class Game {
         }
         this.#annotations = annotations
         this.remainingNumbers = this.#checkRemainingNumbers(this.answers.number)
-        this.#errors = 0
+        this.#errors = errors ?? 0
     }
 
     get sudoku() {
@@ -172,6 +172,7 @@ export class Game {
             } else {
                 if (value != 10) {
                     this.#setErrors(this.#errors + 1)
+                    // console.warn('Errors committed:', this.#errors)
                     
                     if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 2)
                     else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
@@ -189,6 +190,8 @@ export class Game {
             updatedErrors: updatedPlayer.updatedErrors,
             updatedAnnotations: updatedPlayer.updatedAnnotations
         }
+
+        return undefined
     }
 
     /**

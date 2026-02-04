@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useGridCells } from "../../hooks"
 import { Grid } from "../../models/types"
 import { SudokusServices } from "../../services/SudokusServices"
+import { PuzzlesServices } from "../../services"
+import { useToaster } from "../../hooks/useToaster"
 
 function SudokuLab() {
     const { cells } = useGridCells({isLab: true})
@@ -10,6 +12,7 @@ function SudokuLab() {
     const [shownGrid, setShownGrid] = useState<Grid|null>(null)
     const [sudoku, setSudoku] = useState<Grid|null>(null)
     const [puzzle, setPuzzle] = useState<Grid|null>(null)
+    const { openToaster } = useToaster()
 
     function handleAlgorithmChange(e: React.ChangeEvent<HTMLSelectElement>) {
         setAlgorithm(parseInt(e.target.value))
@@ -49,11 +52,15 @@ function SudokuLab() {
     }
     function getPuzzle() {
         if (!difficulty && difficulty !== 0 || !sudoku || !algorithm) return
-        SudokusServices.getPuzzleTest(sudoku, difficulty, algorithm)
+        PuzzlesServices.getPuzzleTest(sudoku, difficulty, algorithm)
             .then(res => {
                 // console.warn(res.data)
-                setPuzzle(res.data)
-                setShownGrid(res.data)
+                if (res.data) {
+                    setPuzzle(res.data)
+                    setShownGrid(res.data)
+                } else {
+                    openToaster('Failed to create the puzzle')
+                }
             })
             .catch(err => {
                 console.error(err)

@@ -9,22 +9,7 @@ export class SudokusServices {
     static async getSudokuTest(algorithm: number) {
         try {
             const response = await axios.get(api_prefix + `/test/${algorithm}`)
-            // console.warn(response)
-            return response
-        } catch (error:any) {
-            // console.error({message: error.message})
-            const altError = error as AxiosError
-            throw new SudokusServicesError(altError.message)
-        }
-    }
-
-    static async getPuzzleTest(grid: Grid, difficulty: number, algorithm: number) {
-        try {
-            const response = await axios.post(api_prefix + `/test/${algorithm}/puzzle`, {
-                sudoku: grid,
-                difficulty
-            })
-            // console.warn(response)
+            console.warn(response)
             return response
         } catch (error:any) {
             // console.error({message: error.message})
