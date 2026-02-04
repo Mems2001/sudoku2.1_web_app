@@ -42,6 +42,7 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                     <div className="title-texts">
                         <h1 className="game-title">Sudoku</h1>
                         <h1 className="game-version">2.1</h1>
+                        <h1 className="app-status">*beta</h1>
                     </div>
                 </div>
 

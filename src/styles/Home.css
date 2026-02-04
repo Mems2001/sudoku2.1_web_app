@@ -58,11 +58,15 @@ h1 {
 
     color: var(--lcolor-blue);
 }
-
 .game-version {
     display: block;
 
     color: var(--lcolor-warning);
+}
+.app-status {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--tcolor-black);
 }
 
 .home-buttons {

@@ -48,7 +48,7 @@ const Game:React.FC<GameProps> = ({
   }) => {
     const game_id:Ids = useParams().game_id as Ids 
     const game_type: GameType = parseInt(useParams().game_type as string) as GameType
-    const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
+    const { input_mode, highlight_color } = useSelector((state:RootState) => state.gameSettings.value)
     // console.log("---> game type and timer:",game_type, timerOn)
 
     //General game functionality states
@@ -56,8 +56,12 @@ const Game:React.FC<GameProps> = ({
     const [turn, setTurn] = useState<boolean|undefined>(undefined)
     const [notebookMode, setNotebookMode] = useState(false)
     
-    //Set the cells grid object
+    //Set the cells grid object and its properties
     const { cells } = useGridCells({game, setTurn})
+    const cellsAux = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
+          for (const c of cellsAux) {
+              c.classList.add(highlight_color)
+          }
 
     // ---> In Game functions <---
     

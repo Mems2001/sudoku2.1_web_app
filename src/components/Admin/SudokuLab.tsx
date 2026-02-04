@@ -92,7 +92,7 @@ function SudokuLab() {
                         <option value="" disabled>Pick a difficulty</option>
                         <option value={0}>Novice</option>
                         <option value={1}>Easy</option>
-                        <option value={2}>Medium</option>
+                        <option value={2}>Normal</option>
                         <option value={3}>Hard</option>
                         <option value={4}>Expert</option>
                         <option value={5}>Master</option>

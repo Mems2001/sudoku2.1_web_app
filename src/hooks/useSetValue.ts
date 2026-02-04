@@ -77,10 +77,6 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
           if (cell[0] === id[0] || cell[1] === id[1] || (Math.ceil((parseInt(cell[0])+1)/3) === Math.ceil((parseInt(id[0])+1)/3) && Math.ceil((parseInt(cell[1])+1)/3) === Math.ceil((parseInt(id[1])+1)/3))) {
             const div = document.getElementById(`c${cell}`) as HTMLDivElement
             div.classList.add('selected')
-            const divs = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
-            for (const c of divs) {
-              c.classList.add(gameSettings.highlight_color)
-            }
           } else {
             const div = document.getElementById(`c${cell}`) as HTMLDivElement
             div.classList.remove('selected')
@@ -135,14 +131,11 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
     function focusOperations(id:string) {
       if (gameSettings.cells_highlight) {
         highlightCells(id)
-        const cells = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
-        for (const c of cells) {
-          c.classList.add(`${gameSettings.highlight_color}`)
-        }
       }
       if (gameSettings.numbers_highlight) {
         highlightSameNumbers(id)
       }
+
       if (id != 'x') setCurrentFocus(id)
       else setCurrentFocus(undefined)
     }

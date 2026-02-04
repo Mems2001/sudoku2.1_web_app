@@ -33,6 +33,7 @@
     background-color: white;
     border: 1px solid rgb(0, 0, 0 , 0.1);
     cursor: pointer;
+    user-select: none;
 }
 .cell-auxiliar-container {
     position: relative;
