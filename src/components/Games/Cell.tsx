@@ -18,23 +18,29 @@ interface CellProps {
 const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton}) => {
     const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
 
+    /**
+     * This function  ultimately verifies if the input value is correct. It is also in charge to purge or filter any non allowed imput and to turn it into a valid input if possible.
+     * @param input The data received at the cell input.
+     * @returns A boolean, wether the value is correct for the puzzle or not.
+     */
     function validateInput(input:React.FormEvent<HTMLInputElement>) {
         let value = input.currentTarget.value
 
+        //For cooperative games when it's not your turn you shouldn't be able to make an input, but, if for some reason you do then this check will fail every time.
         if (game.game_type == 2 && !turn) {
             value = ''
         }
 
-        // Remove invalid characters
+        //Remove invalid characters
         value = value.replace(/[^1-9]/g, '')
 
-        // Limit to one digit
+        //Limit to one digit
         if (value.length > 1) {
-          value = value.slice(0, 1);
+          value = value.slice(0, 1)
         }
 
-        input.currentTarget.value = value
-        if (game.game_type == 2 && !turn) return
+        input.currentTarget.value = value //We correct the value at the cell.
+        if (game.game_type == 2 && !turn) return 
 
         return numberButton(value === '' ? 10 : parseInt(value), timeElapsed)
     }
