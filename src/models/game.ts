@@ -177,7 +177,7 @@ export class Game {
     }
 
     /**
-     * This function strictly handles how to save the answers after a value setting. It is not properly in charge of the saving but how to call it. Variations are related to the player status.
+     * This function strictly handles how to save the answers after a value setting. It is not properly in charge of the saving but how to call it. Variations are related to the player status. It returns data from the backend to double check the puzzle state but the front-end is fully capable of managing value validations.
      * @param location 
      * @param timeElapsed 
      * @returns 

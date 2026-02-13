@@ -54,6 +54,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
         if (game && !game.verifyValue(currentFocused)) {
           //First we set the value to the UI
           game.setValue(currentFocused , value)
+          setClickControl(!clickControl)
 
           //Then we try to save the changes. Separting this concerns allows us to provide offline gaming.
           const saving_data = await game.saveValue(currentFocused, timeElapsed)
@@ -64,7 +65,6 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
             socket.emit('coop-save', {...saving_data, setTurn: value !== 10 && typeof value == "number"} as CoopGameSavingData)
             setTurn(value === 10 || typeof value !== "number")
           }
-          setClickControl(!clickControl)
         }
       }
     }

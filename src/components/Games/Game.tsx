@@ -79,7 +79,7 @@ const Game:React.FC<GameProps> = ({
 
             <div className="grid">
               {cells.map((cell, index) =>  (
-                  <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton}/>  
+                  <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused}/>  
                 )
               )}
             </div>

@@ -12,10 +12,11 @@ interface CellProps {
     timeElapsed: number,
     turn?   : boolean,
     notebookMode: boolean,
-    numberButton(number:number, timeElapsed:number): Promise<void>
+    numberButton(number:number, timeElapsed:number): Promise<void>,
+    currentFocused: string|undefined
 }
 
-const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton}) => {
+const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton, currentFocused}) => {
     const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
 
     /**
@@ -60,13 +61,13 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
     }
 
     return (
-        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className="cell">
+        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className='cell'>
             {game.verifyValue(cell)?
                 (<p id={cell}>{game.getAnswersValueByPosition(cell)}</p>)
             : 
                 (
                 <div className="cell-auxiliar-container">
-                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || notebookMode} maxLength={1} disabled={!timerOn} onInput={(e) => {validateInput(e)}}
+                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || notebookMode || cell !== currentFocused} maxLength={1} disabled={!timerOn} onInput={(e) => {validateInput(e)}}
                     defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.getAnswersValueByPosition(cell) : ''} 
                     className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                     />
