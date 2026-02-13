@@ -66,7 +66,7 @@ const Game:React.FC<GameProps> = ({
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers} = useSetValue({game_type, game, cells, setTurn, socket, timerOn, turn})
+    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers} = useSetValue({game_type, game, cells, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
     //Provides play and pause game functions
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)

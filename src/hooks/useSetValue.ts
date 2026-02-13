@@ -11,8 +11,10 @@ interface UseSetValue {
     cells: Cells,
     socket?: Socket,
     timerOn: boolean,
+    timeElapsed: number,
     turn?: boolean,
     setTurn: React.Dispatch<React.SetStateAction<boolean | undefined>>,
+    notebookMode: boolean
 }
 
 interface CoopGameSavingData extends UpdatedGameData {
@@ -30,11 +32,25 @@ interface CoopGameSavingData extends UpdatedGameData {
  * @param {React.Dispatch<React.SetStateAction<boolean | undefined>>} setTurn
  * @returns {UseSetValueReturn} 
  */
-export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, cells}: UseSetValue) => {
+export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, cells, notebookMode}: UseSetValue) => {
     const [currentFocused , setCurrentFocus] = useState<string>()
     const [clickControl, setClickControl] = useState(false)
     
     const gameSettings = useAppSelector((state:RootState) => state.gameSettings.value)
+
+    async function setAnnotation(value:number) {
+        if (!currentFocused || currentFocused === 'x' || !game) return
+        
+        const prev_annotation = game.annotations[parseInt(currentFocused[0])][parseInt(currentFocused[1])]
+        let new_annotation:CellAnnotation = [...prev_annotation]
+        if (prev_annotation[value-1] != 0) {
+            new_annotation[value-1] = 0
+        } else {
+            new_annotation[value-1] = value
+        }
+
+        await numberButton(new_annotation, timeElapsed)
+    }
     
     /**
      * This function is called when the user clicks on a number button or sets an input with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
@@ -133,7 +149,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
      * @param id - The cell id, which is its name and the positicion of the cell within a grid.
      */
     function focusOperations(id:string) {
-      if (id != 'x') setCurrentFocus(id)
+      if (id !== 'x') setCurrentFocus(id)
       else setCurrentFocus(undefined)
 
       if (gameSettings.cells_highlight) {
@@ -142,6 +158,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
       if (gameSettings.numbers_highlight) {
         highlightSameNumbers(id)
       }
+      
     }
 
     function clearCellsHighlighting () {
@@ -166,6 +183,25 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
           }
         }, [clickControl]
     )
+
+    useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            if (!currentFocused || currentFocused === 'x' || !timerOn) return
+
+            const key = e.key
+            if (/^[1-9]$/.test(key)) {
+                if (notebookMode) {
+                  const value = parseInt(key)
+                    setAnnotation(value)
+
+                    setClickControl(prev => !prev)
+                }
+            }
+        }
+      
+        window.addEventListener('keydown', handleGlobalKeyDown)
+        return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+    }, [currentFocused, game, timeElapsed])
 
     useEffect(() => {
         if (!socket || !game) return
@@ -194,5 +230,5 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
         };
     }, [socket, game])
 
-    return {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, gameSettings, highlightCells, highlightSameNumbers}
+    return {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, gameSettings, highlightCells, highlightSameNumbers, setAnnotation}
 }
