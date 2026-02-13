@@ -128,7 +128,7 @@ export class Game {
      * @returns A boolean value being true if the provided value matches the corresponding sudoku value at the provided location (think of the sudoku object as the solved puzzle), and false otherwise.
      */
     verifyValue(location:string) {
-        if (this.getSudokuValueByPosition(location) == this.getAnswersValueByPosition(location)) {
+        if (this.getSudokuValueByPosition(location) === this.getAnswersValueByPosition(location)) {
             return true
         }
         return false
@@ -141,10 +141,12 @@ export class Game {
      * @param {number} timeElapsed - The time elapsed since the game started.
      * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
-    async setValue (location:string , value:number|CellAnnotation, timeElapsed:number):Promise<UpdatedGameData|undefined> {
+    setValue (location:string , value:number|CellAnnotation):void {
         // console.warn("---> setting value", value, location)
+        //To difference between a value and annotations we selected a type check, number for values and string for annotations.
         if (typeof value === "number") {
             let parsedValue = value
+            // number 10 is reserved to identify erasing intentions.
             if (value === 10) {
                 parsedValue = 0
             }
@@ -164,25 +166,32 @@ export class Game {
         }
 
         //Value checking
-        let updatedPlayer
         if (typeof value === 'number') {
-            if (this.verifyValue(location)) {
-                if (this.completedGameCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 1)
-                else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
-            } else {
+            if (!this.verifyValue(location)) {
                 if (value != 10) {
                     this.#setErrors(this.#errors + 1)
                     // console.warn('Errors committed:', this.#errors)
-                    
-                    if (this.gameOverCheck()) updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed, 2)
-                    else updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
-                } else {
-                    updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
                 }
             }
-        } else {
-            updatedPlayer = await this.saveAnswers(this.answers.grid, this.answers.number, this.#annotations, timeElapsed)
         }
+    }
+
+    /**
+     * This function strictly handles how to save the answers after a value setting. It is not properly in charge of the saving but how to call it. Variations are related to the player status.
+     * @param location 
+     * @param timeElapsed 
+     * @returns 
+     */
+    async saveValue(location:string, timeElapsed:number) {
+        let updatedPlayer
+        let playerStatus
+        if (this.verifyValue(location)) {
+            if (this.completedGameCheck()) playerStatus = 1
+        } else {                  
+            if (this.gameOverCheck()) playerStatus = 2
+        }
+
+        updatedPlayer = await this.saveAnswers(this.#answers.grid, this.#answers.number, this.#annotations, timeElapsed, playerStatus)
 
         if (updatedPlayer) return {
             updatedGrid: updatedPlayer.updatedGrid,
@@ -195,7 +204,7 @@ export class Game {
     }
 
     /**
-     * This function is used to save the game in the database acording to the game_id and game_type
+     * This function is used to save the game in the database acording to the game_id and game_type.
      * @param {Grid} grid Matrix of sudoku values updated by the user.
      * @param {string} number
      * @param {number} timeElapsed Time run to the point of this saving. 

@@ -37,7 +37,7 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
     const gameSettings = useAppSelector((state:RootState) => state.gameSettings.value)
     
     /**
-     * This function is called when the user clicks on a number button with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
+     * This function is called when the user clicks on a number button or sets an input with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
      * @param {number|CellAnnotation} value - A number that the user intends to put into the corresponding cell or sudoku's grid position, or a cell annotation
      * @param {number} timeElapsed - The time elapsed since the game started.
      */
@@ -51,14 +51,18 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
 
       if (currentFocused && value && timerOn) {
         //We allow the change only when the previously set value is different from the new one.
-        if (game && game.getAnswersValueByPosition(currentFocused) !== game.getSudokuValueByPosition(currentFocused)) {
-          const saving_data = await game.setValue(currentFocused , value, timeElapsed)
+        if (game && !game.verifyValue(currentFocused)) {
+          //First we set the value to the UI
+          game.setValue(currentFocused , value)
+
+          //Then we try to save the changes. Separting this concerns allows us to provide offline gaming.
+          const saving_data = await game.saveValue(currentFocused, timeElapsed)
 
           if (!saving_data) throw new Error('Unable to set the value or save the data')
 
           if (game_type===2 && socket) {
             socket.emit('coop-save', {...saving_data, setTurn: value !== 10 && typeof value == "number"} as CoopGameSavingData)
-            setTurn(value == 10 || typeof value !== "number")
+            setTurn(value === 10 || typeof value !== "number")
           }
           setClickControl(!clickControl)
         }
@@ -129,15 +133,15 @@ export const useSetValue = ({game_type, timerOn, game, socket, setTurn, turn, ce
      * @param id - The cell id, which is its name and the positicion of the cell within a grid.
      */
     function focusOperations(id:string) {
+      if (id != 'x') setCurrentFocus(id)
+      else setCurrentFocus(undefined)
+
       if (gameSettings.cells_highlight) {
         highlightCells(id)
       }
       if (gameSettings.numbers_highlight) {
         highlightSameNumbers(id)
       }
-
-      if (id != 'x') setCurrentFocus(id)
-      else setCurrentFocus(undefined)
     }
 
     function clearCellsHighlighting () {
