@@ -185,23 +185,22 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
     )
 
     useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+        function handleGlobalKeyDown (e: KeyboardEvent) {
             if (!currentFocused || currentFocused === 'x' || !timerOn) return
 
             const key = e.key
             if (/^[1-9]$/.test(key)) {
                 if (notebookMode) {
                   const value = parseInt(key)
-                    setAnnotation(value)
-
-                    setClickControl(prev => !prev)
+                  setClickControl(prev => !prev)
+                  setAnnotation(value)
                 }
             }
         }
       
         window.addEventListener('keydown', handleGlobalKeyDown)
         return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-    }, [currentFocused, game, timeElapsed])
+    }, [currentFocused, game, timeElapsed, clickControl])
 
     useEffect(() => {
         if (!socket || !game) return
