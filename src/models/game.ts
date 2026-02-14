@@ -134,6 +134,32 @@ export class Game {
         return false
     }
 
+    #updateAnnotations(location:string, value:number) {
+        const row = parseInt(location[0])
+        const col = parseInt(location[1])
+        const q_row_start = 3*(Math.floor(row/3))
+        const q_col_start = 3*(Math.floor(col/3))
+        const index = value-1
+
+        //Row update
+        for (let i = 0; i < 9; i++) {
+            if (this.#annotations[row][i].includes(value)) this.#annotations[row][i].splice(index, 1, 0) 
+        }
+        //Col update
+        for (let i = 0; i < 9; i++) {
+            if (this.#annotations[i][col].includes(value) && i !== row) this.#annotations[i][col].splice(index, 1, 0)
+        }
+        //Quadrant update
+        for (let i = q_row_start; i < q_row_start + 3; i++) {
+            if (i !== row) {
+                for (let j = q_col_start; j < q_col_start + 3; j++) {
+                    if (this.#annotations[i][j].includes(value) && j !== col) this.#annotations[i][j].splice(index, 1, 0)
+                }
+            }
+        }
+        // console.warn('Annotations updated')
+    }
+
     /**
      * Sets a particular value to any desired position of the anwsers grid or the annotations grid. It also checks the correctness of the value (if it is a number) and finally saves the game.
      * @param {string} location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
@@ -172,6 +198,9 @@ export class Game {
                     this.#setErrors(this.#errors + 1)
                     // console.warn('Errors committed:', this.#errors)
                 }
+            } else {
+                // console.log('Annotations ready to update')
+                this.#updateAnnotations(location, value)
             }
         }
     }

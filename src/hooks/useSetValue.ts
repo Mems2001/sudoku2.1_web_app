@@ -59,12 +59,12 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
      */
     async function numberButton (value:number|CellAnnotation, timeElapsed:number) {
       // console.warn("---> number button clicked:", currentFocused, value)
-
+      
       //Prevents to add values to the puzzle if it's not the player's turn.
       if (game_type===2 && !turn) {
         return
       }
-
+      
       if (currentFocused && value && timerOn) {
         //We allow the change only when the previously set value is different from the new one.
         if (game && !game.verifyValue(currentFocused)) {
