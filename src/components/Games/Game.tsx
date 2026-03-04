@@ -108,7 +108,9 @@ const Game:React.FC<GameProps> = ({
                 )
               )}
               
-              {showWheel && <NumbersWheel/>}
+              <AnimatePresence>
+                {showWheel && <NumbersWheel currentFocused={currentFocused}/>}
+              </AnimatePresence>
             </div>
 
             <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} currentFocused={currentFocused}/>

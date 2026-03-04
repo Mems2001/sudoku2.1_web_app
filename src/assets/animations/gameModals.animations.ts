@@ -20,3 +20,10 @@ export const ErrorModalProps:MotionProps = {
     exit: {opacity: 0},
     transition: {duration: 0.05, ease: "easeInOut"}
 }
+
+export const NumbersWheelProps:MotionProps = {
+    initial: {opacity: 0, scale: 0.1},
+    animate: {opacity: 1, scale: 1},
+    exit: {opacity: 0, scale: 0.5},
+    transition: {duration: 0.1, ease: "easeInOut"}
+}

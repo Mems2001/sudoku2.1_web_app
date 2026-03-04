@@ -67,6 +67,12 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
         return false
     }
 
+    function handleTouchStart() {
+        if (cell === currentFocused && input_mode === 0) {
+            setShowWheel(true)
+        }
+    }
+
     return (
         <div id={`c${cell}`} onClick={() => focusOperations(cell)} className='cell'>
             {game.verifyValue(cell)?
@@ -74,7 +80,7 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
             : 
                 (
                 <div className="cell-auxiliar-container">
-                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || notebookMode || cell !== currentFocused} maxLength={1} disabled={!timerOn} onInput={(e) => {validateInput(e)}} onTouchStart={() => setShowWheel(true)} onTouchEnd={() => setShowWheel(false)}
+                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || notebookMode || cell !== currentFocused} maxLength={1} disabled={!timerOn} onInput={(e) => {validateInput(e)}} onTouchStart={handleTouchStart} onTouchEnd={() => setShowWheel(false)}
                     defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.getAnswersValueByPosition(cell) : ''} 
                     className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                     />
