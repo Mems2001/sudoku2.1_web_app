@@ -17,10 +17,28 @@
     transform: translate(-50% , -50%);
     z-index: 7;
 }
-
 .grid-auxiliar {
     height: 100%;
     width: 100%;
+}
+
+.numbers-wheel {
+    position: absolute;
+    z-index: 9;
+
+    background-color: white;
+    height: 33%;
+    width: 33%;
+
+    border-radius: 50%;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    align-items: center;
+    justify-content: center;
+
+    padding: 3%;
 }
 
 .cell {

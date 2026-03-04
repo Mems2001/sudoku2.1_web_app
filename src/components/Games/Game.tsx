@@ -19,6 +19,7 @@ import NumberButtons from "./NumberButtons"
 import { AnimatePresence } from "framer-motion"
 import ErrorScreen from "./ErrorScreen"
 import { set } from "react-hook-form"
+import NumbersWheel from "./NumbersWheel"
 
 interface GameProps {
   timeElapsed: number
@@ -59,6 +60,7 @@ const Game:React.FC<GameProps> = ({
     const [notebookMode, setNotebookMode] = useState(false)
     const [errorEffect, setErrorEffect] = useState(false)
     const [errorControl, setErrorControl] = useState<number|undefined>(undefined)
+    const [showWheel, setShowWheel] = useState(false)
     
     //Set the cells grid object and its properties
     const { cells } = useGridCells({game, setTurn})
@@ -76,9 +78,12 @@ const Game:React.FC<GameProps> = ({
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
     // console.log("game_settings:", gameSettings)
 
+    /*
+     Error background animation. It triggers the animation anytime the number of errors increases.
+    */
     useEffect(
       () => {
-        if (errorControl || errorControl === 0) {
+        if (typeof errorControl === 'number') {
           if (game && game.getErrors() > errorControl && !game.gameOverCheck()) {
             setErrorControl(game.getErrors())
             setErrorEffect(true)
@@ -99,9 +104,11 @@ const Game:React.FC<GameProps> = ({
 
             <div className="grid">
               {cells.map((cell, index) =>  (
-                  <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused}/>  
+                  <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} setShowWheel={setShowWheel}/>  
                 )
               )}
+              
+              {showWheel && <NumbersWheel/>}
             </div>
 
             <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} currentFocused={currentFocused}/>
