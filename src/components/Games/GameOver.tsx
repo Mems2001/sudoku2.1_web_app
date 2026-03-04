@@ -3,6 +3,7 @@ import { PuzzleS } from "../../models/dbTypes"
 import { useEffect } from "react"
 import { Game, GameType } from "../../models/game"
 import { GamesServices, PlayersServices } from "../../services"
+import { AnnotationsGrid, CellAnnotation } from "../../models/types"
 
 interface GameOverProps {
     game_type: GameType,
@@ -21,13 +22,27 @@ interface GameOverProps {
 const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn, timeElapsed, multiplayerGameOver}) => {
     const navigate = useNavigate()
 
+    function generateEmptyAnnotationsGrid():AnnotationsGrid {
+        const annotations = []
+        for (let i = 0; i < 9; i++) {
+            let row = []
+            for (let j = 0; j < 9; j++) {
+                let col = Array(9).fill(0)
+                row.push(col)
+            }
+            annotations.push(row)
+        }
+
+        return annotations as AnnotationsGrid
+    }
+
     /**
      * This resets the game data, in the player table: puzzle grid, puzzle number, number of errors and timer in the game table. Then reloads the whole window to play again.
      */
     async function retry () {
         try {
             if (game && game.id && puzzle) {
-                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , game.annotations, 0, 0)
+                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , generateEmptyAnnotationsGrid(), 0, 0)
                 await GamesServices.updateGame(game.id, 0 , 1)
             }
             window.location.reload()

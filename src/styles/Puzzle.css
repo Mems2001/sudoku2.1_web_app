@@ -234,6 +234,18 @@
     font-size: var(--text-md);
 }
 
+/* Error screen */
+.error-screen {
+    background-color: var(--tbcolor-error);
+    height: 100vh;
+    width: 100vw;
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
 @media screen and (max-width: 768px) {
     .game-options {
         top: 18%;

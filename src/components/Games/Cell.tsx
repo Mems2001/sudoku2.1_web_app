@@ -46,6 +46,12 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
         return numberButton(value === '' ? 10 : parseInt(value), timeElapsed)
     }
 
+    /**
+     * This functions checks if there is any annotation number at the given cell position. It is used to decide if the annotations container should be rendered or not, and it also could be used to apply different styles to the cell if there are annotations at it.
+     * @param annotations 
+     * @param location 
+     * @returns 
+     */
     function checkAnnnotations(annotations: AnnotationsGrid, location:string) {
         const row = parseInt(location[0])
         const column = parseInt(location[1])

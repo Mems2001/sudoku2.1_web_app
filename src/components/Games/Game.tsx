@@ -5,7 +5,7 @@ import GameCompleted from "./GameCompleted"
 import GameSettings from "./GameSettings"
 import Cell from "./Cell"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { Ids } from "../../models/types"
@@ -17,6 +17,8 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 import NumberButtons from "./NumberButtons"
 import { AnimatePresence } from "framer-motion"
+import ErrorScreen from "./ErrorScreen"
+import { set } from "react-hook-form"
 
 interface GameProps {
   timeElapsed: number
@@ -55,6 +57,8 @@ const Game:React.FC<GameProps> = ({
     const {game , loading} = useGame({game_id, game_type , setTimeElapsed})
     const [turn, setTurn] = useState<boolean|undefined>(undefined)
     const [notebookMode, setNotebookMode] = useState(false)
+    const [errorEffect, setErrorEffect] = useState(false)
+    const [errorControl, setErrorControl] = useState<number|undefined>(undefined)
     
     //Set the cells grid object and its properties
     const { cells } = useGridCells({game, setTurn})
@@ -71,6 +75,22 @@ const Game:React.FC<GameProps> = ({
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
     // console.log("game_settings:", gameSettings)
+
+    useEffect(
+      () => {
+        if (errorControl || errorControl === 0) {
+          if (game && game.getErrors() > errorControl && !game.gameOverCheck()) {
+            setErrorControl(game.getErrors())
+            setErrorEffect(true)
+            setTimeout(() => {
+              setErrorEffect(false)
+            }, 100)
+          }
+        } else {
+          if (game) setErrorControl(game.getErrors())
+        }
+      }, [game, game?.getErrors()]
+    )
 
     if (!loading && game) {
         return (
@@ -90,7 +110,7 @@ const Game:React.FC<GameProps> = ({
 
             {/* Game menu for single player games */}
             <AnimatePresence>
-              {openSettings && game_type===0 && (
+              {openSettings && game_type===0 && !game.gameOverCheck() && (
                 <GameSettings key='sp-game-settings' gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
               )}
             </AnimatePresence>
@@ -112,6 +132,10 @@ const Game:React.FC<GameProps> = ({
               :
               <></>
             }
+
+            <AnimatePresence>
+              {errorEffect && <ErrorScreen/>}
+            </AnimatePresence>
           </section>
         )
     }

@@ -13,3 +13,10 @@ export const GameModalWindowProps:MotionProps = {
     exit: {opacity: 0, y: 0},
     transition: {duration: 0.15, ease: "easeInOut"}
 }
+
+export const ErrorModalProps:MotionProps = {
+    initial: {opacity: 0},
+    animate: {opacity: 1},
+    exit: {opacity: 0},
+    transition: {duration: 0.05, ease: "easeInOut"}
+}
