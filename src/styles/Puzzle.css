@@ -54,6 +54,7 @@
 }
 .wheel-number {
     font-size: var(--text-ml);
+    font-weight: 500;
     user-select: none;
 }
 

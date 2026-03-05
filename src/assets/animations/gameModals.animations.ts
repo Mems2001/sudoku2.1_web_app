@@ -23,7 +23,7 @@ export const ErrorModalProps:MotionProps = {
 
 export const NumbersWheelProps:MotionProps = {
     initial: {opacity: 0, scale: 0.1},
-    animate: {opacity: 1, scale: 1},
+    animate: {opacity: 0.85, scale: 1},
     exit: {opacity: 0, scale: 0.5},
     transition: {duration: 0.1, ease: "easeInOut"}
 }
