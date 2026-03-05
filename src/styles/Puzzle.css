@@ -4,6 +4,12 @@
 }
 
 .grid {
+    touch-action: none; 
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
+
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
@@ -23,6 +29,11 @@
 }
 
 .numbers-wheel {
+    touch-action: none; 
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
     position: absolute;
     z-index: 9;
 
@@ -42,6 +53,12 @@
 }
 
 .cell {
+    touch-action: none; 
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
+
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,26 +1,34 @@
 import {motion} from 'framer-motion'
 import { NumbersWheelProps } from '../../assets/animations'
 import React, { useEffect, useRef, useState } from 'react'
+import { CellAnnotation } from '../../models/types'
+import { time } from 'console'
 
 interface WheelProps {
-    currentFocused: string | undefined
+    currentFocused: string | undefined,
+    timeElapsed: number,
+    numberButton(value: number|CellAnnotation, timeElapsed: number): any,
+    setShowWheel: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const NumbersWheel:React.FC<WheelProps> = ({ currentFocused}) => {
+const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, numberButton, setShowWheel}) => {
     const [hoveredNumber, setHoveredNumber] = useState<number | null>(null)
     const wheelRef = useRef<HTMLDivElement>(null)
 
     const handlePointerMove = (e: PointerEvent) => {
         if (!wheelRef.current) return
 
-        const rect = wheelRef.current.getBoundingClientRect()
+        let rect = undefined
+        if (wheelRef.current) rect = wheelRef.current.getBoundingClientRect()
+        if (!rect) return
+        // console.log(rect)
         const x = e.clientX - rect.left
         const y = e.clientY - rect.top
 
         // Check if finger is inside the wheel boundaries
         if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
-            setHoveredNumber(null); // Finger dragged outside
-            return;
+            setHoveredNumber(null)
+            return
         }
 
         // Calculate grid position (0, 1, or 2)
@@ -29,13 +37,14 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused}) => {
     
         // Map 3x3 grid to 1-9
         const number = row * 3 + col + 1
-        console.warn(number)
+        // console.warn(number)
         setHoveredNumber(number)
     }
 
     function handlePointerUp() {
         if (hoveredNumber) {
-            console.error(hoveredNumber)
+            setShowWheel(false)
+            numberButton(hoveredNumber, timeElapsed)
         }
     }
 
@@ -47,13 +56,13 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused}) => {
         return () => {
             window.removeEventListener('pointermove', handlePointerMove)
             window.removeEventListener('pointerup', handlePointerUp)
-        };
+        }
     }, [hoveredNumber])
 
     return (
         <motion.div ref={wheelRef} className="numbers-wheel" style={{top: `${(parseInt(currentFocused![0]) * (2/3) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (2/3) * 100)/8}%`}} {...NumbersWheelProps}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <div style={{userSelect: 'none'}} onTouchStart={() => console.warn(number)} key={number} className="number">{number} {hoveredNumber}</div>
+                <div style={{userSelect: 'none'}} key={number} className="number">{number}</div>
             ))}
         </motion.div>
     )

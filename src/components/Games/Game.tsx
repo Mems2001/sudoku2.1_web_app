@@ -109,7 +109,7 @@ const Game:React.FC<GameProps> = ({
               )}
               
               <AnimatePresence>
-                {showWheel && <NumbersWheel currentFocused={currentFocused}/>}
+                {showWheel && <NumbersWheel currentFocused={currentFocused} numberButton={numberButton} timeElapsed={timeElapsed} setShowWheel={setShowWheel}/>}
               </AnimatePresence>
             </div>
 
