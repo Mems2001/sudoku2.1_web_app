@@ -38,8 +38,9 @@
     z-index: 9;
 
     background-color: white;
-    height: 33%;
-    width: 33%;
+    box-shadow: var(--pause-box-shadow);
+    height: 40%;
+    width: 40%;
 
     border-radius: 50%;
 
@@ -49,7 +50,11 @@
     align-items: center;
     justify-content: center;
 
-    padding: 3%;
+    padding: 5%;
+}
+.wheel-number {
+    font-size: var(--text-ml);
+    user-select: none;
 }
 
 .cell {

@@ -41,10 +41,10 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
         setHoveredNumber(number)
     }
 
-    function handlePointerUp() {
+    async function handlePointerUp() {
         if (hoveredNumber) {
             setShowWheel(false)
-            numberButton(hoveredNumber, timeElapsed)
+            await numberButton(hoveredNumber, timeElapsed)
         }
     }
 
@@ -60,9 +60,9 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
     }, [hoveredNumber])
 
     return (
-        <motion.div ref={wheelRef} className="numbers-wheel" style={{top: `${(parseInt(currentFocused![0]) * (2/3) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (2/3) * 100)/8}%`}} {...NumbersWheelProps}>
+        <motion.div ref={wheelRef} className="numbers-wheel" style={{top: `${(parseInt(currentFocused![0]) * (0.6) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (0.6) * 100)/8}%`}} {...NumbersWheelProps}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <div style={{userSelect: 'none'}} key={number} className="number">{number}</div>
+                <div key={number} className="wheel-number">{number}</div>
             ))}
         </motion.div>
     )
