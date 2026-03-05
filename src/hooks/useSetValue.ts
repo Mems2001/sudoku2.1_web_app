@@ -184,6 +184,9 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
         }, [clickControl]
     )
 
+    /**
+     * Key event listener for allowing the user to set annotation values with the keyboard.
+     */
     useEffect(() => {
         function handleGlobalKeyDown (e: KeyboardEvent) {
             if (!currentFocused || currentFocused === 'x' || !timerOn) return
@@ -202,6 +205,9 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
         return () => window.removeEventListener('keydown', handleGlobalKeyDown)
     }, [currentFocused, game, timeElapsed, clickControl])
 
+    /**
+     * Coop game saving logic.
+     */
     useEffect(() => {
         if (!socket || !game) return
 

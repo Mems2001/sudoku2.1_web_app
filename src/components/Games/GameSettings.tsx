@@ -103,7 +103,11 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
         saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
         return dispatch(setGameSettings({...game_settings, input_mode: value}))
     }
-
+    function setInputModeWheel(e:React.ChangeEvent<HTMLInputElement>) {
+        const value = e.target.checked ? 2 : 1
+        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
+        return dispatch(setGameSettings({...game_settings, input_mode: value}))
+    }
     function setInputModeKeyboard(e:React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.checked ? 1 : 0
         saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, value)
@@ -122,6 +126,10 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                         <div className="input-mode-container">
                             <label htmlFor="input-buttons">Buttons</label>
                             <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                        </div>
+                        <div className="input-mode-container">
+                            <label htmlFor="input-buttons">Wheel</label>
+                            <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 2} onChange={setInputModeWheel}/>
                         </div>
                         <div className="input-mode-container">
                             <label htmlFor="input-keyboard">Keyboard</label>
@@ -161,6 +169,10 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
                     <div className="input-mode-container">
                         <label htmlFor="input-buttons">Buttons</label>
                         <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
+                    </div>
+                    <div className="input-mode-container">
+                        <label htmlFor="input-wheel">Wheel</label>
+                        <input id='input-wheel' type="checkbox" checked={game_settings.input_mode === 2} onChange={setInputModeWheel}/>
                     </div>
                     <div className="input-mode-container">
                         <label htmlFor="input-keyboard">Keyboard</label>

@@ -98,7 +98,7 @@ export class Game {
 
     /**
      * Counts each 1 to 9 number apparition within a sudoku puzzle. Needed for the constructor.
-     * @param number - A string that represents the concatenation of all numbers inside a sudoku puzzle.
+     * @param number - A string that represents the concatenation of all numbers of a sudoku.
      * @returns An array wich its element's index+1 represents the numeral and its value represents how many times this number have appeared in the param.
      */
     #checkRemainingNumbers(number:string | undefined) {
@@ -115,7 +115,7 @@ export class Game {
     }
 
     /**
-     * Counts each 1 to 9 number apparition within a sudoku puzzle and sets an array wich each element's index represent the 1 to 9 number and its value represents the number of times that numeral appeared in the param
+     * Counts each 1 to 9 number apparition within a sudoku puzzle and sets an array wich each element's index represent the 1 to 9 number and its value represents the number of times that numeral appeared in the puzzle.
      * @param number - A string that represents the concatenation of all numbers inside a sudoku
      */
     #setRemainingNumbers(number:string | undefined) {

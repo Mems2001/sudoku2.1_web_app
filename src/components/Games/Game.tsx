@@ -18,7 +18,6 @@ import { RootState } from "../../store/store"
 import NumberButtons from "./NumberButtons"
 import { AnimatePresence } from "framer-motion"
 import ErrorScreen from "./ErrorScreen"
-import { set } from "react-hook-form"
 import NumbersWheel from "./NumbersWheel"
 
 interface GameProps {
@@ -72,7 +71,7 @@ const Game:React.FC<GameProps> = ({
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers} = useSetValue({game_type, game, cells, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
+    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers, setAnnotation} = useSetValue({game_type, game, cells, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
     //Provides play and pause game functions
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
@@ -109,11 +108,11 @@ const Game:React.FC<GameProps> = ({
               )}
               
               <AnimatePresence>
-                {showWheel && <NumbersWheel currentFocused={currentFocused} numberButton={numberButton} timeElapsed={timeElapsed} setShowWheel={setShowWheel}/>}
+                {showWheel && input_mode === 2 && <NumbersWheel currentFocused={currentFocused} numberButton={numberButton} timeElapsed={timeElapsed} setShowWheel={setShowWheel} notebookMode={notebookMode} setAnnotation={setAnnotation}/>}
               </AnimatePresence>
             </div>
 
-            <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} currentFocused={currentFocused}/>
+            <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} setAnnotation={setAnnotation}/>
 
             <div id="x" onClick={() => focusOperations('x')} className="grid-auxiliar"></div>
 

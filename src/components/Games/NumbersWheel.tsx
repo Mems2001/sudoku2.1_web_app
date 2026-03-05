@@ -2,16 +2,17 @@ import {motion} from 'framer-motion'
 import { NumbersWheelProps } from '../../assets/animations'
 import React, { useEffect, useRef, useState } from 'react'
 import { CellAnnotation } from '../../models/types'
-import { time } from 'console'
 
 interface WheelProps {
     currentFocused: string | undefined,
     timeElapsed: number,
     numberButton(value: number|CellAnnotation, timeElapsed: number): any,
-    setShowWheel: React.Dispatch<React.SetStateAction<boolean>>
+    setAnnotation: any,
+    setShowWheel: React.Dispatch<React.SetStateAction<boolean>>,
+    notebookMode: boolean
 }
 
-const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, numberButton, setShowWheel}) => {
+const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, numberButton, setAnnotation, setShowWheel, notebookMode}) => {
     const [hoveredNumber, setHoveredNumber] = useState<number | null>(null)
     const wheelRef = useRef<HTMLDivElement>(null)
 
@@ -44,7 +45,8 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
     async function handlePointerUp() {
         if (hoveredNumber) {
             setShowWheel(false)
-            await numberButton(hoveredNumber, timeElapsed)
+            if (!notebookMode) await numberButton(hoveredNumber, timeElapsed)
+            else await setAnnotation(hoveredNumber)
         }
     }
 
