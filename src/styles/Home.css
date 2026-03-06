@@ -283,17 +283,18 @@ h1 {
         flex-direction: column;
     }
 
+    .home-content {
+        width: 90dvw;
+    }
     .background {
         height: 90vh;
         width: 90vh;
     }
-
     .background-h{
         height: inherit;
         width: inherit;
         gap: 0;
-        justify-content: space-around;
-        
+        justify-content: space-around; 
     }
     .background-v {
         height: inherit;
@@ -313,10 +314,10 @@ h1 {
         gap: 1.5rem;
     }
     .title-texts {
-        font-size: var(--text-4xl);
+        font-size: var(--text-3xl);
     }
     .home-text {
-        font-size: var(--text-ml);
+        font-size: var(--text-md);
     }
 
     .home-buttons {

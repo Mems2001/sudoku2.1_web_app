@@ -2,6 +2,8 @@ import {motion} from 'framer-motion'
 import { NumbersWheelProps } from '../../assets/animations'
 import React, { useEffect, useRef, useState } from 'react'
 import { CellAnnotation } from '../../models/types'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store/store'
 
 interface WheelProps {
     currentFocused: string | undefined,
@@ -13,6 +15,7 @@ interface WheelProps {
 }
 
 const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, numberButton, setAnnotation, setShowWheel, notebookMode}) => {
+    const {highlight_color} = useSelector((state:RootState) => state.gameSettings.value)
     const [hoveredNumber, setHoveredNumber] = useState<number | null>(null)
     const wheelRef = useRef<HTMLDivElement>(null)
 
@@ -62,9 +65,9 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
     }, [hoveredNumber])
 
     return (
-        <motion.div ref={wheelRef} className="numbers-wheel" style={{top: `${(parseInt(currentFocused![0]) * (0.6) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (0.6) * 100)/8}%`}} {...NumbersWheelProps}>
+        <motion.div ref={wheelRef} className={`numbers-wheel ${hoveredNumber === null ? 'unfocused' : ''}`} style={{top: `${(parseInt(currentFocused![0]) * (0.6) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (0.6) * 100)/8}%`}} {...NumbersWheelProps}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <div key={number} className="wheel-number">{number}</div>
+                <div key={number} style={hoveredNumber === number ? {backgroundColor: `var(--shcolor-${highlight_color})`,boxShadow: `0 0 3px 1px var(--shcolor-${highlight_color})`, transition: "all 150ms ease-in-out"}: {}} className={`wheel-number ${hoveredNumber !== number ? 'unhovered' : ''} ${hoveredNumber === null ? 'unfocused' : ''}`}>{number}</div>
             ))}
         </motion.div>
     )

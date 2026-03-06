@@ -65,6 +65,7 @@
   --tbcolor-success: rgb(77, 182, 172, 0.4);
   --tbcolor-error:  rgb(236, 64, 122, 0.5);
   --tbcolor-informative: rgb(38, 198, 218, 0.4);
+  --tbcolor-black: rgba(0, 0, 0, 0.2);
 
   --tcolor-blue:  rgb(30, 136, 229, 0.25);
   --tcolor-black: rgba(0, 0, 0, 0.2);
@@ -73,6 +74,12 @@
   --tcolor-warning: rgb(249, 168, 37, 0.25);
 
   --tbackground-blue: rgb(30, 136, 229, 0.75);
+
+  --shcolor-yellow: rgb(249, 168, 37, 0.25);
+  --shcolor-pink: rgb(236, 64, 122, 0.25);
+  --shcolor-blue:  rgb(30, 136, 229, 0.25);
+  --shcolor-green: rgb(77, 182, 172, 0.25);
+  --shcolor-black: rgba(0, 0, 0, 0.2);
 
   --lcolor-blue:  rgb(30, 136, 229);
   --lcolor-warning: rgb(249, 168, 37);
