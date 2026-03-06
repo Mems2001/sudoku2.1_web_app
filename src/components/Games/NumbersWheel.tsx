@@ -4,8 +4,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { CellAnnotation } from '../../models/types'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
+import { Game } from '../../models/game'
 
 interface WheelProps {
+    game: Game,
     currentFocused: string | undefined,
     timeElapsed: number,
     numberButton(value: number|CellAnnotation, timeElapsed: number): any,
@@ -14,7 +16,7 @@ interface WheelProps {
     notebookMode: boolean
 }
 
-const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, numberButton, setAnnotation, setShowWheel, notebookMode}) => {
+const NumbersWheel:React.FC<WheelProps> = ({ game, currentFocused, timeElapsed, numberButton, setAnnotation, setShowWheel, notebookMode}) => {
     const {highlight_color} = useSelector((state:RootState) => state.gameSettings.value)
     const [hoveredNumber, setHoveredNumber] = useState<number | null>(null)
     const wheelRef = useRef<HTMLDivElement>(null)
@@ -42,7 +44,7 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
         // Map 3x3 grid to 1-9
         const number = row * 3 + col + 1
         // console.warn(number)
-        setHoveredNumber(number)
+        if (game.remainingNumbers[number-1] < 9) setHoveredNumber(number)
     }
 
     async function handlePointerUp() {
@@ -66,8 +68,8 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
 
     return (
         <motion.div ref={wheelRef} className={`numbers-wheel ${hoveredNumber === null ? 'unfocused' : ''}`} style={{top: `${(parseInt(currentFocused![0]) * (0.6) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (0.6) * 100)/8}%`}} {...NumbersWheelProps}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <div key={number} style={hoveredNumber === number ? {backgroundColor: `var(--hcolor-${highlight_color})`,boxShadow: `0 0 3px 1px var(--hcolor-${highlight_color})`, transition: "all 150ms ease-in-out"}: {}} className={`wheel-number ${hoveredNumber === null ? 'unfocused' : ''}`}>{number}</div>
+            {game.remainingNumbers.map((n, index) => (
+                <div key={index} style={hoveredNumber === index+1 && n<9 ? {backgroundColor: `var(--hcolor-${highlight_color})`,boxShadow: `0 0 3px 1px var(--hcolor-${highlight_color})`, transition: "all 150ms ease-in-out"}: {}} className={`wheel-number ${hoveredNumber === null ? 'unfocused' : ''}`}>{n<9 ? index+1 : ''}</div>
             ))}
         </motion.div>
     )
