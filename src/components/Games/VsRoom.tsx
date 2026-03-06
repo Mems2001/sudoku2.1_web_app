@@ -14,10 +14,6 @@ interface VsRommProps {
     game_id: Ids,
     game_type: number,
     timeElapsed: number,
-    clearCellsHighlighting: () => void,
-    clearNumbersHighlighting: () => void,
-    selectCells: () => void,
-    sameNumbers: () => void,
     players: PlayerData[] | undefined
     inList?: boolean,
     host?: boolean,
@@ -25,7 +21,7 @@ interface VsRommProps {
     socketConexionOn?: boolean
 }
 
-const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCellsHighlighting, clearNumbersHighlighting, selectCells, sameNumbers, players , inList, host , socket, socketConexionOn }) => {
+const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, players , inList, host , socket, socketConexionOn }) => {
     const navigate = useNavigate()
 
     const shareLink = async () => {
@@ -92,7 +88,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, clearCel
                         <button onClick={shareLink}>Compartir link</button>
                     </div>
 
-                    <GameSettins gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={sameNumbers} selectCells={selectCells}/>
+                    <GameSettins gameType={game_type}/>
 
                     <div id='main-room-actions' className="room-actions">
                         { timeElapsed === 0?

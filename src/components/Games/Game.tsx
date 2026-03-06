@@ -50,7 +50,7 @@ const Game:React.FC<GameProps> = ({
   }) => {
     const game_id:Ids = useParams().game_id as Ids 
     const game_type: GameType = parseInt(useParams().game_type as string) as GameType
-    const { input_mode, highlight_color } = useSelector((state:RootState) => state.gameSettings.value)
+    const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
     // console.log("---> game type and timer:",game_type, timerOn)
 
     //General game functionality states
@@ -63,15 +63,11 @@ const Game:React.FC<GameProps> = ({
     
     //Set the cells grid object and its properties
     const { cells } = useGridCells({game, setTurn})
-    const cellsAux = document.getElementsByClassName("cell") as HTMLCollectionOf<HTMLDivElement>
-          for (const c of cellsAux) {
-              c.classList.add(highlight_color)
-          }
 
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, clearCellsHighlighting, clearNumbersHighlighting, highlightCells, highlightSameNumbers, setAnnotation} = useSetValue({game_type, game, cells, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
+    const {numberButton, focusOperations, currentFocused, setAnnotation} = useSetValue({game_type, game, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
     //Provides play and pause game functions
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
@@ -119,14 +115,14 @@ const Game:React.FC<GameProps> = ({
             {/* Game menu for single player games */}
             <AnimatePresence>
               {openSettings && game_type===0 && !game.gameOverCheck() && (
-                <GameSettings key='sp-game-settings' gameType={game_type} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} selectCells={() => { if (currentFocused) highlightCells(currentFocused)}} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}}/>
+                <GameSettings key='sp-game-settings' gameType={game_type}/>
               )}
             </AnimatePresence>
             
             {/* Game menu for multiplayer games */}
             <AnimatePresence>
-              {!timerOn && game_type!==0 && !game.gameOverCheck() && !multiplayerGameOver && (
-                <VsRomm key='mp-game-settings' game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} clearCellsHighlighting={clearCellsHighlighting} clearNumbersHighlighting={clearNumbersHighlighting} sameNumbers={() => {if (currentFocused) highlightSameNumbers(currentFocused)}} selectCells={() => {if (currentFocused) highlightCells(currentFocused)}} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
+              {!timerOn && game_type!==0 && !game.gameOverCheck() && !game.completedGameCheck() && !multiplayerGameOver && (
+                <VsRomm key='mp-game-settings' game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
               )}
             </AnimatePresence>
 

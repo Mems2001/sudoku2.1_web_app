@@ -67,7 +67,7 @@ const NumbersWheel:React.FC<WheelProps> = ({ currentFocused, timeElapsed, number
     return (
         <motion.div ref={wheelRef} className={`numbers-wheel ${hoveredNumber === null ? 'unfocused' : ''}`} style={{top: `${(parseInt(currentFocused![0]) * (0.6) * 100)/8}%`, left: `${(parseInt(currentFocused![1]) * (0.6) * 100)/8}%`}} {...NumbersWheelProps}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
-                <div key={number} style={hoveredNumber === number ? {backgroundColor: `var(--shcolor-${highlight_color})`,boxShadow: `0 0 3px 1px var(--shcolor-${highlight_color})`, transition: "all 150ms ease-in-out"}: {}} className={`wheel-number ${hoveredNumber !== number ? 'unhovered' : ''} ${hoveredNumber === null ? 'unfocused' : ''}`}>{number}</div>
+                <div key={number} style={hoveredNumber === number ? {backgroundColor: `var(--hcolor-${highlight_color})`,boxShadow: `0 0 3px 1px var(--hcolor-${highlight_color})`, transition: "all 150ms ease-in-out"}: {}} className={`wheel-number ${hoveredNumber === null ? 'unfocused' : ''}`}>{number}</div>
             ))}
         </motion.div>
     )

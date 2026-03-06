@@ -8,10 +8,6 @@ import { useEffect } from "react";
 
 interface GameSettingsProps {
     gameType?: number,
-    clearCellsHighlighting?: () => void,
-    clearNumbersHighlighting?: () => void,
-    selectCells?: () => void,
-    sameNumbers?: () => void,
     homeCloseButton?: () => void
 }
 
@@ -19,7 +15,7 @@ interface GameSettingsProps {
  * This component allows the user to change his game preferences. Works both in game or at the home screen.
  * @returns 
  */
-const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighting , clearNumbersHighlighting , selectCells , sameNumbers, homeCloseButton}) => {
+const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) => {
     const game_settings = useAppSelector((state:RootState) => state.gameSettings.value)
 
     const dispatch = useAppDispatch()
@@ -63,12 +59,6 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
 
         // Controlls the function behavior when used inside a game or from the home screen.
         if (!gameType) return
-
-        if (cellsHighlight && clearCellsHighlighting) {
-            clearCellsHighlighting()
-        } else if (selectCells) {
-            selectCells()
-        }
     }
     function handleNumberGuides (numbersHighlight:boolean) {
         saveGameSettings(game_settings.cells_highlight, !numbersHighlight)
@@ -76,12 +66,6 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, clearCellsHighlighti
 
         // Controlls the function behavior when used inside a game or from the home screen.
         if (!gameType) return
-
-        if (numbersHighlight && clearNumbersHighlighting) {
-            clearNumbersHighlighting()
-        } else if (sameNumbers) {
-            sameNumbers()
-        }
     }
 
     function handleHighlightColor (highlightColor:string) {

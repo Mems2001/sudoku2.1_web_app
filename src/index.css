@@ -75,11 +75,12 @@
 
   --tbackground-blue: rgb(30, 136, 229, 0.75);
 
-  --shcolor-yellow: rgb(249, 168, 37, 0.25);
-  --shcolor-pink: rgb(236, 64, 122, 0.25);
-  --shcolor-blue:  rgb(30, 136, 229, 0.25);
-  --shcolor-green: rgb(77, 182, 172, 0.25);
-  --shcolor-black: rgba(0, 0, 0, 0.2);
+  /* shadow and higlight colors for in-game elements */
+  --hcolor-yellow: rgb(249, 168, 37, 0.25);
+  --hcolor-pink: rgb(236, 64, 122, 0.25);
+  --hcolor-blue:  rgb(30, 136, 229, 0.25);
+  --hcolor-green: rgb(77, 182, 172, 0.25);
+  --hcolor-black: rgba(0, 0, 0, 0.2);
 
   --lcolor-blue:  rgb(30, 136, 229);
   --lcolor-warning: rgb(249, 168, 37);

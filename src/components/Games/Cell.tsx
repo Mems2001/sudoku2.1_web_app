@@ -18,7 +18,7 @@ interface CellProps {
 }
 
 const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton, currentFocused, setShowWheel}) => {
-    const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
+    const { input_mode, highlight_color, cells_highlight, numbers_highlight } = useSelector((state:RootState) => state.gameSettings.value)
 
     /**
      * This function  ultimately verifies if the input value is correct. It is also in charge to purge or filter any non allowed imput and to turn it into a valid input if possible.
@@ -73,8 +73,44 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
         }
     }
 
+    /**
+    * This function adds the borders to the cell, so we can see the sudoku grid.
+    */
+    function cellClassHandler():string {
+        let cell_class = 'cell' 
+        if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
+          cell_class += ' border-right'
+        }
+        if (parseInt(cell[1]) == 3 || parseInt(cell[1]) == 6) {
+          cell_class += ' border-left'
+        }
+        if (parseInt(cell[0]) == 2 || parseInt(cell[0]) == 5) {
+          cell_class += ' border-bottom' 
+        }
+        if (parseInt(cell[0]) == 3 || parseInt(cell[0]) == 6) {
+          cell_class += ' border-top'
+        }
+        if (determineNumberHiglight()) {
+            cell_class += ' font-bold'
+        }
+
+        return cell_class
+    }
+
+    function determineNumberHiglight():boolean {
+        if (!numbers_highlight) return false
+        if (currentFocused && game.getAnswersValueByPosition(cell) === game.getAnswersValueByPosition(currentFocused)) return true
+        return false
+    }
+
+    function determineCellHighlight():boolean {
+        if (!cells_highlight) return false
+        if (currentFocused && (currentFocused[0] === cell[0] || currentFocused[1] === cell[1] || (Math.floor(parseInt(currentFocused[0])/3) === Math.floor(parseInt(cell[0])/3) && Math.floor(parseInt(currentFocused[1])/3) === Math.floor(parseInt(cell[1])/3)))) return true
+        return false
+    }
+
     return (
-        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className='cell'>
+        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler()}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
             {game.verifyValue(cell)?
                 (<p id={cell}>{game.getAnswersValueByPosition(cell)}</p>)
             : 
@@ -87,7 +123,7 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
                     {checkAnnnotations(game.annotations, cell) && (
                         <div className="cell-annotations">
                             {[0,1,2,3,4,5,6,7,8].map(index => (
-                                <span className="cell-annotation" id={`${cell}${index+1}`} key={`annotation-${cell}-${index}`}>
+                                <span className={`cell-annotation ${currentFocused && numbers_highlight && game.annotations[parseInt(cell[0])][parseInt(cell[1])][index] === game.getAnswersValueByPosition(currentFocused)?'font-bold':''}`} id={`${cell}${index+1}`} key={`annotation-${cell}-${index}`}>
                                     {game.annotations[parseInt(cell[0])][parseInt(cell[1])][index] != 0 ? game.annotations[parseInt(cell[0])][parseInt(cell[1])][index] : ''}
                                 </span>
                             ))}
