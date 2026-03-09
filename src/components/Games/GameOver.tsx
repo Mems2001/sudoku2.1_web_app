@@ -42,8 +42,7 @@ const GameOver:React.FC<GameOverProps> = ({game_type, game , puzzle, setTimerOn,
     async function retry () {
         try {
             if (game && game.id && puzzle) {
-                await PlayersServices.updatePlayer(game.id, game_type, puzzle.grid , puzzle.number , generateEmptyAnnotationsGrid(), 0, 0)
-                await GamesServices.updateGame(game.id, 0 , 1)
+                await PlayersServices.retryPlayer(game.id)
             }
             window.location.reload()
         } catch (error) {

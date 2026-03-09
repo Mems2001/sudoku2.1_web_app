@@ -114,7 +114,7 @@ const Game:React.FC<GameProps> = ({
 
             {/* Game menu for single player games */}
             <AnimatePresence>
-              {openSettings && game_type===0 && !game.gameOverCheck() && (
+              {openSettings && game_type===0 && !game.gameOverCheck() && !game.completedGameCheck() && (
                 <GameSettings key='sp-game-settings' gameType={game_type}/>
               )}
             </AnimatePresence>

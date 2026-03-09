@@ -60,6 +60,17 @@ export class PlayersServices {
         }   
     }
 
+    static async retryPlayer(game_id: Ids):Promise<AxiosResponse<PlayerData>> {
+        try {
+            const response = await axios.post<PlayerData>(`${api_prefix}/single/${game_id}`)
+            return response
+        } catch (error:any) {
+            // console.error({message: error.message})
+            const altError = error as AxiosError
+            throw new PlayersServicesError(altError.message)
+        }
+    } 
+
     static async getPlayerIsOnList (game_id:Ids):Promise<AxiosResponse<boolean>> {
         try {
             const response = await axios.get<boolean>(`${api_prefix}/on_list/${game_id}`)

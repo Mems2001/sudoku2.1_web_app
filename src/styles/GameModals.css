@@ -371,12 +371,15 @@
 .completed {
     position: absolute;
     z-index: 20;
-    height: 100vh;
-    width: 100vw;
     top: 0;
     left: 0;
+
+    height: 100vh;
+    width: 100vw;
     background-color: var(--tbackground-blue);
     font-family: var(--orbitron-font);
+
+    backdrop-filter: blur(4px);
 }
 
 .completed h1 {

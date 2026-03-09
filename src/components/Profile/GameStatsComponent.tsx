@@ -44,6 +44,7 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
             if (stat.includes(difficulty.toLowerCase())) response.push(stat)
         }
 
+        // console.warn(response)
         return response
     }
 
@@ -92,6 +93,7 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
                         // console.warn(key2)
                         if (key2.includes(difficulty)) {
                             if (key2.includes('started')) started += game_stats[key as keyof GameStats]![key2]
+                            if (key2.includes('reset')) started += game_stats[key as keyof GameStats]![key2]
                             if (key2.includes('won')) won += game_stats[key as keyof GameStats]![key2]
                         }
                     }
@@ -107,6 +109,7 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
                     for (const key2 of Object.keys(game_stats[key as keyof GameStats]!)) {
                         // console.warn(key2)
                         if (key2.includes('started')) started += game_stats[key as keyof GameStats]![key2]
+                        if (key2.includes('reset')) started += game_stats[key as keyof GameStats]![key2]
                         if (key2.includes('won')) won += game_stats[key as keyof GameStats]![key2]
                     }
                 }
@@ -119,6 +122,7 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
             for (const key2 of Object.keys(game_stats[key as keyof GameStats]!)) {
                 // console.warn(key2)
                 if (key2.includes('started')) started += game_stats[key as keyof GameStats]![key2]
+                if (key2.includes('reset')) started += game_stats[key as keyof GameStats]![key2]
                 if (key2.includes('won')) won += game_stats[key as keyof GameStats]![key2]
             }
         }
@@ -207,6 +211,10 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
                                 <span>{getAllGamesStat(game_stats, 'started', key)}</span>
                             </div>
                             <div className="stat">
+                                <span>Games re-started</span>
+                                <span>{getAllGamesStat(game_stats, 'reset', key)}</span>
+                            </div>
+                            <div className="stat">
                                 <span>Games won</span>
                                 <span>{getAllGamesStat(game_stats, 'won', key)}</span>
                             </div>
@@ -264,6 +272,10 @@ const GameStatsComponent:React.FC<GameStatsProps> = ({game_stats}) => {
                     <div className="stat">
                         <span>Games started</span>
                         <span>{getAllGamesStat(game_stats, 'started')}</span>
+                    </div>
+                    <div className="stat">
+                        <span>Games re-started</span>
+                        <span>{getAllGamesStat(game_stats, 'reset')}</span>
                     </div>
                     <div className="stat">
                         <span>Games won</span>

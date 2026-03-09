@@ -51,7 +51,7 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                 <div className="home-buttons">
                     {isLogged && (
                         <button type="button" className="home-button user" onClick={() => navigate('/my-profile')} aria-label="Go to my profile">
-                            <i className="fa-solid fa-user-tie fa-lg" aria-hidden='true'></i>
+                            <i className="fa-solid fa-user-tie fa-xl" aria-hidden='true'></i>
                         </button>
                     )}
                     <button type="button" ref={playButtonRef} className="home-button red play" onClick={openModal}>PLAY</button>
