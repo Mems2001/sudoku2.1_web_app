@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { Game, UpdatedGameData } from "../models/game"
 import { Socket } from "socket.io-client"
 import { CellAnnotation, Ids } from "../models/types"
+import { useSelector } from "react-redux"
+import { RootState } from "../store/store"
 
 interface UseSetValue {
     game_type: number,
@@ -32,6 +34,7 @@ interface CoopGameSavingData extends UpdatedGameData {
 export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode}: UseSetValue) => {
     const [currentFocused , setCurrentFocus] = useState<string>()
     const [clickControl, setClickControl] = useState(false)
+    const {input_mode} = useSelector((state:RootState) => state.gameSettings.value)
 
     async function setAnnotation(value:number) {
         if (!currentFocused || currentFocused === 'x' || !game) return
@@ -89,15 +92,6 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
       else setCurrentFocus(undefined)      
     }
 
-    useEffect(
-        () => {
-          if (currentFocused) {
-            focusOperations(currentFocused)
-            // console.log('refreshed focus')
-          }
-        }, [clickControl]
-    )
-
     /**
      * Key event listener for allowing the user to set annotation values with the keyboard.
      */
@@ -107,16 +101,20 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
 
             const key = e.key
             if (/^[1-9]$/.test(key)) {
-                if (notebookMode) {
+                if (notebookMode && input_mode === 1 && timerOn ) {
                   const value = parseInt(key)
                   setClickControl(prev => !prev)
                   setAnnotation(value)
+                } else if(!notebookMode && input_mode == 1 && timerOn) {
+                  const value = parseInt(key)
+                  setClickControl(prev => !prev)
+                  numberButton(value, timeElapsed)
                 }
             }
         }
       
-        window.addEventListener('keydown', handleGlobalKeyDown)
-        return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+        window.addEventListener('keypress', handleGlobalKeyDown)
+        return () => window.removeEventListener('keypress', handleGlobalKeyDown)
     }, [currentFocused, game, timeElapsed, clickControl])
 
     /**
@@ -149,5 +147,5 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
         };
     }, [socket, game])
 
-    return {numberButton, focusOperations, currentFocused, setAnnotation}
+    return {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation}
 }

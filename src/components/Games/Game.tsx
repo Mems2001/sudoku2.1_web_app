@@ -67,11 +67,54 @@ const Game:React.FC<GameProps> = ({
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, setAnnotation} = useSetValue({game_type, game, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
+    const {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation} = useSetValue({game_type, game, setTurn, socket, timerOn, timeElapsed, turn, notebookMode})
     //Provides play and pause game functions
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
     // console.log("game_settings:", gameSettings)
+
+    function handleKeyNavigation(key: string) {
+      const direction = key.length > 1 ? key.slice(5): key.toLowerCase()
+      // console.warn('Current focused:', currentFocused)
+      const [r, c] = currentFocused ?? '00'
+      let row = parseInt(r)
+      let col = parseInt(c)
+      // console.warn(direction, r, c)
+
+      switch (direction) {
+        case 'Down':
+          if (row < 8) row ++ 
+          break
+        case 's':
+          if (row < 8) row ++ 
+          break
+        case 'Up':
+          if (row > 0) row --
+          break
+        case 'w':
+          if (row > 0) row --
+          break
+        case 'Right':
+          if (col < 8) col ++
+          break
+        case 'd':
+          if (col < 8) col ++
+          break
+        case 'Left':
+          if (col > 0) col --
+          break
+        case 'a':
+          if (col > 0) col --
+          break
+      }
+
+      const newFocus = `${row}${col}`
+      setCurrentFocus(newFocus)
+      const input = newFocus ? document.getElementById(newFocus) : undefined
+      if (input) {
+        input.focus()
+      }
+    }
 
     /*
      Error background animation. It triggers the animation anytime the number of errors increases.
@@ -92,12 +135,59 @@ const Game:React.FC<GameProps> = ({
       }, [game, game?.getErrors()]
     )
 
+    // Keyboard utility keys
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const key = e.key
+            // console.warn(key)
+            switch (key) {
+              case ' ': 
+                e.preventDefault()
+                if (timerOn) pauseGame()
+                else playGame() 
+                break
+              case 'Alt':
+                e.preventDefault()
+                setNotebookMode(value => !value)
+                break
+              case 'Escape':
+                e.preventDefault
+                setCurrentFocus(undefined)
+                break
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown)
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [timerOn, notebookMode, currentFocused])
+
+    // Keyboard navigation keys
+    useEffect(
+      () => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+          const key = e.key
+          // console.warn(key)
+          if ((key.includes('Arrow') || 'wasdWASD'.includes(key)) && timerOn) {
+            e.preventDefault()
+            handleKeyNavigation(key)
+          }
+        }
+
+        document.addEventListener("keydown", handleKeyDown)
+        return () => {
+          document.removeEventListener("keydown", handleKeyDown)
+        }
+      }, [timerOn, currentFocused]
+    )
+
     if (!loading && game) {
         return (
           <section className="grid-container"> 
             <Header game={game} game_type={game_type} turn={turn} time={timeElapsed} pause={() => pauseGame()} play={() => playGame()} timerOn={timerOn} setTimeElapsed={setTimeElapsed} notebookMode={notebookMode} setNotebookMode={setNotebookMode}/>
 
-            <div className="grid">
+            <div className={`grid ${notebookMode ? 'notebook': ''}`}>
               {cells.map((cell, index) =>  (
                   <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} setShowWheel={setShowWheel}/>  
                 )

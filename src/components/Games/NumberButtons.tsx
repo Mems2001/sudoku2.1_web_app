@@ -20,7 +20,7 @@ const NumberButtons:React.FC<NumberButtonsProps> = ({game, game_type, input_mode
             <h2>Annotations:</h2>
             <div className="numbers">
               {game.remainingNumbers.map((n , index) => 
-                <button onClick={async() => {if (input_mode === 1) await setAnnotation(n)}} className="remaining-number" key={index} disabled={n>=9}
+                <button onClick={async() => {if (input_mode === 0) await setAnnotation(index + 1)}} className="remaining-number" key={index} disabled={n>=9}
                 >{n<9 ? index +1 : ''}</button>
               )}
             </div> 
@@ -31,12 +31,13 @@ const NumberButtons:React.FC<NumberButtonsProps> = ({game, game_type, input_mode
           <h2>Remaining numbers:</h2>
           <div className="numbers">
             {game.remainingNumbers.map((n , index) => 
-              <button onClick={async () => {if (input_mode === 1) await numberButton(index+1, timeElapsed)}} className="remaining-number" key={index}
+              <button onClick={async () => {if (input_mode === 0) await numberButton(index+1, timeElapsed)}} className="remaining-number" key={index}
               disabled={(game_type===2 && !turn) || input_mode === 1 || n >= 9}>{n<9?index +1:''}</button>
             )}
-            {(input_mode === 0 || input_mode === 2) && (
-              <button onClick={async () => await numberButton(10, timeElapsed)}
-                disabled={game_type===2 && !turn}>
+            
+            {(input_mode === 0 || input_mode === 2 || input_mode === 1) && (
+              <button style={{userSelect: 'none'}} onClick={async () => await numberButton(10, timeElapsed)}
+                disabled={game_type === 2 && !turn}>
                 <i className="fa-solid fa-eraser fa-2xl"></i>
               </button>
             )}

@@ -111,7 +111,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
                             <label htmlFor="input-buttons">Buttons</label>
                             <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 0} onChange={setInputModeButtons}/>
                         </div>
-                        <div className="input-mode-container">
+                        <div className="input-mode-container" id="numbers-wheel-option">
                             <label htmlFor="input-buttons">Wheel</label>
                             <input id='input-buttons' type="checkbox" checked={game_settings.input_mode === 2} onChange={setInputModeWheel}/>
                         </div>

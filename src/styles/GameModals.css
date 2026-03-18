@@ -55,6 +55,9 @@
     flex-direction: row;
     align-items: center;
 }
+#numbers-wheel-option {
+    display: none;
+}
 .highlight-colors {
     display: flex;
     flex-direction: row;
@@ -406,5 +409,7 @@
 }
 
 @media screen and (max-width: 768px) {
-    
+     #numbers-wheel-option {
+        display: flex;
+    }
 }

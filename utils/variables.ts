@@ -12,9 +12,9 @@ const urls:Urls = {
 
 // LOCAL
 // const urls:Urls = {
-//     url_prefix : 'http://192.168.1.25:443',
-//     socket_url: 'http://192.168.1.25:443',
-//     share_link_prefix: 'http://192.168.1.25:5173'
+//     url_prefix : 'http://localhost:443',
+//     socket_url: 'http://localhost:443',
+//     share_link_prefix: 'http://localhost:5173'
 // }
 
 export default urls

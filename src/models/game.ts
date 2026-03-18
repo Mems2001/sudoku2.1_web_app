@@ -253,7 +253,7 @@ export class Game {
             }
             // console.warn(updatedPlayer?.data)
             if (updatedPlayer) {
-                this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors, updatedPlayer.data.annotations)
+                // this.setAnswers(updatedPlayer.data.grid, updatedPlayer.data.number, updatedPlayer.data.errors, updatedPlayer.data.annotations)
                 return {
                     updatedGrid: updatedPlayer.data.grid,
                     updatedNumber: updatedPlayer.data.number,

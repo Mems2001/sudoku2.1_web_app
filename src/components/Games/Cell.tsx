@@ -76,22 +76,27 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
     /**
     * This function adds the borders to the cell, so we can see the sudoku grid.
     */
-    function cellClassHandler():string {
+    function cellClassHandler(currentFocused?:string):string {
         let cell_class = 'cell' 
-        if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
-          cell_class += ' border-right'
-        }
-        if (parseInt(cell[1]) == 3 || parseInt(cell[1]) == 6) {
-          cell_class += ' border-left'
-        }
-        if (parseInt(cell[0]) == 2 || parseInt(cell[0]) == 5) {
-          cell_class += ' border-bottom' 
-        }
-        if (parseInt(cell[0]) == 3 || parseInt(cell[0]) == 6) {
-          cell_class += ' border-top'
-        }
-        if (determineNumberHiglight()) {
-            cell_class += ' font-bold'
+        if (currentFocused && currentFocused[0] === cell[0] && currentFocused[1] === cell[1]) {
+            cell_class += ' border-right border-left border-bottom border-top'
+            if (determineNumberHiglight()) cell_class += ' font-bold'
+        } else {
+            if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
+              cell_class += ' border-right'
+            }
+            if (parseInt(cell[1]) == 3 || parseInt(cell[1]) == 6) {
+              cell_class += ' border-left'
+            }
+            if (parseInt(cell[0]) == 2 || parseInt(cell[0]) == 5) {
+              cell_class += ' border-bottom' 
+            }
+            if (parseInt(cell[0]) == 3 || parseInt(cell[0]) == 6) {
+              cell_class += ' border-top'
+            }
+            if (determineNumberHiglight()) {
+                cell_class += ' font-bold'
+            }
         }
 
         return cell_class
@@ -110,13 +115,13 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
     }
 
     return (
-        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler()}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
+        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler(currentFocused)}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
             {game.verifyValue(cell)?
                 (<p id={cell}>{game.getAnswersValueByPosition(cell)}</p>)
             : 
                 (
                 <div className="cell-auxiliar-container">
-                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || input_mode === 2 || notebookMode || cell !== currentFocused} maxLength={1} disabled={!timerOn} onInput={(e) => {validateInput(e)}} onPointerDown={handleTouchStart} onPointerUp={() => setShowWheel(false)}
+                    <input id={cell} type="number" inputMode="numeric" min={1} max={9} autoComplete="off" readOnly={input_mode === 0 || input_mode === 2 || notebookMode || cell !== currentFocused} maxLength={1} disabled={!timerOn}  onInput={(e) => {validateInput(e)}} onPointerDown={handleTouchStart} onPointerUp={() => setShowWheel(false)}
                     defaultValue={game.getAnswersValueByPosition(cell) != 0 ? game.getAnswersValueByPosition(cell) : ''} 
                     className={!game.verifyValue(cell) ? 'incorrect' : 'correct'}
                     />
