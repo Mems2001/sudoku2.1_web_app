@@ -15,6 +15,7 @@ import './styles/SudokuLab.css'
 import Login from './components/UserAuth/Login'
 import Register from './components/UserAuth/Register'
 import GameModes from './components/Games/GameModes'
+import HomeLoader from './components/Home/HomeLoader'
 
 import axios from 'axios'
 import { useAuth } from './hooks/useAuth'
@@ -26,6 +27,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from './store/store'
 import ProfilePage from './components/Profile/ProfilePage'
 import ProtectedRouteAdmin from './components/Shared/ProtectedRouteAdmin'
+import HomeLoaderProtector from './components/Home/HomeLoaderPortector'
 
 axios.defaults.withCredentials = true
 
@@ -44,7 +46,9 @@ function App () {
       </AnimatePresence>
 
       <Routes>
-        <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
+        <Route element={<HomeLoaderProtector role={role}/>}>
+          <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
+        </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/game/:game_type/:game_id' element={<GameModes />} />

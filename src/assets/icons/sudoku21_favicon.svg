@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="logo-clip">
+      <rect x="4" y="4" width="92" height="92" rx="18" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#logo-clip)">
+    <rect x="0" y="0" width="40" height="40" fill="#EF8697"/> 
+    <rect x="40" y="0" width="60" height="40" fill="#FBC47D"/> 
+    <rect x="0" y="40" width="40" height="60" fill="#FCCB7E"/> 
+    <rect x="40" y="40" width="60" height="60" fill="#96D0C2"/> 
+  </g>
+
+  <rect x="4" y="4" width="92" height="92" rx="18" stroke="#7B82AF" stroke-width="4.5" fill="none"/>
+  
+  <line x1="40" y1="4" x2="40" y2="96" stroke="#7B82AF" stroke-width="4.5"/>
+  <line x1="4" y1="40" x2="96" y2="40" stroke="#7B82AF" stroke-width="4.5"/>
+</svg>
