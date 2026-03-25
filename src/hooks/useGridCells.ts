@@ -5,10 +5,11 @@ import { Game } from "../models/game";
 interface UseGridCells {
     game?: Game|null,
     setTurn?: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-    isLab?:boolean 
+    isLab?:boolean ,
+    isScreenLoader?: boolean,
 }
 
-export const useGridCells = ({game, setTurn, isLab=false}: UseGridCells):{cells: Cells} => {
+export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false}: UseGridCells):{cells: Cells} => {
     const cells:Cells = [];
 
     /**
@@ -29,6 +30,7 @@ export const useGridCells = ({game, setTurn, isLab=false}: UseGridCells):{cells:
     * @param cells - An array of strings wich contains all the posible cell's names of a sudoku 9x9 grid written as row+column string concatenation.
     */
     function cellsBorders (cells:Cells):void {
+
       for (let cell of cells) {
         if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
           const c = document.getElementById(`c${cell}`) as HTMLDivElement
@@ -47,6 +49,7 @@ export const useGridCells = ({game, setTurn, isLab=false}: UseGridCells):{cells:
           c.classList.add('border-top')
         }
       }
+
     }
 
     useEffect(
@@ -55,7 +58,7 @@ export const useGridCells = ({game, setTurn, isLab=false}: UseGridCells):{cells:
               cellsBorders(cells)
               setTurn(game.host)
             }
-            if (isLab) {
+            if (isLab || isScreenLoader) {
               cellsBorders(cells)
             }
           } , [game]

@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import './App.css'
 import './styles/Logo.css'
+import './styles/ScreenLoader.css'
 import './styles/Home.css'
 import './styles/Login.css'
 import './styles/Puzzle.css'
@@ -46,6 +47,7 @@ function App () {
       </AnimatePresence>
 
       <Routes>
+        {/* <Route path='/' element={<HomeLoader />}/> */}
         <Route element={<HomeLoaderProtector role={role}/>}>
           <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
         </Route>
