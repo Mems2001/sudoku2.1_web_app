@@ -289,7 +289,10 @@ h1 {
 
     .home-content {
         width: 90dvw;
-        height: 80vh;
+        height: 70vh;
+
+        justify-content: space-between;
+        gap: unset;
     }
     .background {
         height: 90vh;
