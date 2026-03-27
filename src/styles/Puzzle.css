@@ -90,7 +90,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: var(--text-lg);
+    font-size: var(--text-ml);
     font-weight: 300;
     color: black;
     border: 1px solid rgb(0, 0, 0 , 0.1);
