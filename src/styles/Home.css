@@ -322,7 +322,7 @@ h1 {
         gap: 1.5rem;
     }
     .title-texts {
-        font-size: var(--text-3xl);
+        font-size: var(--text-2xl);
     }
     .home-text {
         font-size: var(--text-md);
