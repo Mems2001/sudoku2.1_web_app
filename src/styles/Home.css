@@ -92,6 +92,11 @@ h1 {
     color: white;
     opacity: 75%;
     transition: ease-in-out 150ms;
+
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
 }
 .home-button.play {
     width: 14rem;
@@ -136,7 +141,10 @@ h1 {
 }
 
 .home-user-warning {
-    user-select: none;
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
 }
 
 .background {
@@ -226,7 +234,10 @@ h1 {
     font-size: var(--text-md);
     width: 18rem;
 
-    user-select: none;
+    user-select: none; 
+    -webkit-user-select: none; 
+    -webkit-touch-callout: none; 
+    -webkit-user-drag: none;
 }
 
 .games-modal .modal-window {
@@ -325,7 +336,7 @@ h1 {
         font-size: var(--text-2xl);
     }
     .home-text {
-        font-size: var(--text-md);
+        font-size: var(--text-sm);
     }
 
     .home-buttons {
