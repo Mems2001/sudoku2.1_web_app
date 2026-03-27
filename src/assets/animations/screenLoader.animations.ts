@@ -1,5 +1,17 @@
 import { MotionProps } from "framer-motion"
 
+export const loaderExitProps:MotionProps = {
+    initial: {opacity: 1},
+    exit: {opacity: 0},
+    transition: {duration: 0.5, ease: "easeOut"}
+}
+
+export const homeEntranceProps: MotionProps = {
+    initial: {opacity: 0},
+    animate: {opacity: 1},
+    transition: {duration: 0.5, ease: "easeIn"}
+}
+
 export const loaderLogoProps:MotionProps = {
     initial: {opacity: 0, position: 'absolute', top: '75%', transform: 'scale(3)'},
     animate: {opacity: 1, position: 'relative', top: 'auto', left: 'auto', transform: 'scale(1)'},

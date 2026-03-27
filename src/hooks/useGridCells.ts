@@ -7,9 +7,10 @@ interface UseGridCells {
     setTurn?: React.Dispatch<React.SetStateAction<boolean | undefined>>,
     isLab?:boolean ,
     isScreenLoader?: boolean,
+    timerOut?: boolean
 }
 
-export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false}: UseGridCells):{cells: Cells} => {
+export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false, timerOut=false}: UseGridCells):{cells: Cells} => {
     const cells:Cells = [];
 
     /**
@@ -30,6 +31,8 @@ export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false}:
     * @param cells - An array of strings wich contains all the posible cell's names of a sudoku 9x9 grid written as row+column string concatenation.
     */
     function cellsBorders (cells:Cells):void {
+
+      if (!timerOut) return
 
       for (let cell of cells) {
         if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
