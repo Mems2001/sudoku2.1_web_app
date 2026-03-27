@@ -27,6 +27,7 @@ export const useGoToGame = () => {
      */
     async function goToGame ({gameType, difficulty, closeModal}:UseGoToGameProps) {
         setWaiting(true)
+        setAuxDifficulty(difficulty)
         try {
           const puzzle:AxiosResponse<PuzzleData> = await PuzzlesServices.getRandomPuzzle(difficulty)
           const body:PostGameBody = {
@@ -35,6 +36,7 @@ export const useGoToGame = () => {
             status: gameType===0 ? 1 : 0 // If the game is a single player game it automatically starts the game
           }
           const game:AxiosResponse<GameData> = await GamesServices.createGame(body)
+          setAuxDifficulty(undefined)
           setWaiting(false)
           closeModal()
           // console.log(game)
