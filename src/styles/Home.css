@@ -289,7 +289,7 @@ h1 {
 
     .home-content {
         width: 90dvw;
-        max-height: 80vh;
+        height: 80vh;
     }
     .background {
         height: 90vh;
