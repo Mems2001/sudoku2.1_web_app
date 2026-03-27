@@ -47,7 +47,6 @@ function App () {
       </AnimatePresence>
 
       <Routes>
-        {/* <Route path='/' element={<HomeLoader />}/> */}
         <Route element={<HomeLoaderProtector role={role}/>}>
           <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
           <Route path='/login' element={<Login />} />

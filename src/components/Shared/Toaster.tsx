@@ -22,7 +22,7 @@ const Toaster = () => {
         <motion.div className={handleToasterType(type)}
         {...ToasterAnimationProps}>
             {type === "regular" ? 
-                <Logo size="small"/>
+                <img className="toaster-logo" src="/sudoku21_favicon.svg"/>
                     :
                 <div className="error-icon">
                     <i className="fa-solid fa-circle-xmark fa-2xl"></i>

@@ -9,6 +9,7 @@ import { GamesServices } from "../../services/GamesServices"
 import { GameType } from "../../models/game"
 import { GamesServicesError } from "../../models/errors"
 import { GameModalProps } from "../../assets/animations"
+import ButtonSpinner from "../Shared/ButtonSpinner"
 
 interface Props {
     closeModal: () => void,
@@ -145,14 +146,23 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
             }
             {showSaved && (
                 <div className="modal-window" id="saved-games">
-                    {saved?.map(game => 
-                        (<div className="saved-game-buttons" key={game.Game.id}>
-                            <button type="button" onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>
-                            <button type="button" className="delete" onClick={() => deleteSavedGame(game.id)} aria-label={`Delete ${handleGameTypeName(game.Game.type)} game number ${saved.indexOf(game) + 1}`}>
-                                <i className="fa-solid fa-trash fa-lg" aria-hidden="true"></i>
-                            </button>
-                        </div>)
-                    )}
+                    {saved?
+                        (
+                            saved.length > 0 ? (saved?.map(game => 
+                                (<div className="saved-game-buttons" key={game.Game.id}>
+                                    <button type="button" onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>
+                                    <button type="button" className="delete" onClick={() => deleteSavedGame(game.id)} aria-label={`Delete ${handleGameTypeName(game.Game.type)} game number ${saved.indexOf(game) + 1}`}>
+                                        <i className="fa-solid fa-trash fa-lg" aria-hidden="true"></i>
+                                    </button>
+                                </div>)
+                            )) : (
+                                <button disabled={true} className="saved-game home-button modal-button black">No saved games</button>
+                            )
+                        )
+                            :
+                        (<button className="saved-game home-button modal-button">
+                            <ButtonSpinner size={20} color={''}/>
+                        </button>)}
                     <button className="saved-game home-button modal-button" onClick={() => {setShowSaved(false); setAnnouncement("Back to main menu")}}>Back</button>
                 </div>
                 )

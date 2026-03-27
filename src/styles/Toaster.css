@@ -21,7 +21,18 @@
     background-color: white;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 }
+.toaster-logo {
+    width: 5vh;
+    height: 5vh;
+}
 
 .error-icon {
     color: var(--color-error)
+}
+
+@media screen and (max-with: 768px) {
+    .toaster-logo {
+        width: 4vw;
+        height: 4vw;
+    }
 }
