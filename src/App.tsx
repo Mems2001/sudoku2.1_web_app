@@ -50,16 +50,16 @@ function App () {
         {/* <Route path='/' element={<HomeLoader />}/> */}
         <Route element={<HomeLoaderProtector role={role}/>}>
           <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
-        </Route>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/game/:game_type/:game_id' element={<GameModes />} />
-        <Route>
-          <Route path='/my-profile' element={<ProfilePage />}/>
-        </Route>
-        <Route element={<ProtectedRouteAdmin />}>
-          <Route path='/admin' element={<AdminConsole />}/>
-          <Route path='/admin/lab' element={<SudokuLab />}/>
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/game/:game_type/:game_id' element={<GameModes />} />
+          <Route>
+            <Route path='/my-profile' element={<ProfilePage />}/>
+          </Route>
+          <Route element={<ProtectedRouteAdmin />}>
+            <Route path='/admin' element={<AdminConsole />}/>
+            <Route path='/admin/lab' element={<SudokuLab />}/>
+          </Route>
         </Route>
       </Routes>
     </div>
