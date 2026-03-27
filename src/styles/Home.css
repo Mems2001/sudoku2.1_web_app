@@ -329,11 +329,14 @@ h1 {
     }
 
     .home-buttons {
-        gap: 1.5rem;
+        gap: 1rem;
     }
     .home-button {
-        padding: 1.2rem 0;
-        width: 65vw;
+        padding: 1rem 0;
+        width: 50vw;
+    }
+    .home-button.play {
+        width: 35vw;
     }
     .home-button.user {
         width: 4.5rem;
