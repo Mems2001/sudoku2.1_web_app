@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { GamesServices, PostGameBody } from '../services/GamesServices'
 import { PuzzlesServices } from '../services/PuzzlesServices'
 import { AxiosResponse } from 'axios'
+import { useState } from 'react'
 
 interface UseGoToGameProps {
     gameType: number,
@@ -14,6 +15,9 @@ interface UseGoToGameProps {
 * First picks a random puzzle, then creates a game according to the game type, then redirects to the module in charge on game rendering.
 */
 export const useGoToGame = () => {
+    const [waiting, setWaiting] = useState(false)
+    const [auxDifficulty, setAuxDifficulty] = useState<number|undefined>(undefined)
+
     const navigate = useNavigate()
 
     /**
@@ -22,6 +26,7 @@ export const useGoToGame = () => {
      * @returns 
      */
     async function goToGame ({gameType, difficulty, closeModal}:UseGoToGameProps) {
+        setWaiting(true)
         try {
           const puzzle:AxiosResponse<PuzzleData> = await PuzzlesServices.getRandomPuzzle(difficulty)
           const body:PostGameBody = {
@@ -30,6 +35,7 @@ export const useGoToGame = () => {
             status: gameType===0 ? 1 : 0 // If the game is a single player game it automatically starts the game
           }
           const game:AxiosResponse<GameData> = await GamesServices.createGame(body)
+          setWaiting(false)
           closeModal()
           // console.log(game)
           return navigate(`/game/${gameType}/${game.data.id}`)
@@ -38,5 +44,5 @@ export const useGoToGame = () => {
         }
     }
 
-    return {goToGame}
+    return {goToGame, waiting, auxDifficulty}
 }

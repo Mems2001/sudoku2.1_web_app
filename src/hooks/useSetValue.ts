@@ -32,6 +32,7 @@ interface CoopGameSavingData extends UpdatedGameData {
  * @returns {UseSetValueReturn} 
  */
 export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode}: UseSetValue) => {
+    // console.log({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode})
     const [currentFocused , setCurrentFocus] = useState<string>()
     const [clickControl, setClickControl] = useState(false)
     const {input_mode} = useSelector((state:RootState) => state.gameSettings.value)
@@ -56,12 +57,9 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
      * @param {number} timeElapsed - The time elapsed since the game started.
      */
     async function numberButton (value:number|CellAnnotation, timeElapsed:number) {
-      // console.warn("---> number button clicked:", currentFocused, value)
-      
+            
       //Prevents to add values to the puzzle if it's not the player's turn.
-      if (game_type===2 && !turn) {
-        return
-      }
+      if (game_type===2 && !turn) return
       
       if (currentFocused && value && timerOn) {
         //We allow the change only when the previously set value is different from the new one.

@@ -26,7 +26,7 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
     const [showDifficulties, setShowDifficulties] = useState(false)
     const [gameType, setGameType] = useState<GameType|null>(null)
     const [saved , setSaved] = useState<PlayerData[]>()
-    const {goToGame} = useGoToGame()
+    const {goToGame, waiting, auxDifficulty} = useGoToGame()
     const navigate = useNavigate()
 
     //Esc key
@@ -178,12 +178,12 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
             }
             {showDifficulties && gameType !== null && (
                 <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>Novice</button>
-                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>Easy</button>
-                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>Normal</button>
-                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>Hard</button>
-                    <button className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>Expert</button>
-                    <button className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>Master</button>
+                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>{waiting && auxDifficulty === 0?<ButtonSpinner size={20} color="" />:'Novice'}</button>
+                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>{waiting && auxDifficulty === 1?<ButtonSpinner size={20} color="" />:'Easy'}</button>
+                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>{waiting && auxDifficulty === 2?<ButtonSpinner size={20} color="" />:'Normal'}</button>
+                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>{waiting && auxDifficulty === 3?<ButtonSpinner size={20} color="" />:'Hard'}</button>
+                    <button className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>{waiting && auxDifficulty === 4?<ButtonSpinner size={20} color="" />:'Expert'}</button>
+                    <button className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>{waiting && auxDifficulty === 5?<ButtonSpinner size={20} color="" />:'Master'}</button>
                     <button className="home-button modal-button" onClick={() => {setShowDifficulties(false);setGameType(null); setAnnouncement("Back to game type selection")}}>Back</button>
                 </div>
             )}

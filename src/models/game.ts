@@ -166,11 +166,8 @@ export class Game {
      * Sets a particular value to any desired position of the anwsers grid or the annotations grid. It also checks the correctness of the value (if it is a number) and finally saves the game.
      * @param {string} location - A string that represents the concatenation of a particular row and column of the grid. Both named as numbers from 0 to 8 taken from left to right in case of colmuns and from top to bottom in case of rows.
      * @param {number|CellAnnotation} value  - The desired value to be set.
-     * @param {number} timeElapsed - The time elapsed since the game started.
-     * @returns {UpdatedGameData} If the game was successfully saved returns the updated game data object, including a grid, number and number of errors, undefined otherwise.
      */
     setValue (location:string , value:number|CellAnnotation):void {
-        // console.warn("---> setting value", value, location)
         //To difference between a value and annotations we selected a type check, number for values and string for annotations.
         if (typeof value === "number") {
             let parsedValue = value
