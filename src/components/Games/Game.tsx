@@ -83,28 +83,36 @@ const Game:React.FC<GameProps> = ({
 
       switch (direction) {
         case 'Down':
-          if (row < 8) row ++ 
+          if (row < 8) row ++
+          else row = 0
           break
         case 's':
-          if (row < 8) row ++ 
+          if (row < 8) row ++
+          else row = 0
           break
         case 'Up':
           if (row > 0) row --
+          else row = 8
           break
         case 'w':
           if (row > 0) row --
+          else row = 8
           break
         case 'Right':
           if (col < 8) col ++
+          else col = 0
           break
         case 'd':
           if (col < 8) col ++
+          else col = 0
           break
         case 'Left':
           if (col > 0) col --
+          else col = 8
           break
         case 'a':
           if (col > 0) col --
+          else col = 8
           break
       }
 

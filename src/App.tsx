@@ -14,21 +14,24 @@ import './styles/Admin.css'
 import './styles/SudokuLab.css'
 
 import Login from './components/UserAuth/Login'
+import Toaster from './components/Shared/Toaster'
 import Register from './components/UserAuth/Register'
+import SudokuLab from './components/Admin/SudokuLab'
 import GameModes from './components/Games/GameModes'
-import HomeLoader from './components/Home/HomeLoader'
+import ProfilePage from './components/Profile/ProfilePage'
+import AdminConsole from './components/Admin/AdminConsole'
+import HomeLoaderProtector from './components/Home/HomeLoaderPortector'
+import ProtectedRouteAdmin from './components/Shared/ProtectedRouteAdmin'
 
 import axios from 'axios'
 import { useAuth } from './hooks/useAuth'
-import Toaster from './components/Shared/Toaster'
-import AdminConsole from './components/Admin/AdminConsole'
-import SudokuLab from './components/Admin/SudokuLab'
 import { AnimatePresence } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import { RootState } from './store/store'
-import ProfilePage from './components/Profile/ProfilePage'
-import ProtectedRouteAdmin from './components/Shared/ProtectedRouteAdmin'
-import HomeLoaderProtector from './components/Home/HomeLoaderPortector'
+import { useDeviceInput } from './hooks'
+import { useEffect } from 'react'
+import { setGameSettings } from './store/gameSettings.slice'
+import { useAppDispatch } from './models/hooks'
 
 axios.defaults.withCredentials = true
 
@@ -36,7 +39,17 @@ axios.defaults.withCredentials = true
 function App () {
 
   const showToaster = useSelector((state:RootState) => state.showToaster.value)
+  const gameSettings = useSelector((state:RootState) => state.gameSettings.value)
   const {isLogged, role, logout} = useAuth()
+  const { hasKeyboard } = useDeviceInput()
+
+  const dispatch = useAppDispatch()
+
+  useEffect(
+    () => {
+      if (hasKeyboard && gameSettings.input_mode === 2) dispatch(setGameSettings({...gameSettings, input_mode: 1}))
+    }, []
+  )
 
   return (
     <div className='App'>
