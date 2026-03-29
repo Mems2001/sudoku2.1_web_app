@@ -14,7 +14,7 @@ const initialState:GameSettings = {
         cells_highlight: true,
         numbers_highlight: true,
         highlight_color: "blue",
-        input_mode: 0
+        input_mode: 1
     }
 }
 
