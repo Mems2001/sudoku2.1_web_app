@@ -113,7 +113,9 @@ export const useAuth = ():UseAuthReturn => {
                   if (response.status == 200) {
                       dispatch(setLoggedIn())
                       dispatch(setRole(response.data.role))
-                      dispatch(setGameSettings(response.data.settings))
+                      // Input mode filter. Needeed for the wheel functioning since it works properly only with non keyboard devices.
+                      if (hasKeyboard && response.data.settings.input_mode === 2) dispatch(setGameSettings({...response.data.settings, input_mode: 1}))
+                      else dispatch(setGameSettings(response.data.settings))
                       localStorage.removeItem('anon-sudoku')
                       if (game_id) socket?.emit('create-player', response.data.user_id, game_id)
                   } else {
