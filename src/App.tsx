@@ -28,10 +28,6 @@ import { useAuth } from './hooks/useAuth'
 import { AnimatePresence } from 'framer-motion'
 import { useSelector } from 'react-redux'
 import { RootState } from './store/store'
-import { useDeviceInput } from './hooks'
-import { useEffect } from 'react'
-import { setGameSettings } from './store/gameSettings.slice'
-import { useAppDispatch } from './models/hooks'
 
 axios.defaults.withCredentials = true
 
@@ -39,17 +35,7 @@ axios.defaults.withCredentials = true
 function App () {
 
   const showToaster = useSelector((state:RootState) => state.showToaster.value)
-  const gameSettings = useSelector((state:RootState) => state.gameSettings.value)
   const {isLogged, role, logout} = useAuth()
-  const { hasKeyboard } = useDeviceInput()
-
-  const dispatch = useAppDispatch()
-
-  useEffect(
-    () => {
-      if (hasKeyboard && gameSettings.input_mode === 2) dispatch(setGameSettings({...gameSettings, input_mode: 1}))
-    }, []
-  )
 
   return (
     <div className='App'>

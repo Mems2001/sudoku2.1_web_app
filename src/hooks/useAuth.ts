@@ -15,6 +15,7 @@ import { UsersServices } from "../services/UsersServices"
 import { useToaster } from "./useToaster"
 import { AuthenticationError, LoginError, LogoutError, UsersServicesError } from "../models/errors"
 import { AuthenticationResponse } from "../models/dbTypes"
+import { useDeviceInput } from "./useDeviceInput"
 
 interface HandleLoginProps {
   data: LoginForm, 
@@ -36,6 +37,7 @@ interface UseAuthReturn {
 export const useAuth = ():UseAuthReturn => {
     const isLogged = useAppSelector((state:RootState) => state.isLogged.value)
     const role = useAppSelector((state:RootState) => state.role.value)
+    const { hasKeyboard } = useDeviceInput()
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const { openToaster } = useToaster()
@@ -58,7 +60,9 @@ export const useAuth = ():UseAuthReturn => {
           // console.log(response)
           if (response && response.status == 200) {
               dispatch(setRole(response.data.role))
-              dispatch(setGameSettings(response.data.settings))
+              // Input mode filter. Needeed for the wheel functioning since it works properly only with non keyboard devices.
+              if (hasKeyboard && response.data.settings.input_mode === 2) dispatch(setGameSettings({...response.data.settings, input_mode: 1}))
+              else dispatch(setGameSettings(response.data.settings))
               //Only updates the loggged in state to true if the user is not an anon, to protect non anon user features.
               if (response.data.role && response.data.role != 'anon') {
                 dispatch(setLoggedIn())
