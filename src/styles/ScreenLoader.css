@@ -38,7 +38,7 @@
     /* transform: translate(-50% , -50%); */
     /* z-index: 7; */
 
-    background-color: white;
+    background-color: var(--bg-light-beige);
 }
 
 .loader-cell {
@@ -57,6 +57,8 @@
     border: 1px solid rgb(0, 0, 0 , 0.1);
     cursor: pointer;
     user-select: none;
+
+    background-color: white;
 }
 
 .cell-animate {

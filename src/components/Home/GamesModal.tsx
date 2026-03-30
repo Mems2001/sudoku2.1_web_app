@@ -1,5 +1,5 @@
 import { useState, forwardRef, useEffect, Ref, RefObject, useRef } from "react"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { PlayerData } from "../../models/dbTypes"
 import { Ids } from "../../models/types"
@@ -8,7 +8,7 @@ import { useGoToGame } from "../../hooks/useGoToGame"
 import { GamesServices } from "../../services/GamesServices"
 import { GameType } from "../../models/game"
 import { GamesServicesError } from "../../models/errors"
-import { GameModalProps } from "../../assets/animations"
+import { GameModalProps, GameTypesVariants, GameTypeVariants } from "../../assets/animations"
 import ButtonSpinner from "../Shared/ButtonSpinner"
 
 interface Props {
@@ -167,26 +167,65 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
                 </div>
                 )
             }
-            {showNewGame && (
-                <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(0); setAnnouncement("Single player difficulty selection")}}>Single Player</button>
-                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(1); setAnnouncement("Multiplayer time attack difficulty selection")}}>Multiplayer Time Attack</button>
-                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(2); setAnnouncement("Multiplayer cooperative difficulty selection")}}>Multiplayer Cooperative</button>
-                    <button className="home-button modal-button" onClick={() => {setShowNewGame(false); setAnnouncement("Back to main menu")}}>Back</button>
-                </div>
-                )
-            }
-            {showDifficulties && gameType !== null && (
-                <div className="modal-window" id="new-game">
-                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>{waiting && auxDifficulty === 0?<ButtonSpinner size={20} color=""/>:'Novice'}</button>
-                    <button className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>{waiting && auxDifficulty === 1?<ButtonSpinner size={20} color=""/>:'Easy'}</button>
-                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>{waiting && auxDifficulty === 2?<ButtonSpinner size={20} color=""/>:'Normal'}</button>
-                    <button className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>{waiting && auxDifficulty === 3?<ButtonSpinner size={20} color=""/>:'Hard'}</button>
-                    <button className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>{waiting && auxDifficulty === 4?<ButtonSpinner size={20} color=""/>:'Expert'}</button>
-                    <button className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>{waiting && auxDifficulty === 5?<ButtonSpinner size={20} color=""/>:'Master'}</button>
-                    <button className="home-button modal-button" onClick={() => {setShowDifficulties(false);setGameType(null); setAnnouncement("Back to game type selection")}}>Back</button>
-                </div>
-            )}
+            <AnimatePresence mode="wait"> 
+                {showNewGame && (
+                    <motion.div
+                    variants={GameTypesVariants}
+                    initial='hidden'
+                    animate='show'
+                    exit='hidden'
+                    key='game-types'
+                    className="modal-window" id="new-game">
+                        <motion.button
+                        variants={GameTypeVariants} key='single-player'
+                        className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(0); setAnnouncement("Single player difficulty selection")}}>Single Player</motion.button>
+                        <motion.button 
+                        variants={GameTypeVariants} key='multiplayer-time-attack'
+                        className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(1); setAnnouncement("Multiplayer time attack difficulty selection")}}>Multiplayer Time Attack</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants} key='multiplayer-cooperative'
+                        className="home-button modal-button" onClick={() => {setShowDifficulties(true);setShowNewGame(false);setGameType(2); setAnnouncement("Multiplayer cooperative difficulty selection")}}>Multiplayer Cooperative</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants} key='games-back'
+                        className="home-button modal-button" onClick={() => {setShowNewGame(false); setAnnouncement("Back to main menu")}}>Back</motion.button>
+                    </motion.div>
+                    )
+                }
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+                {showDifficulties && gameType !== null && (
+                    <motion.div 
+                    variants={GameTypesVariants}
+                    initial='hidden'
+                    animate='show'
+                    exit='hidden'
+                    key='game-difficulties'
+                    className="modal-window" id="new-game">
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:0, closeModal})}>{waiting && auxDifficulty === 0?<ButtonSpinner size={20} color=""/>:'Novice'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button green" onClick={() => goToGame({gameType, difficulty:1, closeModal})}>{waiting && auxDifficulty === 1?<ButtonSpinner size={20} color=""/>:'Easy'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:2, closeModal})}>{waiting && auxDifficulty === 2?<ButtonSpinner size={20} color=""/>:'Normal'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button yellow" onClick={() => goToGame({gameType, difficulty:3, closeModal})}>{waiting && auxDifficulty === 3?<ButtonSpinner size={20} color=""/>:'Hard'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>{waiting && auxDifficulty === 4?<ButtonSpinner size={20} color=""/>:'Expert'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>{waiting && auxDifficulty === 5?<ButtonSpinner size={20} color=""/>:'Master'}</motion.button>
+                        <motion.button
+                        variants={GameTypeVariants}
+                        className="home-button modal-button" onClick={() => {setShowDifficulties(false);setShowNewGame(true);setGameType(null); setAnnouncement("Back to game type selection")}}>Back</motion.button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div
                 onClick={() => {closeModal();setShowSaved(false);setShowNewGame(false);setShowDifficulties(false);setGameType(null)}} className="modal-auxiliar">

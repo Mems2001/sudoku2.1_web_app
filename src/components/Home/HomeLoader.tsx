@@ -3,7 +3,7 @@ import { useGridCells } from "../../hooks"
 import { Cells, Grid } from "../../models/types"
 import { AnimatePresence, motion } from "framer-motion"
 
-import {loaderGridProps, loaderLogoProps} from '../../assets/animations'
+import {cellVariants, gridVariants, loaderTextProps, loaderLogoProps} from '../../assets/animations'
 
 function HomeLoader () {
     const [timerOut, setTimerOut] = useState(false)
@@ -95,7 +95,7 @@ function HomeLoader () {
                 const timer = setTimeout(
                     () => {
                         assignValue(shuffledCells)
-                    }, 1000
+                    }, 1250
                 )
     
                 return () => clearTimeout(timer)
@@ -113,16 +113,20 @@ function HomeLoader () {
 
             <AnimatePresence>
                 <motion.h2 
-                {...loaderGridProps}
+                {...loaderTextProps}
                 className="loader-message">Our servers are taking longer than expected to respond. Please wait a few more seconds...</motion.h2>
             </AnimatePresence>
 
             <AnimatePresence>
                 <motion.div
-                {...loaderGridProps}
+                variants={gridVariants}
+                initial='hidden'
+                animate= 'show'
                 className="loader-grid">
                     {cells.map((cell) => (
-                            <div className={classHandler(lastUpdatedCells, cell)} key={cell} id={`c${cell}`}>{parseValue(cell)}</div>
+                            <motion.div 
+                            variants={cellVariants}
+                            className={classHandler(lastUpdatedCells, cell)} key={cell} id={`c${cell}`}>{parseValue(cell)}</motion.div>
                     ))}
                 </motion.div>
             </AnimatePresence>
