@@ -9,7 +9,7 @@ function HomeLoader () {
     const [timerOut, setTimerOut] = useState(false)
     const [lastUpdatedCells, setLastUpdatedCells] = useState<Cells>([])
 
-    const {cells} = useGridCells({isScreenLoader:true})
+    const {cells} = useGridCells({})
     const shuffledCells = useMemo(() => shuffleArray(cells), cells)
 
     const [puzzle, setPuzzle] = useState<Grid>([[0,8,0,0,0,0,0,2,0],[0,3,4,0,0,5,0,0,0],[0,0,0,9,0,0,4,0,0],[0,2,0,6,0,0,3,0,0],[0,0,8,0,9,3,0,7,0],[0,1,0,0,7,0,0,5,4],[3,6,0,5,1,0,0,0,0],[1,0,0,4,0,0,0,0,0],[0,0,0,0,0,0,2,0,0]]) 

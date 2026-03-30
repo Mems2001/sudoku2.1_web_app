@@ -4,13 +4,10 @@ import { Game } from "../models/game";
 
 interface UseGridCells {
     game?: Game|null,
-    setTurn?: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-    isLab?:boolean ,
-    isScreenLoader?: boolean,
-    timerOut?: boolean
+    setTurn?: React.Dispatch<React.SetStateAction<boolean | undefined>>
 }
 
-export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false, timerOut=false}: UseGridCells):{cells: Cells} => {
+export const useGridCells = ({game, setTurn}: UseGridCells):{cells: Cells} => {
     const cells:Cells = [];
 
     /**

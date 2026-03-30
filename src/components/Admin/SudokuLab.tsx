@@ -6,7 +6,7 @@ import { PuzzlesServices } from "../../services"
 import { useToaster } from "../../hooks/useToaster"
 
 function SudokuLab() {
-    const { cells } = useGridCells({isLab: true})
+    const { cells } = useGridCells({})
     const [algorithm, setAlgorithm] = useState<number|null>(null)
     const [difficulty, setDifficulty] = useState<number|null>(null)
     const [shownGrid, setShownGrid] = useState<Grid|null>(null)
