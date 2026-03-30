@@ -16,9 +16,10 @@ import { GameType } from "../../models/game"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 import NumberButtons from "./NumberButtons"
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import ErrorScreen from "./ErrorScreen"
 import NumbersWheel from "./NumbersWheel"
+import { PuzzleGridVariants, PuzzleProps } from "../../assets/animations"
 
 interface GameProps {
   timeElapsed: number
@@ -192,53 +193,59 @@ const Game:React.FC<GameProps> = ({
 
     if (!loading && game) {
         return (
-          <section className="grid-container"> 
-            <Header game={game} game_type={game_type} turn={turn} time={timeElapsed} pause={() => pauseGame()} play={() => playGame()} timerOn={timerOn} setTimeElapsed={setTimeElapsed} notebookMode={notebookMode} setNotebookMode={setNotebookMode}/>
+            <motion.section
+            {...PuzzleProps} 
+            key={`game-section-${game_id}`}
+            className="grid-container"> 
+              <Header game={game} game_type={game_type} turn={turn} time={timeElapsed} pause={() => pauseGame()} play={() => playGame()} timerOn={timerOn} setTimeElapsed={setTimeElapsed} notebookMode={notebookMode} setNotebookMode={setNotebookMode}/>
 
-            <div className={`grid ${notebookMode ? 'notebook': ''}`}>
-              {cells.map((cell, index) =>  (
-                  <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} setShowWheel={setShowWheel}/>  
-                )
-              )}
-              
+                <motion.div 
+                variants={PuzzleGridVariants}
+                key='game-grid'
+                className='grid'>
+                  {cells.map((cell, index) =>  (
+                      <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} setShowWheel={setShowWheel}/>  
+                    )
+                  )}
+                  <AnimatePresence>
+                    {showWheel && input_mode === 2 && <NumbersWheel game={game} currentFocused={currentFocused} numberButton={numberButton} timeElapsed={timeElapsed} setShowWheel={setShowWheel} notebookMode={notebookMode} setAnnotation={setAnnotation}/>}
+                  </AnimatePresence>
+                </motion.div>
+                
+
+              <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} setAnnotation={setAnnotation}/>
+
+              <div id="x" onClick={() => focusOperations('x')} className="grid-auxiliar"></div>
+
+              {/* Game menu for single player games */}
               <AnimatePresence>
-                {showWheel && input_mode === 2 && <NumbersWheel game={game} currentFocused={currentFocused} numberButton={numberButton} timeElapsed={timeElapsed} setShowWheel={setShowWheel} notebookMode={notebookMode} setAnnotation={setAnnotation}/>}
+                {openSettings && game_type===0 && !game.gameOverCheck() && !game.completedGameCheck() && (
+                  <GameSettings key='sp-game-settings' gameType={game_type}/>
+                )}
               </AnimatePresence>
-            </div>
+              
+              {/* Game menu for multiplayer games */}
+              <AnimatePresence>
+                {!timerOn && game_type!==0 && !game.gameOverCheck() && !game.completedGameCheck() && !multiplayerGameOver && (
+                  <VsRomm key='mp-game-settings' game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
+                )}
+              </AnimatePresence>
 
-            <NumberButtons game={game} game_type={game_type} input_mode={input_mode} notebookMode={notebookMode} numberButton={numberButton} timeElapsed={timeElapsed} turn={turn} setAnnotation={setAnnotation}/>
+              {game.gameOverCheck() || multiplayerGameOver?
+                <GameOver game_type={game_type} game={game} puzzle={game.puzzle} setTimerOn={setTimerOn} timeElapsed={timeElapsed} multiplayerGameOver={multiplayerGameOver}/>
+                :
+                <></>
+              }
+              {game.completedGameCheck()?
+                <GameCompleted game_type={game_type} pauseGame={() => pauseGame()} socket={socket}/>
+                :
+                <></>
+              }
 
-            <div id="x" onClick={() => focusOperations('x')} className="grid-auxiliar"></div>
-
-            {/* Game menu for single player games */}
-            <AnimatePresence>
-              {openSettings && game_type===0 && !game.gameOverCheck() && !game.completedGameCheck() && (
-                <GameSettings key='sp-game-settings' gameType={game_type}/>
-              )}
-            </AnimatePresence>
-            
-            {/* Game menu for multiplayer games */}
-            <AnimatePresence>
-              {!timerOn && game_type!==0 && !game.gameOverCheck() && !game.completedGameCheck() && !multiplayerGameOver && (
-                <VsRomm key='mp-game-settings' game_type={game_type} game_id={game_id} timeElapsed={timeElapsed} inList={inList} host={game.host} socket={socket} socketConexionOn={socketConexionOn} players={players}/>
-              )}
-            </AnimatePresence>
-
-            {game.gameOverCheck() || multiplayerGameOver?
-              <GameOver game_type={game_type} game={game} puzzle={game.puzzle} setTimerOn={setTimerOn} timeElapsed={timeElapsed} multiplayerGameOver={multiplayerGameOver}/>
-              :
-              <></>
-            }
-            {game.completedGameCheck()?
-              <GameCompleted game_type={game_type} pauseGame={() => pauseGame()} socket={socket}/>
-              :
-              <></>
-            }
-
-            <AnimatePresence>
-              {errorEffect && <ErrorScreen/>}
-            </AnimatePresence>
-          </section>
+              <AnimatePresence>
+                {errorEffect && <ErrorScreen/>}
+              </AnimatePresence>
+            </motion.section>
         )
     }
   }

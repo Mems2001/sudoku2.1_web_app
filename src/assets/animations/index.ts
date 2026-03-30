@@ -1,3 +1,4 @@
+export * from './puzzle.animations'
 export * from './toaster.animations'
 export * from './gamesModal.animations'
 export * from './gameModals.animations'

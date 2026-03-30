@@ -22,11 +22,6 @@
     left: 50%;
     transform: translate(-50% , -50%);
     z-index: 7;
-
-    background-color: white;
-}
-.grid.notebook {
-    background-color: var(--bg-light-beige);
 }
 .grid-auxiliar {
     height: 100%;
@@ -96,6 +91,10 @@
     border: 1px solid rgb(0, 0, 0 , 0.1);
     cursor: pointer;
     user-select: none;
+    background-color: white;
+}
+.cell.notebook {
+    background-color: var(--bg-light-beige);
 }
 .cell-auxiliar-container {
     position: relative;

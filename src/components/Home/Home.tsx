@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom"
 import Logo from "../Shared/Logo"
 import React, { useRef, useState } from "react"
 import GameSettings from "../Games/GameSettings"
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
+import { PageEntranceProps } from "../../assets/animations"
 
 interface HomeProps {
     role: string | null,
@@ -34,7 +35,9 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
     }
     
     return (
-       <div className="home">
+       <motion.div
+       {...PageEntranceProps}
+       className="home">
         <section className="background">
             <div className="home-content">
                 <div className="title-container">
@@ -115,7 +118,7 @@ const Home:React.FC<HomeProps> = ({isLogged, role, logout}:HomeProps) => {
                 (<GameSettings key='home_settings' homeCloseButton={() => setOpenSettings(false)}/>)
             }
         </AnimatePresence>
-       </div>
+       </motion.div>
     )
 }
 

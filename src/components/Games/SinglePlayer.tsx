@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Game from "./Game";
+import { AnimatePresence } from "framer-motion";
 
 function SinglePlayer () {
   const [timerOn , setTimerOn] = useState(true)

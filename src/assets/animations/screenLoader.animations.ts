@@ -6,10 +6,14 @@ export const loaderExitProps:MotionProps = {
     transition: {duration: 0.5, ease: "easeOut"}
 }
 
-export const homeEntranceProps: MotionProps = {
-    initial: {opacity: 0},
-    animate: {opacity: 1},
-    transition: {duration: 0.5, ease: "easeIn"}
+export const PageEntranceProps: MotionProps = {
+    initial: "hidden",
+    animate: "show",
+    exit: "hidden",
+    variants: {
+        show: {opacity: 1, transition: {duration: 0.25, ease: "easeIn"}},
+        hidden: {opacity: 0, transition: {duration: 0.25, ease: "easeOut", when: "afterChildren"}}
+    }
 }
 
 export const loaderLogoProps:MotionProps = {

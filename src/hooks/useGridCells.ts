@@ -26,43 +26,10 @@ export const useGridCells = ({game, setTurn, isLab=false, isScreenLoader=false, 
     }
     defineCells(cells)
 
-    /**
-    * This function adds the borders to the cells, so we can see the sudoku grid.
-    * @param cells - An array of strings wich contains all the posible cell's names of a sudoku 9x9 grid written as row+column string concatenation.
-    */
-    function cellsBorders (cells:Cells):void {
-
-      if (!timerOut) return
-
-      for (let cell of cells) {
-        if (parseInt(cell[1]) == 2 || parseInt(cell[1]) == 5) {
-          const c = document.getElementById(`c${cell}`) as HTMLDivElement
-          c.classList.add('border-right')
-        }
-        if (parseInt(cell[1]) == 3 || parseInt(cell[1]) == 6) {
-          const c = document.getElementById(`c${cell}`) as HTMLDivElement
-          c.classList.add('border-left')
-        }
-        if (parseInt(cell[0]) == 2 || parseInt(cell[0]) == 5) {
-          const c = document.getElementById(`c${cell}`) as HTMLDivElement
-          c.classList.add('border-bottom')
-        }
-        if (parseInt(cell[0]) == 3 || parseInt(cell[0]) == 6) {
-          const c = document.getElementById(`c${cell}`) as HTMLDivElement
-          c.classList.add('border-top')
-        }
-      }
-
-    }
-
     useEffect(
           () => {
             if (game && setTurn) {
-              cellsBorders(cells)
               setTurn(game.host)
-            }
-            if (isLab || isScreenLoader) {
-              cellsBorders(cells)
             }
           } , [game]
         )

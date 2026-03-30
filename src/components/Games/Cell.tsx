@@ -3,6 +3,8 @@ import { Game } from "../../models/game"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 import { AnnotationsGrid } from "../../models/types"
+import {motion} from 'framer-motion'
+import { cellVariants, GameTypeVariants, PuzzleCellVariants } from "../../assets/animations"
 
 interface CellProps {
     game: Game,
@@ -78,6 +80,9 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
     */
     function cellClassHandler(currentFocused?:string):string {
         let cell_class = 'cell' 
+
+        if (notebookMode) cell_class += ' notebook'
+
         if (currentFocused && currentFocused[0] === cell[0] && currentFocused[1] === cell[1]) {
             cell_class += ' border-right border-left border-bottom border-top'
             if (determineNumberHiglight()) cell_class += ' font-bold'
@@ -115,7 +120,9 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
     }
 
     return (
-        <div id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler(currentFocused)}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
+        <motion.div 
+        variants={PuzzleCellVariants}
+        id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler(currentFocused)}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
             {game.verifyValue(cell)?
                 (<p id={cell}>{game.getAnswersValueByPosition(cell)}</p>)
             : 
@@ -137,7 +144,7 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
                 </div>
                 )               
             }
-        </div>
+        </motion.div>
     )
 }
 

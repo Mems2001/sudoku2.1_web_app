@@ -1,5 +1,5 @@
 import Home from './components/Home/Home'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 
 import './App.css'
 import './styles/Logo.css'
@@ -36,6 +36,7 @@ function App () {
 
   const showToaster = useSelector((state:RootState) => state.showToaster.value)
   const {isLogged, role, logout} = useAuth()
+  const location = useLocation()
 
   return (
     <div className='App'>
@@ -45,21 +46,23 @@ function App () {
         )}
       </AnimatePresence>
 
-      <Routes>
-        <Route element={<HomeLoaderProtector role={role}/>}>
-          <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/game/:game_type/:game_id' element={<GameModes />} />
-          <Route>
-            <Route path='/my-profile' element={<ProfilePage />}/>
+      <AnimatePresence mode='wait'>
+        <Routes location={location} key={location.pathname}>
+          <Route element={<HomeLoaderProtector role={role}/>}>
+            <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/game/:game_type/:game_id' element={<GameModes/>} />
+            <Route>
+              <Route path='/my-profile' element={<ProfilePage />}/>
+            </Route>
+            <Route element={<ProtectedRouteAdmin />}>
+              <Route path='/admin' element={<AdminConsole />}/>
+              <Route path='/admin/lab' element={<SudokuLab />}/>
+            </Route>
           </Route>
-          <Route element={<ProtectedRouteAdmin />}>
-            <Route path='/admin' element={<AdminConsole />}/>
-            <Route path='/admin/lab' element={<SudokuLab />}/>
-          </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </AnimatePresence>
     </div>
   )
 }
