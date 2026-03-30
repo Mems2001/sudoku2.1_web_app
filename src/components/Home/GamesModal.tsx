@@ -137,36 +137,68 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
                 {announcement}
             </div>
 
-            {!showSaved && !showNewGame && !showDifficulties && (
-                <div id="games" className="modal-window">
-                    <button className="home-button modal-button" onClick={() => {setShowNewGame(true); setAnnouncement("Game type selection menu opened")}}>New Game</button>
-                    <button className="home-button modal-button" onClick={() => {goToSavedGames(); setAnnouncement("Loading saved games")}}>Saved Games</button>
-                </div>
-                )
-            }
-            {showSaved && (
-                <div className="modal-window" id="saved-games">
-                    {saved?
-                        (
-                            saved.length > 0 ? (saved?.map(game => 
-                                (<div className="saved-game-buttons" key={game.Game.id}>
-                                    <button type="button" onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>
-                                    <button type="button" className="delete" onClick={() => deleteSavedGame(game.id)} aria-label={`Delete ${handleGameTypeName(game.Game.type)} game number ${saved.indexOf(game) + 1}`}>
-                                        <i className="fa-solid fa-trash fa-lg" aria-hidden="true"></i>
-                                    </button>
-                                </div>)
-                            )) : (
-                                <button disabled={true} className="saved-game home-button modal-button black">No saved games</button>
+            <AnimatePresence mode="wait">
+                {!showSaved && !showNewGame && !showDifficulties && (
+                    <motion.div
+                    variants={GameTypesVariants}
+                    initial='hidden'
+                    animate='show'
+                    exit='hidden'
+                    key='main-menu'
+                    id="main-menu" className="modal-window">
+                        <motion.button 
+                        variants={GameTypeVariants}
+                        key='new-game'
+                        className="home-button modal-button" onClick={() => {setShowNewGame(true); setAnnouncement("Game type selection menu opened")}}>New Game</motion.button>
+                        <motion.button 
+                        variants={GameTypeVariants}
+                        key='saved-games'
+                        className="home-button modal-button" onClick={() => {goToSavedGames(); setAnnouncement("Loading saved games")}}>Saved Games</motion.button>
+                    </motion.div>
+                    )
+                }
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+                {showSaved && (
+                    <motion.div 
+                    variants={GameTypesVariants}
+                    initial='hidden'
+                    animate='show'
+                    exit='hidden'
+                    key='saved-games'
+                    className="modal-window" id="saved-games">
+                        {saved?
+                            (
+                                saved.length > 0 ? (saved?.map(game => 
+                                    (<motion.div 
+                                    variants={GameTypeVariants}
+                                    className="saved-game-buttons" key={game.Game.id}>
+                                        <button type="button" onClick={() => goToSavedGame(game.Game.id , game.Game.type)} className="saved-game home-button modal-button">{handleGameTypeName(game.Game.type)} {saved.indexOf(game)+1} {handleDifficultyName(game.Game.Puzzle.difficulty)}</button>
+                                        <button type="button" className="delete" onClick={() => deleteSavedGame(game.id)} aria-label={`Delete ${handleGameTypeName(game.Game.type)} game number ${saved.indexOf(game) + 1}`}>
+                                            <i className="fa-solid fa-trash fa-lg" aria-hidden="true"></i>
+                                        </button>
+                                    </motion.div>)
+                                )) : (
+                                    <button disabled={true} className="saved-game home-button modal-button black">No saved games</button>
+                                )
                             )
-                        )
-                            :
-                        (<button className="saved-game home-button modal-button">
-                            <ButtonSpinner size={20} color={''}/>
-                        </button>)}
-                    <button className="saved-game home-button modal-button" onClick={() => {setShowSaved(false); setAnnouncement("Back to main menu")}}>Back</button>
-                </div>
-                )
-            }
+                                :
+                            (<motion.button 
+                            variants={GameTypeVariants}
+                            key='loading-saved-games'
+                            className="saved-game home-button modal-button">
+                                <ButtonSpinner size={20} color={''}/>
+                            </motion.button>)}
+                        <motion.button 
+                        variants={GameTypeVariants}
+                        key='saved-games-back'
+                        className="saved-game home-button modal-button" onClick={() => {setShowSaved(false); setAnnouncement("Back to main menu")}}>Back</motion.button>
+                    </motion.div>
+                    )
+                }
+            </AnimatePresence>
+
             <AnimatePresence mode="wait"> 
                 {showNewGame && (
                     <motion.div
