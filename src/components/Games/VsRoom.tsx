@@ -94,7 +94,7 @@ const VsRomm:React.FC<VsRommProps> = ({game_id, game_type, timeElapsed, players 
                         { timeElapsed === 0?
                             <button className="continue" onClick={() => playGame(socket, true)} disabled={(players && players.length < 2) || !host}>Start</button>
                             :
-                            <button className="continue" disabled={!host} onClick={() => playGame(socket, false)}>Continue</button>
+                            <button className="continue" disabled={!host || (game_type === 2 && players.length < 2)} onClick={() => playGame(socket, false)}>Continue</button>
                         }
                         <button className="cancel" onClick={() => navigate('/')}>Salir</button>
                     </div>

@@ -112,7 +112,8 @@ const MultiplayerGame = () => {
             })
 
             newSocket.on('game-alert' , data => {
-              console.log(data)
+            //   console.log(data)
+              openToaster(data.message, 'error')
             })
 
             return () => {newSocket.disconnect()}

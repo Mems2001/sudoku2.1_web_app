@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
 import { AnnotationsGrid } from "../../models/types"
 import {motion} from 'framer-motion'
-import { cellVariants, GameTypeVariants, PuzzleCellVariants } from "../../assets/animations"
+import { PuzzleCellVariants } from "../../assets/animations"
 
 interface CellProps {
     game: Game,
