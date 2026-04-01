@@ -11,7 +11,7 @@ interface UseSetValue {
     socket?: Socket,
     timerOn: boolean,
     timeElapsed: number,
-    turn?: boolean,
+    turnBearer?: boolean,
     setTurn: React.Dispatch<React.SetStateAction<boolean | undefined>>,
     notebookMode: boolean
 }
@@ -31,7 +31,7 @@ interface CoopGameSavingData extends UpdatedGameData {
  * @param {React.Dispatch<React.SetStateAction<boolean | undefined>>} setTurn
  * @returns {UseSetValueReturn} 
  */
-export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode}: UseSetValue) => {
+export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turnBearer, notebookMode}: UseSetValue) => {
     // console.log({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode})
     const [currentFocused , setCurrentFocus] = useState<string>()
     const [clickControl, setClickControl] = useState(false)
@@ -50,6 +50,14 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
 
         await numberButton(new_annotation, timeElapsed)
     }
+
+    function handleTurn(value: number | CellAnnotation, turnBearer?: boolean):boolean|undefined {
+      if (game_type === 2) {
+        if ((notebookMode && typeof value !== "number") || (turnBearer && value === 10)) return turnBearer
+        return !turnBearer
+      }
+      return turnBearer
+    }
     
     /**
      * This function is called when the user clicks on a number button or sets an input with the intention to fill a cell with the corresponding value. It also checks the correction of the value according to the filled sudoku. If there is not a focused cell or the game is paused it does nothing.
@@ -59,7 +67,7 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
     async function numberButton (value:number|CellAnnotation, timeElapsed:number) {
             
       //Prevents to add values to the puzzle if it's not the player's turn.
-      if (game_type===2 && !turn) return
+      if (game_type===2 && !turnBearer && typeof value === "number") return
       
       if (currentFocused && value && timerOn) {
         //We allow the change only when the previously set value is different from the new one.
@@ -74,8 +82,8 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
           if (!saving_data) throw new Error('Unable to set the value or save the data')
 
           if (game_type===2 && socket) {
-            socket.emit('coop-save', {...saving_data, setTurn: value !== 10 && typeof value == "number"} as CoopGameSavingData)
-            setTurn(value === 10 || typeof value !== "number")
+            socket.emit('coop-save', {...saving_data, setTurn: handleTurn(value, !turnBearer)} as CoopGameSavingData)
+            setTurn(handleTurn(value, turnBearer))
           }
         }
       }
