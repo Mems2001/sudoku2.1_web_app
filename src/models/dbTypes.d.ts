@@ -1,11 +1,11 @@
-import {AnnotationsGrid, Grid, Ids} from './types'
+import {AnnotationsGrid, Grid, HighlightColor, Ids} from './types'
 
 type RoleType = "admin" | "user" | "anon"
 
 export interface GameSettings {
     cells_highlight: boolean,
     numbers_highlight: boolean,
-    highlight_color: string,
+    highlight_color: HighlightColor,
     input_mode: number,
     other_player_highlight: boolean
 }
