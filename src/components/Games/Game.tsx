@@ -20,6 +20,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import ErrorScreen from "./ErrorScreen"
 import NumbersWheel from "./NumbersWheel"
 import { PuzzleGridVariants, PuzzleProps } from "../../assets/animations"
+import { useAppDispatch } from "../../models/hooks"
+import { setGameSettings } from "../../store/gameSettings.slice"
 
 interface GameProps {
   timeElapsed: number
@@ -52,6 +54,8 @@ const Game:React.FC<GameProps> = ({
     const game_id:Ids = useParams().game_id as Ids 
     const game_type: GameType = parseInt(useParams().game_type as string) as GameType
     const { input_mode } = useSelector((state:RootState) => state.gameSettings.value)
+    const game_settings = useSelector((state:RootState) => state.gameSettings.value)
+    const dispatch = useAppDispatch()
     // console.log("---> game type and timer:",game_type, timerOn)
 
     //General game functionality states
@@ -68,16 +72,16 @@ const Game:React.FC<GameProps> = ({
     // ---> In Game functions <---
     
     //Provides the main value setting functions and related states
-    const {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation} = useSetValue({game_type, game, setTurn, socket, timerOn, timeElapsed, turnBearer:turn, notebookMode})
+    const {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation, currentFocusedCoop} = useSetValue({game_type, game, setTurn, socket, timerOn, timeElapsed, turnBearer:turn, notebookMode})
     //Provides play and pause game functions
     const { playGame, pauseGame, openSettings } = usePlayPause({game_type, game_id, socket, setTimerOn})
     // console.log("game_id:" , game_id , "game_info:" , game , "loading:" , loading , "error:" , error)
-    // console.log("game_settings:", gameSettings)
 
     function handleKeyNavigation(key: string) {
       const direction = key.length > 1 ? key.slice(5): key.toLowerCase()
       // console.warn('Current focused:', currentFocused)
       const [r, c] = currentFocused ?? '00'
+      const [r2, c2] = currentFocusedCoop ?? '00'
       let row = parseInt(r)
       let col = parseInt(c)
       // console.warn(direction, r, c)
@@ -119,6 +123,8 @@ const Game:React.FC<GameProps> = ({
 
       const newFocus = `${row}${col}`
       setCurrentFocus(newFocus)
+      socket?.emit('other-player-focus', newFocus)
+
       const input = newFocus ? document.getElementById(newFocus) : undefined
       if (input) {
         input.focus()
@@ -155,13 +161,18 @@ const Game:React.FC<GameProps> = ({
                 if (timerOn) pauseGame()
                 else playGame() 
                 break
-              case 'Alt':
+              case 'Control':
                 e.preventDefault()
                 setNotebookMode(value => !value)
                 break
               case 'Escape':
-                e.preventDefault
+                e.preventDefault()
                 setCurrentFocus(undefined)
+                socket?.emit('other-player-focus', undefined)
+                break
+              case "q":
+                e.preventDefault()
+                dispatch(setGameSettings({...game_settings, other_player_highlight: !game_settings.other_player_highlight}))
                 break
             }
         }
@@ -170,7 +181,7 @@ const Game:React.FC<GameProps> = ({
         return () => {
             document.removeEventListener("keydown", handleKeyDown)
         }
-    }, [timerOn, notebookMode, currentFocused])
+    }, [timerOn, notebookMode, currentFocused, game_settings])
 
     // Keyboard navigation keys
     useEffect(
@@ -204,7 +215,7 @@ const Game:React.FC<GameProps> = ({
                 key='game-grid'
                 className='grid'>
                   {cells.map((cell, index) =>  (
-                      <Cell key={index} game={game} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} setShowWheel={setShowWheel}/>  
+                      <Cell key={`${index}-${cell}`} game={game} game_type={game_type} cell={cell} focusOperations={focusOperations} timerOn={timerOn} timeElapsed={timeElapsed} turn={turn} notebookMode={notebookMode} numberButton={numberButton} currentFocused={currentFocused} currentFocusedCoop={currentFocusedCoop} setShowWheel={setShowWheel}/>  
                     )
                   )}
                   <AnimatePresence>

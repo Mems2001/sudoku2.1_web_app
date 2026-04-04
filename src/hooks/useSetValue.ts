@@ -33,7 +33,8 @@ interface CoopGameSavingData extends UpdatedGameData {
  */
 export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setTurn, turnBearer, notebookMode}: UseSetValue) => {
     // console.log({game_type, timerOn, timeElapsed, game, socket, setTurn, turn, notebookMode})
-    const [currentFocused , setCurrentFocus] = useState<string>()
+    const [currentFocused , setCurrentFocus] = useState<string|undefined>(undefined)
+    const [currentFocusedCoop , setCurrentFocusedCoop] = useState<string|undefined>(undefined)
     const [clickControl, setClickControl] = useState(false)
     const {input_mode} = useSelector((state:RootState) => state.gameSettings.value)
 
@@ -94,8 +95,18 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
      * @param id - The cell id, which is its name and the positicion of the cell within a grid.
      */
     function focusOperations(id:string) {
-      if (id !== 'x') setCurrentFocus(id)
-      else setCurrentFocus(undefined)      
+      if (game_type !== 2) {
+        if (id !== 'x') setCurrentFocus(id)
+          else setCurrentFocus(undefined)      
+      } else {
+        let otherPlayerFocus = undefined
+        if (id !== 'x') {
+          setCurrentFocus(id)
+          otherPlayerFocus = id
+        }
+        socket?.emit('other-player-focus', otherPlayerFocus)
+      }
+      console.warn('currentFocused:', currentFocused, "currentFocusedCoop:", currentFocusedCoop)
     }
 
     /**
@@ -124,7 +135,7 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
     }, [currentFocused, game, timeElapsed, clickControl])
 
     /**
-     * Coop game saving logic.
+     * Coop game saving logic and focus operations for coop games.
      */
     useEffect(() => {
         if (!socket || !game) return
@@ -145,13 +156,17 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
     
         socket.on('coop-save-2', (data:CoopGameSavingData) => {coopSave(data)})
         socket.on('new-host', data => {newHost(data)})
+        socket.on('other-player-focus-2', (cell: string | undefined) => {
+          setCurrentFocusedCoop(cell)
+        })  
     
         // Limpia el handler cuando cambie el socket/game o se desmonte el componente
         return () => {
           socket.off('coop-save-2')
           socket.off('new-host')
+          socket.off('other-player-focus-2')
         };
     }, [socket, game])
 
-    return {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation}
+    return {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation, currentFocusedCoop}
 }

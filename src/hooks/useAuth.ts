@@ -142,7 +142,7 @@ export const useAuth = ():UseAuthReturn => {
            .then((res:AxiosResponse<AuthenticationResponse>) => {
              dispatch(setLoggedOut())
              dispatch(setRole(null))
-             dispatch(setGameSettings({cells_highlight: true, numbers_highlight: true, highlight_color: "blue", input_mode: 0}))
+             dispatch(setGameSettings({cells_highlight: true, numbers_highlight: true, highlight_color: "blue", input_mode: 0, other_player_highlight: true}))
              openToaster(res.data.message, "regular")
            })
            .catch((error:LogoutError) => {

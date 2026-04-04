@@ -53,3 +53,5 @@ export interface CurrentPlayer {
 }
 
 export type numbers = [number , number , number , number , number , number , number , number , number]
+
+export type HighlightColor = "blue" | "pink" | "green" | "yellow" | "black"

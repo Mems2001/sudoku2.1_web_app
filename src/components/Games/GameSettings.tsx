@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { GameModalProps, GameModalWindowProps } from "../../assets/animations";
 import { ProfilesServices } from "../../services/ProfilesServices";
 import { useEffect } from "react";
+import { HighlightColor } from "../../models/types";
 
 interface GameSettingsProps {
     gameType?: number,
@@ -19,7 +20,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
     const game_settings = useAppSelector((state:RootState) => state.gameSettings.value)
 
     const dispatch = useAppDispatch()
-    const highlight_colors = ["blue", "pink", "green", "yellow", "black"]
+    const highlight_colors: HighlightColor[] = ["blue", "pink", "green", "yellow", "black"]
 
     function closeSettingsModal() {
         if (homeCloseButton !== undefined) homeCloseButton()
@@ -44,9 +45,9 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
     /***
      * Saves the game settings to the profile, even for anon users.
      */
-    async function saveGameSettings (cellsHighlight:boolean, numbersHighlight:boolean, highlightColor?:string, inputMode?: number) {
+    async function saveGameSettings (cellsHighlight?:boolean, numbersHighlight?:boolean, highlightColor?:string, inputMode?: number, otherPlayerHighlight?: boolean) {
             try {
-                const newSettings = await ProfilesServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode)
+                const newSettings = await ProfilesServices.updateGameSettings(cellsHighlight, numbersHighlight, highlightColor, inputMode, otherPlayerHighlight)
                 return console.log('new_game_settings:' , newSettings?.data)
             } catch (error) {
                 return console.error(error)
@@ -55,22 +56,22 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
 
     function handleColorGuides (cellsHighlight:boolean) {
         saveGameSettings(!cellsHighlight, game_settings.numbers_highlight)
-        dispatch(setGameSettings({cells_highlight:!cellsHighlight, numbers_highlight:game_settings.numbers_highlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
+        dispatch(setGameSettings({ ...game_settings , cells_highlight:!cellsHighlight}))
 
         // Controlls the function behavior when used inside a game or from the home screen.
         if (!gameType) return
     }
     function handleNumberGuides (numbersHighlight:boolean) {
         saveGameSettings(game_settings.cells_highlight, !numbersHighlight)
-        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight:!numbersHighlight, highlight_color: game_settings.highlight_color, input_mode: game_settings.input_mode}))
+        dispatch(setGameSettings({ ...game_settings, numbers_highlight:!numbersHighlight}))
 
         // Controlls the function behavior when used inside a game or from the home screen.
         if (!gameType) return
     }
 
-    function handleHighlightColor (highlightColor:string) {
+    function handleHighlightColor (highlightColor:HighlightColor) {
         saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, highlightColor)
-        dispatch(setGameSettings({cells_highlight: game_settings.cells_highlight, numbers_highlight: game_settings.numbers_highlight, highlight_color: highlightColor, input_mode: game_settings.input_mode}))
+        dispatch(setGameSettings({...game_settings, highlight_color: highlightColor}))
 
         // Controlls the function behavior when used inside a game or from the home screen.
         if (gameType === undefined) return
@@ -80,6 +81,11 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
             c.classList.remove(game_settings.highlight_color)
             c.classList.add(highlightColor)
         }
+    }
+
+    function handleOtherPlayerHighlight (otherPlayerHighlight:boolean) {
+        saveGameSettings(game_settings.cells_highlight, game_settings.numbers_highlight, game_settings.highlight_color, game_settings.input_mode, !otherPlayerHighlight)
+        dispatch(setGameSettings({...game_settings, other_player_highlight: !otherPlayerHighlight}))
     }
 
     function setInputModeButtons(e:React.ChangeEvent<HTMLInputElement>) {
@@ -98,6 +104,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
         return dispatch(setGameSettings({...game_settings, input_mode: value}))
     }
 
+    // for single player games or the settings menu at the home page
     if (gameType === undefined || gameType === 0) {
         return (
             <motion.div className="game-settings"
@@ -145,6 +152,7 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
                 
             </motion.div>
         )
+    // For multiplayer games
     } else {
         return (
             <div className="settings-window">
@@ -171,6 +179,12 @@ const GameSettins:React.FC<GameSettingsProps> = ({gameType, homeCloseButton}) =>
                     <label htmlFor="rc-match">Highlight cells</label>
                     <input type="checkbox" id="rc-match" defaultChecked={game_settings.cells_highlight} onChange={() => handleColorGuides(game_settings.cells_highlight)}/>
                 </div>
+                {gameType === 2 && (
+                    <div className="game-setting">
+                        <label htmlFor="coop-highlight">Other player highlight:</label>
+                        <input type="checkbox" id="coop-highlight" defaultChecked={game_settings.other_player_highlight} onChange={() => handleOtherPlayerHighlight(game_settings.other_player_highlight)}/>
+                    </div>
+                )}
                 <div className="game-setting">
                     <label>Highlight color:</label>
                 </div>

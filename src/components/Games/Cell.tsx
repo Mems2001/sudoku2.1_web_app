@@ -2,12 +2,13 @@ import React from "react"
 import { Game } from "../../models/game"
 import { useSelector } from "react-redux"
 import { RootState } from "../../store/store"
-import { AnnotationsGrid } from "../../models/types"
-import {motion} from 'framer-motion'
+import { AnnotationsGrid, HighlightColor } from "../../models/types"
+import {motion, MotionStyle} from 'framer-motion'
 import { PuzzleCellVariants } from "../../assets/animations"
 
 interface CellProps {
     game: Game,
+    game_type: number,
     cell: string,
     focusOperations(cell:string): void,
     timerOn: boolean,
@@ -17,10 +18,12 @@ interface CellProps {
     numberButton(number:number, timeElapsed:number): Promise<void>,
     currentFocused: string|undefined,
     setShowWheel: React.Dispatch<React.SetStateAction<boolean>>
+    currentFocusedCoop?: string,
 }
 
-const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton, currentFocused, setShowWheel}) => {
-    const { input_mode, highlight_color, cells_highlight, numbers_highlight } = useSelector((state:RootState) => state.gameSettings.value)
+const Cell:React.FC<CellProps> = ({game, game_type, cell, focusOperations, timerOn, timeElapsed, turn, notebookMode, numberButton, currentFocused, setShowWheel, currentFocusedCoop}) => {
+
+    const { input_mode, highlight_color, cells_highlight, numbers_highlight, other_player_highlight } = useSelector((state:RootState) => state.gameSettings.value)
 
     /**
      * This function  ultimately verifies if the input value is correct. It is also in charge to purge or filter any non allowed imput and to turn it into a valid input if possible.
@@ -113,16 +116,29 @@ const Cell:React.FC<CellProps> = ({game, cell, focusOperations, timerOn, timeEla
         return false
     }
 
-    function determineCellHighlight():boolean {
-        if (!cells_highlight) return false
-        if (currentFocused && (currentFocused[0] === cell[0] || currentFocused[1] === cell[1] || (Math.floor(parseInt(currentFocused[0])/3) === Math.floor(parseInt(cell[0])/3) && Math.floor(parseInt(currentFocused[1])/3) === Math.floor(parseInt(cell[1])/3)))) return true
-        return false
+    function determineCellHighlight(): MotionStyle|undefined {
+        if (game_type !== 2) {
+            if (!cells_highlight) return {}
+            if (currentFocused && (currentFocused[0] === cell[0] || currentFocused[1] === cell[1] || (Math.floor(parseInt(currentFocused[0])/3) === Math.floor(parseInt(cell[0])/3) && Math.floor(parseInt(currentFocused[1])/3) === Math.floor(parseInt(cell[1])/3)))) return {backgroundColor: `var(--hcolor-${highlight_color})`}
+        // Logic for cooperative games.
+        } else {
+            if (!cells_highlight && !other_player_highlight) return {}
+            const currentPlayerColor:HighlightColor = "pink"
+            const otherPlayerColor:HighlightColor = "blue"
+            const currentPlayerHighlight = currentFocused && (currentFocused[0] === cell[0] || currentFocused[1] === cell[1] || (Math.floor(parseInt(currentFocused[0])/3) === Math.floor(parseInt(cell[0])/3) && Math.floor(parseInt(currentFocused[1])/3) === Math.floor(parseInt(cell[1])/3)))
+            const otherPlayerHighlight = other_player_highlight && (currentFocusedCoop && (currentFocusedCoop[0] === cell[0] || currentFocusedCoop[1] === cell[1] || (Math.floor(parseInt(currentFocusedCoop[0])/3) === Math.floor(parseInt(cell[0])/3) && Math.floor(parseInt(currentFocusedCoop[1])/3) === Math.floor(parseInt(cell[1])/3))))
+            if (currentPlayerHighlight && otherPlayerHighlight) return {backgroundColor: `var(--hcolor-purple)`}
+            if (currentPlayerHighlight) return {backgroundColor: `var(--hcolor-${currentPlayerColor})`}
+            if (otherPlayerHighlight) return {backgroundColor: `var(--hcolor-${otherPlayerColor})`}
+        }
+
+        return {}
     }
 
     return (
         <motion.div 
         variants={PuzzleCellVariants}
-        id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler(currentFocused)}`} style={determineCellHighlight() ?{backgroundColor: `var(--hcolor-${highlight_color})`}:{}}>
+        id={`c${cell}`} onClick={() => focusOperations(cell)} className={`${cellClassHandler(currentFocused)}`} style={determineCellHighlight()}>
             {game.verifyValue(cell)?
                 (<p id={cell}>{game.getAnswersValueByPosition(cell)}</p>)
             : 

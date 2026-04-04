@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "./store"
+import { HighlightColor } from "../models/types"
 
 interface GameSettings {
     value: {
         cells_highlight: boolean,
         numbers_highlight: boolean,
-        highlight_color: string,
-        input_mode: number
+        highlight_color: HighlightColor,
+        input_mode: number,
+        other_player_highlight: boolean
     }
 }
 const initialState:GameSettings = {
@@ -14,7 +16,8 @@ const initialState:GameSettings = {
         cells_highlight: true,
         numbers_highlight: true,
         highlight_color: "blue",
-        input_mode: 1
+        input_mode: 1,
+        other_player_highlight: true
     }
 }
 
@@ -22,11 +25,12 @@ export const gameSettingsSlice = createSlice({
     name: 'game_settings',
     initialState,
     reducers: {
-        setGameSettings : (state , action: PayloadAction<{cells_highlight:boolean,numbers_highlight:boolean, highlight_color:string, input_mode: number}>) => {
+        setGameSettings : (state , action: PayloadAction<{cells_highlight:boolean, numbers_highlight:boolean, highlight_color:HighlightColor, input_mode: number, other_player_highlight: boolean}>) => {
             state.value.cells_highlight = action.payload.cells_highlight
             state.value.numbers_highlight = action.payload.numbers_highlight
             state.value.highlight_color = action.payload.highlight_color
             state.value.input_mode = action.payload.input_mode
+            state.value.other_player_highlight = action.payload.other_player_highlight
         }
     }
 })

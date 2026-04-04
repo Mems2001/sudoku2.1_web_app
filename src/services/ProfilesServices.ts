@@ -7,6 +7,7 @@ interface GameSettingsBody {
     cellsHighlight?: boolean, 
     numbersHighlight?: boolean,
     highlightColor?: string,
+    otherPlayerHighlight?: boolean,
     inputMode?: number
 }
 
@@ -22,15 +23,16 @@ export class ProfilesServices {
         }
     }
 
-    static async updateGameSettings(cellsHighlight?: boolean, numbersHighlight?: boolean, highlightColor?:string, inputMode?:number) {
+    static async updateGameSettings(cellsHighlight?: boolean, numbersHighlight?: boolean, highlightColor?:string, inputMode?:number, otherPlayerHighlight?: boolean):Promise<AxiosResponse<ProfileData>> {
         try {
             const body: GameSettingsBody = {
                 cellsHighlight,
                 numbersHighlight,
-                highlightColor, 
+                highlightColor,
+                otherPlayerHighlight,
                 inputMode
             }
-            const response = await axios.patch(`${api_prefix}/game-settings`, body)
+            const response = await axios.patch<ProfileData>(`${api_prefix}/game-settings`, body)
             return response
         } catch (error:any) {
             // console.error({message: error.message})

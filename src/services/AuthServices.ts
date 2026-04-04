@@ -11,7 +11,7 @@ class AuthServices {
     static async getAuthenticateSession():Promise<AxiosResponse<AuthenticationResponse>> {
         try {
             const response = await axios.get<AuthenticationResponse>(`${api_prefix}/authenticate_session`)
-            // console.log(response)
+            console.log(response)
             return response
         } catch (error:any) {
             return handleErrorType('authentication', error)

@@ -6,7 +6,8 @@ export interface GameSettings {
     cells_highlight: boolean,
     numbers_highlight: boolean,
     highlight_color: string,
-    input_mode: number
+    input_mode: number,
+    other_player_highlight: boolean
 }
 
 export interface AuthenticationResponse {
@@ -132,6 +133,7 @@ export interface ProfileData {
     cells_highlight: boolean,
     numbers_highlight: boolean,
     highlight_color: string,
+    other_player_highlight: boolean,
     input_mode: number,
     created_at: Date,
     updated_at: Date,
