@@ -75,6 +75,7 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
         if (game && !game.verifyValue(currentFocused)) {
           //First we set the value to the UI
           game.setValue(currentFocused , value)
+          setTurn(handleTurn(value, turnBearer))
           setClickControl(!clickControl)
 
           //Then we try to save the changes. Separting this concerns allows us to provide offline gaming.
@@ -84,7 +85,6 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
 
           if (game_type===2 && socket) {
             socket.emit('coop-save', {...saving_data, setTurn: handleTurn(value, !turnBearer)} as CoopGameSavingData)
-            setTurn(handleTurn(value, turnBearer))
           }
         }
       }
@@ -132,7 +132,7 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
       
         window.addEventListener('keypress', handleGlobalKeyDown)
         return () => window.removeEventListener('keypress', handleGlobalKeyDown)
-    }, [currentFocused, game, timeElapsed, clickControl])
+    }, [currentFocused, game, timeElapsed, clickControl, notebookMode])
 
     /**
      * Coop game saving logic and focus operations for coop games.
@@ -168,5 +168,5 @@ export const useSetValue = ({game_type, timerOn, timeElapsed, game, socket, setT
         };
     }, [socket, game])
 
-    return {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation, currentFocusedCoop}
+    return {numberButton, focusOperations, currentFocused, setCurrentFocus, setAnnotation, currentFocusedCoop, setClickControl}
 }

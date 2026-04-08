@@ -60,6 +60,7 @@ function HomeLoader () {
     function assignValue(cells: Cells) {
 
         for (const cell of cells) {
+
             const [row, col] = cell
             const r = parseInt(row)
             const c = parseInt(col)
