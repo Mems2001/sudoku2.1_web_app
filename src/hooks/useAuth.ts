@@ -28,11 +28,12 @@ interface UseAuthReturn {
   isLogged: boolean,
   handleRegistration(data:LoginForm): void,
   handleLogin({data, game_id, socket}:HandleLoginProps):void,
-  logout():void
+  logout():void,
+  authenticateSession():void
 }
 
 /**
- * This hook is in charge to verify if the user is logged in on the app init or when the role state changes and updates login information such as game settings.
+ * This hook is in charge to verify if the user is logged in on the app init or when the role state changes and updates login information such as game settings. It also makes an authenticate session call to the server every time it is called in order to check the server availability and the user session, so it should be called on every app render. It also provides functions to handle login, registration and logout, which can be used in the corresponding components.
  */
 export const useAuth = ():UseAuthReturn => {
     const isLogged = useAppSelector((state:RootState) => state.isLogged.value)
@@ -155,5 +156,5 @@ export const useAuth = ():UseAuthReturn => {
         if (!role) authenticateSession()
     }, [role])
 
-    return {role, isLogged, handleRegistration, handleLogin, logout}
+    return {role, isLogged, handleRegistration, handleLogin, logout, authenticateSession}
 }

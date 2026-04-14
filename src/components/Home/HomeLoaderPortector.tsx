@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react"
 import HomeLoader from "./HomeLoader"
 import { Outlet } from "react-router-dom"
 import { motion} from "framer-motion"
-import { PageEntranceProps, loaderExitProps } from "../../assets/animations"
+import { loaderExitProps } from "../../assets/animations"
 
 interface HomeLoaderProtectorProps {
-    role: string | null
+    role: string | null,
+    authenticateSession(): void
 }
 
-const HomeLoaderProtector:React.FC<HomeLoaderProtectorProps> = ({role}) => {
+const HomeLoaderProtector:React.FC<HomeLoaderProtectorProps> = ({role, authenticateSession}) => {
 
     const [timerOut, setTimerOut] = useState(false)
 
@@ -28,7 +29,7 @@ const HomeLoaderProtector:React.FC<HomeLoaderProtectorProps> = ({role}) => {
                 <motion.div
                 key='screen-loader'
                 {...loaderExitProps}>
-                    <HomeLoader/>
+                    <HomeLoader role={role} authenticateSession={authenticateSession}/>
                 </motion.div>
             ) : (
                 <motion.div

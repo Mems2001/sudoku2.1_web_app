@@ -1,17 +1,24 @@
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useGridCells } from "../../hooks"
 import { Cells, Grid } from "../../models/types"
 import { AnimatePresence, motion } from "framer-motion"
 
 import {cellVariants, gridVariants, loaderTextProps, loaderLogoProps} from '../../assets/animations'
 
-function HomeLoader () {
+interface HomeLoaderProps {
+    role: string | null,
+    authenticateSession(): void
+}
+
+const HomeLoader:React.FC<HomeLoaderProps> = ({role, authenticateSession}) => {
     const [timerOut, setTimerOut] = useState(false)
+    const [blanksAmmount, setBlanksAmmount] = useState(0)
     const [lastUpdatedCells, setLastUpdatedCells] = useState<Cells>([])
 
     const {cells} = useGridCells({})
     const shuffledCells = useMemo(() => shuffleArray(cells), cells)
 
+    const [backupPuzzle, setBackupPuzzle] = useState<Grid>([[0,8,0,0,0,0,0,2,0],[0,3,4,0,0,5,0,0,0],[0,0,0,9,0,0,4,0,0],[0,2,0,6,0,0,3,0,0],[0,0,8,0,9,3,0,7,0],[0,1,0,0,7,0,0,5,4],[3,6,0,5,1,0,0,0,0],[1,0,0,4,0,0,0,0,0],[0,0,0,0,0,0,2,0,0]])
     const [puzzle, setPuzzle] = useState<Grid>([[0,8,0,0,0,0,0,2,0],[0,3,4,0,0,5,0,0,0],[0,0,0,9,0,0,4,0,0],[0,2,0,6,0,0,3,0,0],[0,0,8,0,9,3,0,7,0],[0,1,0,0,7,0,0,5,4],[3,6,0,5,1,0,0,0,0],[1,0,0,4,0,0,0,0,0],[0,0,0,0,0,0,2,0,0]]) 
 
     const answers:Grid = [[9,8,1,3,4,7,5,2,6],[2,3,4,8,6,5,1,9,7],[5,7,6,9,2,1,4,8,3],[7,2,9,6,5,4,3,1,8],[4,5,8,1,9,3,6,7,2],[6,1,3,2,7,8,9,5,4],[3,6,7,5,1,2,8,4,9],[1,9,2,4,8,6,7,3,5],[8,4,5,7,3,9,2,6,1]]
@@ -28,6 +35,17 @@ function HomeLoader () {
             [aux_array[i], aux_array[j]] = [aux_array[j], aux_array[i]]
         }
         return aux_array
+    }
+
+    function countBlanks(puzzle: Grid) {
+        let count = 0
+        for (const row of puzzle) {
+            for (const cell of row) {
+                if (cell === 0) count++
+            }
+        }
+
+        return setBlanksAmmount(count)
     }
 
     function parseValue(cell:string) {
@@ -57,7 +75,18 @@ function HomeLoader () {
         return final_class
     }
 
+    /**
+     * This functions first evaluate if the current puzzle has been solved. If so, it resets the puzzle to its initial unsolved state. If not, it fills the first blank cell it finds with the correct value.
+     * @param cells - The array of coordinates to be filled. It is shuffled in order to fill the cells in a random order. 
+     * @returns Either the updated puzzle with one more cell filled, or the initial unsolved puzzle if the current puzzle is already solved.
+     */
     function assignValue(cells: Cells) {
+
+        if (lastUpdatedCells.length === blanksAmmount) {
+            
+            setLastUpdatedCells([])
+            return setPuzzle(backupPuzzle)
+        }
 
         for (const cell of cells) {
 
@@ -75,11 +104,11 @@ function HomeLoader () {
 
             return setPuzzle(new_puzzle)
         }
-     
     }
 
     useEffect(
         () => {
+            countBlanks(puzzle)
             const timer = setTimeout(
                 () => {
                     setTimerOut(true)
@@ -95,6 +124,7 @@ function HomeLoader () {
             if (timerOut) {
                 const timer = setTimeout(
                     () => {
+                        if (!role && lastUpdatedCells.length === blanksAmmount) authenticateSession()
                         assignValue(shuffledCells)
                     }, 1250
                 )

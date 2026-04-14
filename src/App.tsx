@@ -35,7 +35,8 @@ axios.defaults.withCredentials = true
 function App () {
 
   const showToaster = useSelector((state:RootState) => state.showToaster.value)
-  const {isLogged, role, logout} = useAuth()
+  // We make the useAuth hook call on every App render in order to check the server availability and the user session.
+  const {isLogged, role, logout, authenticateSession} = useAuth()
   const location = useLocation()
 
   return (
@@ -48,7 +49,7 @@ function App () {
 
       <AnimatePresence mode='wait'>
         <Routes location={location} key={location.pathname}>
-          <Route element={<HomeLoaderProtector role={role}/>}>
+          <Route element={<HomeLoaderProtector role={role} authenticateSession={authenticateSession} />}>
             <Route path='/' element={<Home isLogged={isLogged} role={role} logout={logout}/>} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
