@@ -249,9 +249,9 @@ const GamesModal = forwardRef<HTMLDivElement, Props> (({closeModal, isModalOpen}
                         <motion.button
                         variants={GameTypeVariants}
                         className="home-button modal-button red" onClick={() => goToGame({gameType, difficulty:4, closeModal})}>{waiting && auxDifficulty === 4?<ButtonSpinner size={20} color=""/>:'Expert'}</motion.button>
-                        <motion.button
+                        {/* <motion.button
                         variants={GameTypeVariants}
-                        className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>{waiting && auxDifficulty === 5?<ButtonSpinner size={20} color=""/>:'Master'}</motion.button>
+                        className="home-button modal-button black" onClick={() => goToGame({gameType, difficulty:5, closeModal})}>{waiting && auxDifficulty === 5?<ButtonSpinner size={20} color=""/>:'Master'}</motion.button> */}
                         <motion.button
                         variants={GameTypeVariants}
                         className="home-button modal-button" onClick={() => {setShowDifficulties(false);setShowNewGame(true);setGameType(null); setAnnouncement("Back to game type selection")}}>Back</motion.button>
